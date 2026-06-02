@@ -168,35 +168,23 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
           Hello, {profile?.name ?? "friend"}.
         </h1>
 
-        {/* Personal astro pills */}
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
-            style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-            <span className="w-2 h-2 rounded-full" style={{ background: "var(--primary)" }} />
-            <span className="text-xs tracking-widest uppercase"
-              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
-              Moon in {astro.moonSign}
-            </span>
-          </div>
-          {profile?.sun_sign && (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
-              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-              <span className="text-xs tracking-widest uppercase"
-                style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-                {SIGN_SYMBOL[profile.sun_sign]} Sun · {profile.sun_sign}
-              </span>
-            </div>
-          )}
-          {profile?.moon_sign && (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
-              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
-              <span className="text-xs tracking-widest uppercase"
-                style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-                {SIGN_SYMBOL[profile.moon_sign]} Moon · {profile.moon_sign}
-              </span>
-            </div>
-          )}
-        </div>
+        {/* Personal signs — ⊙ Sun ☽ Moon ↑ Ascendant */}
+        {profile && (
+          <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.95rem", color: "var(--muted-foreground)", letterSpacing: "0.01em" }}>
+            <span style={{ color: "var(--foreground)" }}>⊙</span>
+            {" "}{profile.sun_sign}
+            {"  "}
+            <span style={{ color: "var(--foreground)" }}>☽</span>
+            {" "}{profile.moon_sign}
+            {profile.rising_sign && (
+              <>
+                {"  "}
+                <span style={{ color: "var(--foreground)" }}>↑</span>
+                {" "}{profile.rising_sign}
+              </>
+            )}
+          </p>
+        )}
       </div>
 
       {/* Divider */}
