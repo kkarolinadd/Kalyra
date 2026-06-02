@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getDailyAstrology, MOON_PHASE_EMOJI, PLANET_SYMBOL, SIGN_SYMBOL, type DailyAstrology } from "@/lib/astrology";
-import { getRitual, getGreeting, getSpecialSectionContent } from "@/lib/ritualContent";
+import { getRitual, getGreeting, getSpecialSectionContent, getTriggeredRituals, type MasterRitual } from "@/lib/ritualContent";
 import { getProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitualUsed, type CheckinKey } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -84,6 +84,7 @@ export function TodayTab() {
   const [aiState, setAiState] = useState<"idle" | "loading" | "done">("idle");
   const [aiContent, setAiContent] = useState("");
   const [aiUsed, setAiUsed] = useState(false);
+  const [expandedRitual, setExpandedRitual] = useState<string | null>(null);
 
   const profile = getProfile();
 
@@ -96,6 +97,7 @@ export function TodayTab() {
   if (!astro) return null;
 
   const ritual = getRitual(astro.moonPhase, astro.dayRuler);
+  const triggeredRituals = getTriggeredRituals(astro.moonPhase, astro.moonSign, astro.dayRuler);
   const greeting = profile
     ? getGreeting(profile.name, astro.moonSign, astro.moonPhase)
     : `Welcome. ${MOON_PHASE_EMOJI[astro.moonPhase]} ${astro.moonPhase} in ${astro.moonSign} today.`;
@@ -175,6 +177,60 @@ export function TodayTab() {
           </div>
         )}
       </div>
+
+      {/* Today's Rituals */}
+      {triggeredRituals.length > 0 && (
+        <div className="space-y-3 fade-in">
+          <p className="text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase text-center"
+            style={{ color: "#8a8ba0" }}>
+            Today&apos;s Rituals
+          </p>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {triggeredRituals.map((r: MasterRitual) => (
+              <button key={r.id}
+                onClick={() => setExpandedRitual(expandedRitual === r.id ? null : r.id)}
+                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all active:scale-95"
+                style={{
+                  background: expandedRitual === r.id ? "#c9a84c20" : "#13152a",
+                  border: `1px solid ${expandedRitual === r.id ? "#c9a84c" : "#1e2140"}`,
+                  color: expandedRitual === r.id ? "#c9a84c" : "#f5f0e8",
+                }}>
+                <span>{r.icon}</span>
+                <span className="font-[family-name:var(--font-cinzel)] text-xs tracking-wide">{r.name}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Expanded ritual steps */}
+          {expandedRitual && (() => {
+            const r = triggeredRituals.find((x: MasterRitual) => x.id === expandedRitual);
+            if (!r) return null;
+            return (
+              <div className="rounded-2xl p-5 space-y-4 fade-in"
+                style={{ background: "#13152a", border: "1px solid #c9a84c40" }}>
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{r.icon}</span>
+                  <h3 className="font-[family-name:var(--font-cinzel)] text-sm tracking-widest uppercase"
+                    style={{ color: "#c9a84c" }}>
+                    {r.name}
+                  </h3>
+                </div>
+                <ol className="space-y-3">
+                  {r.steps.map((step: string, i: number) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-[family-name:var(--font-cinzel)]"
+                        style={{ background: "#1e2140", color: "#c9a84c" }}>
+                        {i + 1}
+                      </span>
+                      <span className="text-base leading-relaxed text-[#f5f0e8]">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            );
+          })()}
+        </div>
+      )}
 
       {/* Special event sections */}
       {astro.specialEvents.map((ev, i) => {

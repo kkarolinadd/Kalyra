@@ -1,5 +1,243 @@
 import type { MoonPhase, Planet, ZodiacSign } from "./astrology";
 
+// ─── Master Ritual List (12 rituals from PRD section 9.4) ─────────────────────
+
+export interface MasterRitual {
+  id: string;
+  name: string;
+  icon: string;
+  format: string;
+  steps: string[];
+}
+
+export const MASTER_RITUALS: Record<string, MasterRitual> = {
+  moon_water: {
+    id: "moon_water",
+    name: "Moon Water",
+    icon: "💧",
+    format: "Instruction card + intention prompt",
+    steps: [
+      "Fill a clean glass or bowl with water — filtered or tap both work.",
+      "Hold the vessel and speak your intention into it. Be specific.",
+      "Place it on a windowsill, balcony, or outside where moonlight can reach it.",
+      "Leave overnight. Retrieve before sunrise.",
+      "Use throughout the cycle: in your morning drink, to anoint your wrists or crystals, or in a ritual bath.",
+    ],
+  },
+  candle_magic: {
+    id: "candle_magic",
+    name: "Candle Magic",
+    icon: "🕯",
+    format: "Step-by-step ritual + intention text",
+    steps: [
+      "Choose a candle color aligned with your intention (gold = abundance, white = clarity, pink = love, black = release).",
+      "Hold the unlit candle and infuse it with your intention — visualize what you're calling in or releasing.",
+      "Light it with a match, not a lighter — the sulfur clears stagnant energy.",
+      "Write your intention on paper and place it beneath the candle holder.",
+      "Let it burn as long as feels right. Never leave unattended. You can extinguish and relight — don't blow out, pinch or snuff.",
+    ],
+  },
+  crystal_work: {
+    id: "crystal_work",
+    name: "Crystal Work",
+    icon: "💎",
+    format: "Daily crystal + how-to-use instruction",
+    steps: [
+      "Choose your crystal for the day (see today's Crystal of the Day recommendation).",
+      "Hold it in your non-dominant hand and set your intention for the day.",
+      "Carry it with you, place it on your desk, or keep it in your bra/pocket.",
+      "Check in with it throughout the day — each touch is a reminder of your intention.",
+      "Cleanse it regularly: moonlight, running water (check if water-safe), or sound.",
+    ],
+  },
+  bath_ritual: {
+    id: "bath_ritual",
+    name: "Bath Ritual",
+    icon: "🛁",
+    format: "Ingredients + intention + meditation",
+    steps: [
+      "Draw a warm bath. Add 1–2 cups Epsom salt for energetic clearing and muscle relaxation.",
+      "Optional additions: rose petals (love), lavender (peace), rosemary (clarity), a few drops of essential oil.",
+      "Place your crystal at the edge of the tub — not in the water unless water-safe.",
+      "As you enter, set an intention: what are you washing away? What are you inviting in?",
+      "Soak for at least 15 minutes. No phone. Let your mind soften.",
+      "As you drain the water, visualize what you released flowing away.",
+    ],
+  },
+  journaling: {
+    id: "journaling",
+    name: "Journaling",
+    icon: "📖",
+    format: "Prompted questions",
+    steps: [
+      "Find a quiet space. Put your phone face-down.",
+      "Open to today's journal prompt (see Journal Prompt section above).",
+      "Write for at least 5 minutes without stopping — don't edit, just flow.",
+      "If you get stuck, write: 'What I really want to say is...' and continue from there.",
+      "Read back what you wrote. Circle or underline the sentence that surprises you most.",
+    ],
+  },
+  scripting: {
+    id: "scripting",
+    name: "Scripting",
+    icon: "✍️",
+    format: "Write future in past tense — structured template",
+    steps: [
+      "Date your entry as if it's one year from today.",
+      "Write in the past tense as if your intention has already happened: 'It's [date next year] and I am so grateful that...'",
+      "Include sensory details — what do you see, feel, hear in this future version of your life?",
+      "Write freely for 10–15 minutes. Let it be vivid and specific.",
+      "End with: 'I am so grateful. This or something better.' Close the journal.",
+    ],
+  },
+  mirror_work: {
+    id: "mirror_work",
+    name: "Mirror Work",
+    icon: "🪞",
+    format: "Affirmation text to read aloud",
+    steps: [
+      "Stand in front of a mirror — bathroom mirror works perfectly.",
+      "Look directly into your own eyes. Hold your gaze for a breath.",
+      "Read today's Mirror Reflection aloud (see section above) slowly and with feeling.",
+      "If resistance comes up, notice it without judgment — that's where the work is.",
+      "Repeat the most resonant line 3 times. Place your hand on your heart as you speak.",
+    ],
+  },
+  meditation: {
+    id: "meditation",
+    name: "Meditation",
+    icon: "🧘",
+    format: "Guided text script",
+    steps: [
+      "Find a comfortable seated position. Close your eyes or soften your gaze downward.",
+      "Take 3 deep breaths — inhale for 4 counts, exhale for 6.",
+      "Bring your awareness to the current moon phase energy. What does it feel like in your body?",
+      "Spend 5–10 minutes with this awareness — breathing, noticing, allowing.",
+      "When ready, set one clear intention and let it dissolve into your breath.",
+      "Return slowly. Journal anything that surfaced.",
+    ],
+  },
+  breathwork: {
+    id: "breathwork",
+    name: "Breathwork",
+    icon: "🌬️",
+    format: "Technique description",
+    steps: [
+      "4-7-8 Breath (for calm and clarity): Inhale for 4 counts → Hold for 7 → Exhale for 8. Repeat 4 cycles.",
+      "Box Breathing (for focus and grounding): Inhale 4 → Hold 4 → Exhale 4 → Hold 4. Repeat 4–6 cycles.",
+      "Air sign days favor 4-7-8 — it slows the mental chatter that Gemini, Libra, and Aquarius energy can amplify.",
+      "Practice before journaling, a difficult conversation, or any moment requiring mental clarity.",
+      "Notice: your mind is clearer after 4 cycles than before. This is your most accessible ritual.",
+    ],
+  },
+  dream_work: {
+    id: "dream_work",
+    name: "Dream Work",
+    icon: "🌙",
+    format: "Evening prep prompt + morning capture",
+    steps: [
+      "Evening: Place your journal and pen beside your bed before sleep.",
+      "Before closing your eyes, set an intention: 'Tonight I am open to guidance through my dreams.'",
+      "Optional: hold your crystal (Moonstone, Labradorite, or Amethyst) as you fall asleep.",
+      "Morning: Before checking your phone, write whatever you remember — images, feelings, fragments.",
+      "Don't analyze yet — just capture. Patterns will emerge over days and weeks.",
+      "Ask: what emotion did the dream leave me with? That feeling is the message.",
+    ],
+  },
+  manifestation: {
+    id: "manifestation",
+    name: "Manifestation",
+    icon: "✨",
+    format: "Visualization + scripting hybrid",
+    steps: [
+      "Find 10 quiet minutes. Sit comfortably with your crystal in your non-dominant hand.",
+      "Close your eyes. Breathe slowly until your mind quiets.",
+      "Bring your intention clearly to mind. See it already real — as vivid as you can make it.",
+      "Feel the emotion of having it: gratitude, joy, relief, expansion. Stay in that feeling.",
+      "Open your eyes and write 3 sentences in present tense: 'I am..., I have..., I feel...'",
+      "Say aloud: 'This or something better is on its way to me. I am ready to receive.'",
+    ],
+  },
+  gratitude: {
+    id: "gratitude",
+    name: "Gratitude",
+    icon: "🌸",
+    format: "Structured gratitude list",
+    steps: [
+      "Open your journal to a fresh page.",
+      "Write: 'I am grateful for...' and list at least 10 specific things — no generic answers.",
+      "For each item, add one sentence: why this particular thing matters to you right now.",
+      "Include one thing about yourself you're grateful for. This is non-negotiable.",
+      "Read the list aloud. Notice where you feel warmth in your body — that's the energy you're amplifying.",
+    ],
+  },
+};
+
+// ─── Triggered rituals logic ──────────────────────────────────────────────────
+
+const FIRE_SIGNS: ZodiacSign[] = ["Aries", "Leo", "Sagittarius"];
+const AIR_SIGNS: ZodiacSign[] = ["Gemini", "Libra", "Aquarius"];
+const WANING_PHASES: MoonPhase[] = ["Waning Gibbous", "Last Quarter", "Waning Crescent"];
+const WAXING_PHASES: MoonPhase[] = ["New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous"];
+const WATER_SIGNS: ZodiacSign[] = ["Cancer", "Scorpio", "Pisces"];
+
+export function getTriggeredRituals(
+  phase: MoonPhase,
+  moonSign: ZodiacSign,
+  dayRuler: Planet
+): MasterRitual[] {
+  const triggered: string[] = [];
+
+  // 1. Moon Water — New Moon, Full Moon, Waxing Crescent
+  if (phase === "New Moon" || phase === "Full Moon" || phase === "Waxing Crescent") {
+    triggered.push("moon_water");
+  }
+
+  // 2. Candle Magic — Full Moon, New Moon, Fire moon days
+  if (phase === "Full Moon" || phase === "New Moon" || FIRE_SIGNS.includes(moonSign)) {
+    triggered.push("candle_magic");
+  }
+
+  // 4. Bath Ritual — Full Moon, Waxing Gibbous, Venus days
+  if (phase === "Full Moon" || phase === "Waxing Gibbous" || dayRuler === "Venus") {
+    triggered.push("bath_ritual");
+  }
+
+  // 6. Scripting — New Moon, Waxing Crescent
+  if (phase === "New Moon" || phase === "Waxing Crescent") {
+    triggered.push("scripting");
+  }
+
+  // 8. Meditation — Full Moon, New Moon, phase-specific (all phases have a meditation)
+  if (phase === "Full Moon" || phase === "New Moon" || phase === "Waning Crescent") {
+    triggered.push("meditation");
+  }
+
+  // 9. Breathwork — Air moon days, Mercury transits
+  if (AIR_SIGNS.includes(moonSign) || dayRuler === "Mercury") {
+    triggered.push("breathwork");
+  }
+
+  // 10. Dream Work — Waning phases, Pisces/Scorpio moon
+  if (WANING_PHASES.includes(phase) || moonSign === "Pisces" || moonSign === "Scorpio") {
+    triggered.push("dream_work");
+  }
+
+  // 11. Manifestation — New Moon, Waxing phases, Jupiter days
+  if (WAXING_PHASES.includes(phase) || dayRuler === "Jupiter") {
+    triggered.push("manifestation");
+  }
+
+  // 12. Gratitude — Waxing Gibbous, Full Moon, Thursday (Jupiter = Thursday)
+  if (phase === "Waxing Gibbous" || phase === "Full Moon" || dayRuler === "Jupiter") {
+    triggered.push("gratitude");
+  }
+
+  // Deduplicate and return, max 4 rituals per day
+  const unique = [...new Set(triggered)];
+  return unique.slice(0, 4).map((id) => MASTER_RITUALS[id]);
+}
+
 export interface DailyRitual {
   morningRitual: string[];
   journalPrompt: string;
