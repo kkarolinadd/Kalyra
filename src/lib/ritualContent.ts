@@ -173,69 +173,36 @@ export const MASTER_RITUALS: Record<string, MasterRitual> = {
   },
 };
 
-// ─── Triggered rituals logic ──────────────────────────────────────────────────
+// ─── Triggered rituals logic (PRD section 9.6) ───────────────────────────────
+//
+// Ritual effort levels:
+//   Micro  — 1–3 min, no prep  (mirror work, journal, crystal, glamour — always in fixed UI)
+//   Medium — 5–15 min          (breathwork, meditation, scripting, gratitude, manifestation)
+//   Macro  — 20–60 min setup   (bath ritual, candle magic, moon water, dream work)
+//
+// Rule: max 3 active rituals per day (medium + macro combined).
+// Phase-to-ritual mapping follows PRD 9.6 exactly.
 
-const FIRE_SIGNS: ZodiacSign[] = ["Aries", "Leo", "Sagittarius"];
-const AIR_SIGNS: ZodiacSign[] = ["Gemini", "Libra", "Aquarius"];
-const WANING_PHASES: MoonPhase[] = ["Waning Gibbous", "Last Quarter", "Waning Crescent"];
-const WAXING_PHASES: MoonPhase[] = ["New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous"];
-const WATER_SIGNS: ZodiacSign[] = ["Cancer", "Scorpio", "Pisces"];
+// Phase-based ritual assignment (PRD 9.6 table)
+const PHASE_RITUALS: Record<MoonPhase, string[]> = {
+  "New Moon":        ["scripting", "manifestation", "candle_magic", "moon_water"],
+  "Waxing Crescent": ["moon_water", "scripting", "manifestation"],
+  "First Quarter":   ["breathwork", "manifestation"],
+  "Waxing Gibbous":  ["gratitude", "bath_ritual"],
+  "Full Moon":       ["moon_water", "candle_magic", "bath_ritual", "gratitude"],
+  "Waning Gibbous":  ["gratitude", "meditation"],
+  "Last Quarter":    ["breathwork", "meditation"],
+  "Waning Crescent": ["dream_work", "meditation"],
+};
 
 export function getTriggeredRituals(
   phase: MoonPhase,
-  moonSign: ZodiacSign,
-  dayRuler: Planet
+  _moonSign: ZodiacSign,
+  _dayRuler: Planet
 ): MasterRitual[] {
-  const triggered: string[] = [];
-
-  // 1. Moon Water — New Moon, Full Moon, Waxing Crescent
-  if (phase === "New Moon" || phase === "Full Moon" || phase === "Waxing Crescent") {
-    triggered.push("moon_water");
-  }
-
-  // 2. Candle Magic — Full Moon, New Moon, Fire moon days
-  if (phase === "Full Moon" || phase === "New Moon" || FIRE_SIGNS.includes(moonSign)) {
-    triggered.push("candle_magic");
-  }
-
-  // 4. Bath Ritual — Full Moon, Waxing Gibbous, Venus days
-  if (phase === "Full Moon" || phase === "Waxing Gibbous" || dayRuler === "Venus") {
-    triggered.push("bath_ritual");
-  }
-
-  // 6. Scripting — New Moon, Waxing Crescent
-  if (phase === "New Moon" || phase === "Waxing Crescent") {
-    triggered.push("scripting");
-  }
-
-  // 8. Meditation — Full Moon, New Moon, phase-specific (all phases have a meditation)
-  if (phase === "Full Moon" || phase === "New Moon" || phase === "Waning Crescent") {
-    triggered.push("meditation");
-  }
-
-  // 9. Breathwork — Air moon days, Mercury transits
-  if (AIR_SIGNS.includes(moonSign) || dayRuler === "Mercury") {
-    triggered.push("breathwork");
-  }
-
-  // 10. Dream Work — Waning phases, Pisces/Scorpio moon
-  if (WANING_PHASES.includes(phase) || moonSign === "Pisces" || moonSign === "Scorpio") {
-    triggered.push("dream_work");
-  }
-
-  // 11. Manifestation — New Moon, Waxing phases, Jupiter days
-  if (WAXING_PHASES.includes(phase) || dayRuler === "Jupiter") {
-    triggered.push("manifestation");
-  }
-
-  // 12. Gratitude — Waxing Gibbous, Full Moon, Thursday (Jupiter = Thursday)
-  if (phase === "Waxing Gibbous" || phase === "Full Moon" || dayRuler === "Jupiter") {
-    triggered.push("gratitude");
-  }
-
-  // Deduplicate and return, max 4 rituals per day
-  const unique = [...new Set(triggered)];
-  return unique.slice(0, 4).map((id) => MASTER_RITUALS[id]);
+  const base = PHASE_RITUALS[phase] ?? [];
+  // Max 3 active rituals (medium + macro) per PRD core rule
+  return base.slice(0, 3).map((id) => MASTER_RITUALS[id]);
 }
 
 export interface DailyRitual {
