@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { getMoonPhaseData, getSpecialEvents, type MoonPhase, type SpecialEvent } from "@/lib/astrology";
-import { MoonPhaseIcon2 } from "@/components/icons";
+import { MoonPhaseIcon2, MoonFirstQuarter } from "@/components/icons";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -68,7 +68,7 @@ function DayDetail({ day, onClose }: { day: DayData; onClose: () => void }) {
         <div className="flex items-center gap-3">
           <MoonPhaseIcon2
             phase={day.phase} size={32}
-            litColor="var(--foreground)" strokeColor="var(--primary)"
+            litColor="#E8E0F0" darkColor="#1E1640" strokeColor="#C9A84C"
           />
           <div>
             <p className="text-xs tracking-widest uppercase"
@@ -144,12 +144,12 @@ export function CalendarTab({ colorMode = "dark" }: { colorMode?: "morning" | "m
   const monthData = useMemo(() => buildMonthData(viewYear, viewMonth), [viewYear, viewMonth]);
   const firstDow = getFirstDayOfWeek(viewYear, viewMonth);
 
-  const isMorning = colorMode === "morning";
-  // In morning mode: dark icons on light background (like the screenshot)
-  // In dark/mid mode: light icons on dark background
-  const moonLitColor = isMorning ? "#1A1208" : "var(--foreground)";
-  const moonStrokeColor = isMorning ? "#1A1208" : "var(--muted-foreground)";
+  // Two-tone colors — always visible on both dark and light backgrounds
+  const litColor    = "#E8E0F0";
+  const darkColor   = "#1E1640";
+  const strokeColor = "#4A3F7A";
   const todayStrokeColor = "#C9A84C";
+  const moonSize = 36;
 
   function prevMonth() {
     setSelectedDay(null);
@@ -239,20 +239,18 @@ export function CalendarTab({ colorMode = "dark" }: { colorMode?: "morning" | "m
               }}
             >
               {/* Moon phase icon */}
-              <div className="relative">
+              <div className="relative flex items-center justify-center"
+                style={{ width: moonSize + 8, height: moonSize + 8 }}>
                 {isToday && (
                   <div className="absolute inset-0 rounded-full"
-                    style={{
-                      margin: -3,
-                      border: `1.5px solid ${todayStrokeColor}`,
-                      borderRadius: "50%",
-                    }} />
+                    style={{ border: `1.5px solid ${todayStrokeColor}` }} />
                 )}
                 <MoonPhaseIcon2
                   phase={day.phase}
-                  size={28}
-                  litColor={isToday ? "#C9A84C" : moonLitColor}
-                  strokeColor={isToday ? todayStrokeColor : moonStrokeColor}
+                  size={moonSize}
+                  litColor={litColor}
+                  darkColor={darkColor}
+                  strokeColor={isToday ? todayStrokeColor : strokeColor}
                 />
               </div>
 
@@ -287,14 +285,15 @@ export function CalendarTab({ colorMode = "dark" }: { colorMode?: "morning" | "m
       <div className="flex items-center justify-center gap-6 pt-4 mt-2"
         style={{ borderTop: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full" style={{ background: "var(--foreground)" }} />
+          {/* Half-moon icon for Full/New */}
+          <MoonFirstQuarter size={14} litColor="#E8E0F0" darkColor="#1E1640" strokeColor="#4A3F7A" />
           <span className="text-xs tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Full / New
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full"
+          <div className="w-3.5 h-3.5 rounded-full"
             style={{ border: "1.5px solid #C9A84C" }} />
           <span className="text-xs tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>

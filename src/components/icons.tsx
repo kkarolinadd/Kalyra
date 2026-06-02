@@ -190,92 +190,119 @@ export function IconEnergy({ size = 20, color = "currentColor" }: IconProps) {
   );
 }
 
-// ─── Moon Phases (for calendar & today card) ─────────────────────────────────
+// ─── Moon Phases ─────────────────────────────────────────────────────────────
+//
+// Each phase uses TWO visible colors — no transparency.
+// Lit:    #E8E0F0 (soft white-lavender)
+// Shadow: #1E1640 (dark violet — always visible against dark bg)
+// Stroke: #4A3F7A (subtle outline)
+//
+// Crescent geometry: two arcs — outer circle arc + inner ellipse arc.
+// This creates a proper crescent without clip paths.
 
 interface MoonIconProps {
   size?: number;
-  litColor?: string;   // fill for illuminated part
-  darkColor?: string;  // fill for dark part
+  litColor?: string;
+  darkColor?: string;
   strokeColor?: string;
 }
 
-function MoonPhaseIcon({ size = 24, litColor, darkColor = "transparent", strokeColor, children }: MoonIconProps & { children?: React.ReactNode }) {
+const LIT    = "#E8E0F0";
+const SHADOW = "#1E1640";
+const STROKE = "#4A3F7A";
+
+// New Moon — full shadow circle, no lit area
+export function MoonNew({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      {children}
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
+      <circle cx="12" cy="12" r="9" fill={darkColor} stroke={strokeColor} strokeWidth={1.5} />
     </svg>
   );
 }
 
-export function MoonNew({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
-  return <MoonPhaseIcon size={size} strokeColor={strokeColor}><circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={1.5} /></MoonPhaseIcon>;
-}
-
-export function MoonWaxingCrescent({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+// Waxing Crescent — shadow circle + thin lit crescent on right
+// Crescent = outer right arc + inner offset arc
+export function MoonWaxingCrescent({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      <path d="M12 3 A9 9 0 0 1 12 21 A5 5 0 0 0 12 3 Z" fill={litColor} stroke="none" />
+      <circle cx="12" cy="12" r="9" fill={darkColor} stroke={strokeColor} strokeWidth={1.5} />
+      {/* Thin lit crescent on right: outer right arc + inner leftward arc */}
+      <path d="M12 3 A9 9 0 0 1 12 21 A6.5 9 0 0 0 12 3 Z" fill={litColor} />
     </svg>
   );
 }
 
-export function MoonFirstQuarter({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+// First Quarter — left half shadow, right half lit
+export function MoonFirstQuarter({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      <path d="M12 3 A9 9 0 0 1 12 21 Z" fill={litColor} stroke="none" />
-      <line x1="12" y1="3" x2="12" y2="21" stroke={strokeColor} strokeWidth={1.5} />
+      {/* Shadow left half */}
+      <path d="M12 3 A9 9 0 0 0 12 21 Z" fill={darkColor} />
+      {/* Lit right half */}
+      <path d="M12 3 A9 9 0 0 1 12 21 Z" fill={litColor} />
+      <circle cx="12" cy="12" r="9" fill="none" stroke={strokeColor} strokeWidth={1.5} />
     </svg>
   );
 }
 
-export function MoonWaxingGibbous({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
-  // Almost full, small dark sliver on left
+// Waxing Gibbous — mostly lit, thin shadow crescent on left
+export function MoonWaxingGibbous({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      {/* Lit area: right + most of left, only thin crescent dark on left */}
-      <path d="M12 3 A9 9 0 0 1 12 21 A3.5 3.5 0 0 1 12 3 Z" fill={litColor} stroke="none" />
+      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={1.5} />
+      {/* Shadow crescent on left: outer left arc + inner rightward arc */}
+      <path d="M12 3 A9 9 0 0 0 12 21 A5.5 9 0 0 1 12 3 Z" fill={darkColor} />
     </svg>
   );
 }
 
-export function MoonFull({ size = 24, litColor = "#F0EAF8", strokeColor = "#C9A84C" }: MoonIconProps) {
+// Full Moon — all lit, gold stroke, subtle glow via filter
+export function MoonFull({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = "#C9A84C" }: MoonIconProps) {
+  const id = `glow-${size}`;
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={2} />
+      <defs>
+        <filter id={id} x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="1.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={2} filter={`url(#${id})`} />
     </svg>
   );
 }
 
-export function MoonWaningGibbous({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
-  // Almost full, small dark sliver on right
+// Waning Gibbous — mostly lit, thin shadow crescent on right
+export function MoonWaningGibbous({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      {/* Lit area: left + most of right, only thin crescent dark on right */}
-      <path d="M12 3 A9 9 0 0 0 12 21 A3.5 3.5 0 0 0 12 3 Z" fill={litColor} stroke="none" />
+      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={1.5} />
+      {/* Shadow crescent on right: outer right arc + inner leftward arc */}
+      <path d="M12 3 A9 9 0 0 1 12 21 A5.5 9 0 0 0 12 3 Z" fill={darkColor} />
     </svg>
   );
 }
 
-export function MoonLastQuarter({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+// Last Quarter — right half shadow, left half lit
+export function MoonLastQuarter({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      <path d="M12 3 A9 9 0 0 0 12 21 Z" fill={litColor} stroke="none" />
-      <line x1="12" y1="3" x2="12" y2="21" stroke={strokeColor} strokeWidth={1.5} />
+      {/* Lit left half */}
+      <path d="M12 3 A9 9 0 0 0 12 21 Z" fill={litColor} />
+      {/* Shadow right half */}
+      <path d="M12 3 A9 9 0 0 1 12 21 Z" fill={darkColor} />
+      <circle cx="12" cy="12" r="9" fill="none" stroke={strokeColor} strokeWidth={1.5} />
     </svg>
   );
 }
 
-export function MoonWaningCrescent({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+// Waning Crescent — shadow circle + thin lit crescent on left
+export function MoonWaningCrescent({ size = 24, litColor = LIT, darkColor = SHADOW, strokeColor = STROKE }: MoonIconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
-      <path d="M12 3 A9 9 0 0 0 12 21 A5 5 0 0 1 12 3 Z" fill={litColor} stroke="none" />
+      <circle cx="12" cy="12" r="9" fill={darkColor} stroke={strokeColor} strokeWidth={1.5} />
+      {/* Thin lit crescent on left: outer left arc + inner rightward arc */}
+      <path d="M12 3 A9 9 0 0 0 12 21 A6.5 9 0 0 1 12 3 Z" fill={litColor} />
     </svg>
   );
 }
@@ -284,8 +311,8 @@ export function MoonWaningCrescent({ size = 24, litColor = "#F0EAF8", strokeColo
 
 import type { MoonPhase } from "@/lib/astrology";
 
-export function MoonPhaseIcon2({ phase, size = 24, litColor, strokeColor }: { phase: MoonPhase } & MoonIconProps) {
-  const props = { size, litColor, strokeColor };
+export function MoonPhaseIcon2({ phase, size = 24, litColor, darkColor, strokeColor }: { phase: MoonPhase } & MoonIconProps) {
+  const props = { size, litColor, darkColor, strokeColor };
   switch (phase) {
     case "New Moon":        return <MoonNew {...props} />;
     case "Waxing Crescent": return <MoonWaxingCrescent {...props} />;
