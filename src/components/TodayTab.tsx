@@ -7,14 +7,44 @@ import { getProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitu
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const DAY_RULER_KEYWORD: Record<string, string> = {
-  Sun:     "visibility",
-  Moon:    "intuition",
-  Mercury: "clarity",
-  Venus:   "beauty",
-  Mars:    "action",
-  Jupiter: "expansion",
-  Saturn:  "discipline",
+const MOON_PHASE_TAGLINE: Record<string, string> = {
+  "New Moon":        "Set intentions",
+  "Waxing Crescent": "Take first steps",
+  "First Quarter":   "Push through",
+  "Waxing Gibbous":  "Refine & build",
+  "Full Moon":       "Release & celebrate",
+  "Waning Gibbous":  "Time to release",
+  "Last Quarter":    "Let it go",
+  "Waning Crescent": "Rest & restore",
+};
+
+const DAY_RULER_TAGLINE: Record<string, { label: string; action: string }> = {
+  Sun:     { label: "Sun rules today",     action: "Be seen"        },
+  Moon:    { label: "Moon rules today",    action: "Trust feelings" },
+  Mercury: { label: "Mercury rules today", action: "Speak clearly"  },
+  Venus:   { label: "Venus rules today",   action: "Choose beauty"  },
+  Mars:    { label: "Mars rules today",    action: "Bold moves only" },
+  Jupiter: { label: "Jupiter rules today", action: "Think bigger"   },
+  Saturn:  { label: "Saturn rules today",  action: "Do the work"    },
+};
+
+const CRYSTAL_COLOR: Record<string, string> = {
+  Citrine:           "#F5A623",
+  Moonstone:         "#C8D8E8",
+  "Blue Lace Agate": "#89B4CC",
+  "Rose Quartz":     "#F4A7B9",
+  Carnelian:         "#C8472B",
+  "Green Aventurine":"#4CAF70",
+  "Black Tourmaline":"#2A2A2A",
+  Labradorite:       "#7B8FA6",
+  Amethyst:          "#9B59B6",
+  Fluorite:          "#7EC8A4",
+  "Clear Quartz":    "#E8E8F0",
+  Obsidian:          "#1A1A1A",
+  Selenite:          "#F0EDE8",
+  Morganite:         "#F7C5B0",
+  Rhodonite:         "#D4526A",
+  Pyrite:            "#C9A84C",
 };
 
 const MOCK_AI_RITUAL = `The Moon moves through your sky with quiet certainty, and today she asks you to be equally unhurried. Begin your morning by placing both hands flat on a surface — desk, floor, earth — and breathing until you feel the solidity beneath you. You are here. This is real.
@@ -49,23 +79,29 @@ function SectionCard({
         border: `1px solid ${checked ? "var(--primary)" : "var(--border)"}`,
         transition: "border-color 0.3s, background 2000ms ease-in-out",
       }}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">{icon}</span>
-          <h3 className="text-xs tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
-              color: accent ?? "var(--primary)" }}>
-            {title}
-          </h3>
-        </div>
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-xs tracking-widest uppercase"
+          style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
+            color: accent ?? "var(--primary)" }}>
+          {title}
+        </h3>
         {checkinKey && onToggle && (
-          <div className="flex items-center gap-2 shrink-0">
-            <Checkbox
-              checked={checked}
-              onCheckedChange={() => onToggle(checkinKey)}
-              className="border-[--primary] data-[state=checked]:bg-[--primary] data-[state=checked]:border-[--primary]"
-            />
-          </div>
+          <button
+            onClick={() => onToggle(checkinKey)}
+            className="shrink-0 rounded-md flex items-center justify-center transition-all active:scale-95"
+            style={{
+              width: 28, height: 28,
+              border: `2px solid ${checked ? "var(--primary)" : "var(--muted-foreground)"}`,
+              background: checked ? "var(--primary)" : "transparent",
+            }}
+            aria-label={checked ? "Mark incomplete" : "Mark complete"}
+          >
+            {checked && (
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                <path d="M1 5l4 4L13 1" stroke="var(--primary-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </button>
         )}
       </div>
       <div style={{ color: "var(--foreground)" }}>{children}</div>
@@ -202,42 +238,54 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       <div style={{ height: 1, background: "var(--border)" }} />
 
       {/* ── DAY SECTION — 3 equal columns ────────────── */}
-      <div className="rounded-2xl p-4"
+      <div className="rounded-2xl overflow-hidden"
         style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-        <div className="grid grid-cols-3 divide-x" style={{ borderColor: "var(--border)" }}>
+        <div className="grid grid-cols-3">
           {/* Moon Phase */}
-          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
-            <span className="text-2xl">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
-            <span className="text-xs tracking-widest uppercase leading-tight"
-              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+          <div className="flex flex-col items-center gap-1 p-4 text-center"
+            style={{ borderRight: "1px solid var(--border)" }}>
+            <span className="text-2xl leading-none">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
+            <span className="text-xs font-semibold mt-1 leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
               {astro.moonPhase}
             </span>
-            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-              {astro.moonIllumination}%
+            <span className="text-xs leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
+              {MOON_PHASE_TAGLINE[astro.moonPhase]}
             </span>
+            {/* Cycle progress bar */}
+            <div className="w-full mt-1.5 h-1 rounded-full overflow-hidden"
+              style={{ background: "var(--border)" }}>
+              <div className="h-full rounded-full"
+                style={{ width: `${astro.moonIllumination}%`, background: "var(--primary)", transition: "width 0.5s" }} />
+            </div>
           </div>
 
           {/* Day Ruler */}
-          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
-            <span className="text-2xl">{PLANET_SYMBOL[astro.dayRuler]}</span>
-            <span className="text-xs tracking-widest uppercase leading-tight"
-              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
-              {astro.dayRuler}
+          <div className="flex flex-col items-center gap-1 p-4 text-center"
+            style={{ borderRight: "1px solid var(--border)" }}>
+            <span className="text-2xl leading-none">⚡</span>
+            <span className="text-xs font-semibold mt-1 leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
+              {DAY_RULER_TAGLINE[astro.dayRuler].label}
             </span>
-            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-              {DAY_RULER_KEYWORD[astro.dayRuler]}
+            <span className="text-xs leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
+              {DAY_RULER_TAGLINE[astro.dayRuler].action}
             </span>
           </div>
 
           {/* Crystal */}
-          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
-            <span className="text-2xl">💎</span>
-            <span className="text-xs tracking-widest uppercase leading-tight"
-              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+          <div className="flex flex-col items-center gap-1 p-4 text-center">
+            <div className="w-7 h-7 rounded-full"
+              style={{ background: CRYSTAL_COLOR[ritual.crystal.name] ?? "var(--primary)" }} />
+            <span className="text-xs font-semibold mt-1 leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
               {ritual.crystal.name}
             </span>
-            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-              crystal
+            <span className="text-xs leading-tight"
+              style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
+              carry today
             </span>
           </div>
         </div>
@@ -260,10 +308,6 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       {/* Today's Rituals */}
       {triggeredRituals.length > 0 && (
         <div className="space-y-3 fade-in">
-          <p className="text-xs tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-            Today&apos;s Rituals
-          </p>
           <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
             {triggeredRituals.map((r: MasterRitual) => (
               <button key={r.id}
