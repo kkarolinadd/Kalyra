@@ -7,6 +7,16 @@ import { getProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitu
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
+const DAY_RULER_KEYWORD: Record<string, string> = {
+  Sun:     "visibility",
+  Moon:    "intuition",
+  Mercury: "clarity",
+  Venus:   "beauty",
+  Mars:    "action",
+  Jupiter: "expansion",
+  Saturn:  "discipline",
+};
+
 const MOCK_AI_RITUAL = `The Moon moves through your sky with quiet certainty, and today she asks you to be equally unhurried. Begin your morning by placing both hands flat on a surface — desk, floor, earth — and breathing until you feel the solidity beneath you. You are here. This is real.
 
 Your ritual today weaves the energy of the moon's current phase with the planetary ruler of this day. Write your one clearest desire at the top of a page, then spend ten minutes writing beneath it — not how you'll get there, but how it will feel when you're living it. Use the present tense. Use specificity. Not "I want abundance" but "I am the kind of woman who..."
@@ -130,57 +140,110 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
   });
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
-      {/* Greeting */}
-      <div className="text-center space-y-1 pt-2">
-        <p className="text-sm italic" style={{ color: "var(--muted-foreground)" }}>{dateStr}</p>
-        <p className="kalyra-voice text-xl leading-snug" style={{ color: "var(--foreground)" }}>{greeting}</p>
-      </div>
+    <div className="max-w-lg mx-auto px-4 pt-6 pb-4 space-y-5">
 
-      {/* Cosmic Header */}
-      <div className="rounded-2xl p-5 space-y-4"
-        style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+      {/* ── USER SECTION ─────────────────────────────── */}
+      <div className="space-y-3 px-1">
+        {/* Date + streak */}
         <div className="flex items-center justify-between">
-          <h1 className="shimmer text-2xl" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600 }}>
-            Kalyra
-          </h1>
-          <span className="text-3xl">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
+          <p className="text-xs tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+            {astro.date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
+            {" · "}
+            {astro.date.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()}
+          </p>
+          {checkins.length > 0 && (
+            <div className="flex items-center gap-1.5">
+              <span style={{ color: "var(--primary)", fontSize: 14 }}>✦</span>
+              <span className="text-xs font-semibold" style={{ fontFamily: "var(--font-inter)", color: "var(--muted-foreground)" }}>
+                {checkins.length}
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl p-3" style={{ background: "var(--background)" }}>
-            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Moon Phase</p>
-            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>{astro.moonPhase}</p>
-            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>{astro.moonIllumination}% illuminated · day {astro.phaseCycleDay}</p>
-          </div>
-          <div className="rounded-xl p-3" style={{ background: "var(--background)" }}>
-            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Moon Sign</p>
-            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>
-              {SIGN_SYMBOL[astro.moonSign]} {astro.moonSign}
-            </p>
-            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>Sun in {SIGN_SYMBOL[astro.sunSign]} {astro.sunSign}</p>
-          </div>
-          <div className="rounded-xl p-3 col-span-2" style={{ background: "var(--background)" }}>
-            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Day Ruler</p>
-            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>
-              {PLANET_SYMBOL[astro.dayRuler]} {astro.dayRuler}
-            </p>
-          </div>
-        </div>
+        {/* Hello */}
+        <h1 className="kalyra-voice leading-none"
+          style={{ fontSize: "clamp(2.4rem, 10vw, 3rem)", color: "var(--foreground)", fontWeight: 300 }}>
+          Hello, {profile?.name ?? "friend"}.
+        </h1>
 
-        {astro.specialEvents.length > 0 && (
-          <div className="flex flex-wrap gap-2">
-            {astro.specialEvents.map((ev, i) => (
-              <Badge key={i} className="text-xs"
-                style={{ fontFamily: "var(--font-inter)", fontWeight: 600,
-                  background: "color-mix(in srgb, var(--primary) 15%, transparent)",
-                  color: "var(--primary)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}>
-                ✦ {ev.label}
-              </Badge>
-            ))}
+        {/* Personal astro pills */}
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+            style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+            <span className="w-2 h-2 rounded-full" style={{ background: "var(--primary)" }} />
+            <span className="text-xs tracking-widest uppercase"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+              Moon in {astro.moonSign}
+            </span>
           </div>
-        )}
+          {profile?.sun_sign && (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              <span className="text-xs tracking-widest uppercase"
+                style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+                {SIGN_SYMBOL[profile.sun_sign]} Sun · {profile.sun_sign}
+              </span>
+            </div>
+          )}
+          {profile?.moon_sign && (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full"
+              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              <span className="text-xs tracking-widest uppercase"
+                style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+                {SIGN_SYMBOL[profile.moon_sign]} Moon · {profile.moon_sign}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Divider */}
+      <div style={{ height: 1, background: "var(--border)" }} />
+
+      {/* ── DAY SECTION ──────────────────────────────── */}
+      <div className="rounded-2xl p-4 flex items-center gap-4"
+        style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+        {/* Moon phase illustration */}
+        <div className="shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-4xl"
+          style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
+          {MOON_PHASE_EMOJI[astro.moonPhase]}
+        </div>
+
+        {/* Day info */}
+        <div className="flex-1 space-y-1">
+          <p className="text-xs tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+            Energy · {astro.moonPhase}
+          </p>
+          <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "1.3rem", fontWeight: 500, color: "var(--foreground)", lineHeight: 1.2 }}>
+            {PLANET_SYMBOL[astro.dayRuler]} {astro.dayRuler}
+            <span style={{ color: "var(--muted-foreground)", fontWeight: 300 }}> · </span>
+            <span style={{ color: "var(--muted-foreground)", fontWeight: 300, fontSize: "1.1rem" }}>
+              {DAY_RULER_KEYWORD[astro.dayRuler]}
+            </span>
+          </p>
+          <p className="text-xs tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+            Crystal · {ritual.crystal.name}
+          </p>
+        </div>
+      </div>
+
+      {/* Special event badges */}
+      {astro.specialEvents.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {astro.specialEvents.map((ev, i) => (
+            <Badge key={i} className="text-xs"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600,
+                background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+                color: "var(--primary)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}>
+              ✦ {ev.label}
+            </Badge>
+          ))}
+        </div>
+      )}
 
       {/* Today's Rituals */}
       {triggeredRituals.length > 0 && (
