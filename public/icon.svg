@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#0D0A1A"/>
+
+  <!-- Outer glow -->
+  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#C9A84C" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="512" height="512" rx="120" fill="url(#glow)"/>
+
+  <!-- Crystal / geometric diamond -->
+  <!-- Top facet -->
+  <polygon points="256,90 340,210 256,175 172,210" fill="#E8C96A"/>
+  <!-- Left facet -->
+  <polygon points="172,210 256,175 256,355 130,270" fill="#9A7030"/>
+  <!-- Right facet -->
+  <polygon points="340,210 256,175 256,355 382,270" fill="#C9A84C"/>
+  <!-- Bottom left facet -->
+  <polygon points="130,270 256,355 210,420" fill="#7A5020"/>
+  <!-- Bottom right facet -->
+  <polygon points="382,270 256,355 302,420" fill="#A8882A"/>
+  <!-- Bottom center facet -->
+  <polygon points="210,420 256,355 302,420 256,440" fill="#C9A84C"/>
+
+  <!-- Center highlight line -->
+  <line x1="256" y1="175" x2="256" y2="355" stroke="#F5E09A" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Top star dot -->
+  <circle cx="256" cy="80" r="4" fill="#C9A84C" opacity="0.8"/>
+
+  <!-- Small stars -->
+  <circle cx="140" cy="140" r="2" fill="#C9A84C" opacity="0.5"/>
+  <circle cx="372" cy="160" r="1.5" fill="#C9A84C" opacity="0.4"/>
+  <circle cx="110" cy="320" r="1.5" fill="#C9A84C" opacity="0.3"/>
+  <circle cx="400" cy="350" r="2" fill="#C9A84C" opacity="0.4"/>
+  <circle cx="180" cy="440" r="1.5" fill="#C9A84C" opacity="0.3"/>
+  <circle cx="350" cy="430" r="1.5" fill="#C9A84C" opacity="0.3"/>
+</svg>
