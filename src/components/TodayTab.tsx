@@ -11,6 +11,7 @@ import {
   IconSunrise, IconEvening, IconJournal, IconMirror,
   IconCrystalSection, IconGlamour, IconEnergy,
   IconChecked, IconUnchecked,
+  CrystalIcon,
 } from "@/components/icons";
 
 const MOON_PHASE_TAGLINE: Record<string, string> = {
@@ -62,6 +63,7 @@ Tonight, before sleep, read what you wrote aloud. Then place your crystal on top
 function SectionCard({
   icon: Icon,
   title,
+  tag,
   checkinKey,
   checkedKeys,
   onToggle,
@@ -70,6 +72,7 @@ function SectionCard({
 }: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   title: string;
+  tag?: string;
   checkinKey?: CheckinKey;
   checkedKeys: CheckinKey[];
   onToggle?: (key: CheckinKey) => void;
@@ -86,13 +89,23 @@ function SectionCard({
         transition: "border-color 0.3s, background 2000ms ease-in-out",
       }}>
       <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
           <Icon size={20} color={accent ?? "var(--primary)"} />
           <h3 className="text-xs tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
               color: accent ?? "var(--primary)" }}>
             {title}
           </h3>
+          {tag && (
+            <span className="text-xs px-2 py-0.5 rounded-full shrink-0"
+              style={{
+                fontFamily: "var(--font-inter)", fontWeight: 500,
+                color: "var(--muted-foreground)",
+                border: "1px solid var(--border)",
+              }}>
+              {tag}
+            </span>
+          )}
         </div>
         {checkinKey && onToggle && (
           <button
@@ -149,6 +162,18 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
 
   const ritual = getRitual(astro.moonPhase, astro.dayRuler);
   const triggeredRituals = getTriggeredRituals(astro.moonPhase, astro.moonSign, astro.dayRuler);
+
+  // Map triggered rituals to section cards
+  const RITUAL_TO_CARD: Record<string, CheckinKey> = {
+    scripting: "morning", manifestation: "morning", moon_water: "morning", candle_magic: "morning",
+    gratitude: "evening", meditation: "evening", dream_work: "evening",
+    breathwork: "journal", bath_ritual: "evening",
+  };
+  const cardTags: Partial<Record<CheckinKey, string>> = {};
+  triggeredRituals.forEach((r) => {
+    const card = RITUAL_TO_CARD[r.id];
+    if (card && !cardTags[card]) cardTags[card] = r.name;
+  });
   const greeting = profile
     ? getGreeting(profile.name, astro.moonSign, astro.moonPhase)
     : `Welcome. ${astro.moonPhase} in ${astro.moonSign} today.`;
@@ -256,12 +281,6 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
               style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
               {MOON_PHASE_TAGLINE[astro.moonPhase]}
             </span>
-            {/* Cycle progress bar */}
-            <div className="w-full mt-1.5 h-1 rounded-full overflow-hidden"
-              style={{ background: "var(--border)" }}>
-              <div className="h-full rounded-full"
-                style={{ width: `${astro.moonIllumination}%`, background: "var(--primary)", transition: "width 0.5s" }} />
-            </div>
           </div>
 
           {/* Day Ruler */}
@@ -280,8 +299,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
 
           {/* Crystal */}
           <div className="flex flex-col items-center gap-1 p-4 text-center">
-            <div className="w-7 h-7 rounded-full"
-              style={{ background: CRYSTAL_COLOR[ritual.crystal.name] ?? "var(--primary)" }} />
+            <CrystalIcon name={ritual.crystal.name} size={28} />
             <span className="text-xs font-semibold mt-1 leading-tight"
               style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
               {ritual.crystal.name}
@@ -308,47 +326,6 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
         </div>
       )}
 
-      {/* Today's Rituals */}
-      {triggeredRituals.length > 0 && (
-        <div className="space-y-3 fade-in">
-          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-            {triggeredRituals.map((r: MasterRitual) => (
-              <button key={r.id}
-                onClick={() => setExpandedRitual(expandedRitual === r.id ? null : r.id)}
-                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all active:scale-95 shrink-0"
-                style={{
-                  background: expandedRitual === r.id
-                    ? "color-mix(in srgb, var(--primary) 15%, transparent)"
-                    : "var(--card)",
-                  border: `1px solid ${expandedRitual === r.id ? "var(--primary)" : "var(--border)"}`,
-                  color: expandedRitual === r.id ? "var(--primary)" : "var(--foreground)",
-                }}>
-                <span>{r.icon}</span>
-                <span className="text-xs tracking-wide" style={{ fontFamily: "var(--font-inter)", fontWeight: 600 }}>{r.name}</span>
-              </button>
-            ))}
-          </div>
-
-          {expandedRitual && (() => {
-            const r = triggeredRituals.find((x: MasterRitual) => x.id === expandedRitual);
-            if (!r) return null;
-            return (
-              <div className="rounded-2xl p-5 space-y-4 fade-in"
-                style={{ background: "var(--card)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{r.icon}</span>
-                  <h3 className="text-sm tracking-widest uppercase"
-                    style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--primary)" }}>
-                    {r.name}
-                  </h3>
-                </div>
-                <RitualList steps={r.steps} />
-              </div>
-            );
-          })()}
-        </div>
-      )}
-
       {/* Special event sections */}
       {astro.specialEvents.map((ev, i) => {
         const content = getSpecialSectionContent(ev.type);
@@ -363,12 +340,14 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
 
       {/* Morning Ritual */}
       <SectionCard icon={IconSunrise} title="Morning Ritual" checkinKey="morning"
+        tag={cardTags["morning"]}
         checkedKeys={checkins} onToggle={toggle}>
         <RitualList steps={ritual.morningRitual} />
       </SectionCard>
 
       {/* Journal Prompt */}
       <SectionCard icon={IconJournal} title="Journal Prompt" checkinKey="journal"
+        tag={cardTags["journal"]}
         checkedKeys={checkins} onToggle={toggle}>
         <blockquote className="border-l-2 pl-4 italic text-base leading-relaxed"
           style={{ borderColor: "var(--primary)" }}>
@@ -418,6 +397,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
 
       {/* Evening Ritual */}
       <SectionCard icon={IconEvening} title="Evening Ritual" checkinKey="evening"
+        tag={cardTags["evening"]}
         checkedKeys={checkins} onToggle={toggle}>
         <RitualList steps={ritual.eveningRitual} />
       </SectionCard>

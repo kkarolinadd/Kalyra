@@ -232,10 +232,12 @@ export function MoonFirstQuarter({ size = 24, litColor = "#F0EAF8", strokeColor 
 }
 
 export function MoonWaxingGibbous({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+  // Almost full, small dark sliver on left
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={1.5} />
-      <path d="M12 3 A9 9 0 0 0 12 21 A4 4 0 0 1 12 3 Z" fill="none" stroke="none" />
+      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
+      {/* Lit area: right + most of left, only thin crescent dark on left */}
+      <path d="M12 3 A9 9 0 0 1 12 21 A3.5 3.5 0 0 1 12 3 Z" fill={litColor} stroke="none" />
     </svg>
   );
 }
@@ -249,10 +251,12 @@ export function MoonFull({ size = 24, litColor = "#F0EAF8", strokeColor = "#C9A8
 }
 
 export function MoonWaningGibbous({ size = 24, litColor = "#F0EAF8", strokeColor = "currentColor" }: MoonIconProps) {
+  // Almost full, small dark sliver on right
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="9" fill={litColor} stroke={strokeColor} strokeWidth={1.5} />
-      <path d="M12 3 A9 9 0 0 1 12 21 A4 4 0 0 0 12 3 Z" fill="none" stroke="none" />
+      <circle cx="12" cy="12" r="9" stroke={strokeColor} strokeWidth={1.5} fill="none" />
+      {/* Lit area: left + most of right, only thin crescent dark on right */}
+      <path d="M12 3 A9 9 0 0 0 12 21 A3.5 3.5 0 0 0 12 3 Z" fill={litColor} stroke="none" />
     </svg>
   );
 }
@@ -292,6 +296,166 @@ export function MoonPhaseIcon2({ phase, size = 24, litColor, strokeColor }: { ph
     case "Last Quarter":    return <MoonLastQuarter {...props} />;
     case "Waning Crescent": return <MoonWaningCrescent {...props} />;
   }
+}
+
+// ─── Crystal shapes (geometric, colored per mineral) ─────────────────────────
+
+interface CrystalProps {
+  size?: number;
+  fillColor?: string;
+  strokeColor?: string;
+}
+
+// Carnelian — teardrop/point
+function CrystalCarnelian({ size = 28, fillColor = "#B5451B", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3 L22 16 Q14 26 6 16 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="14" y1="3" x2="14" y2="22" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+    </svg>
+  );
+}
+
+// Moonstone — oval with horizontal lines
+function CrystalMoonstone({ size = 28, fillColor = "#C8D4E8", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <ellipse cx="14" cy="14" rx="8" ry="11" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} />
+      <line x1="7" y1="11" x2="21" y2="11" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <line x1="6" y1="14" x2="22" y2="14" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <line x1="7" y1="17" x2="21" y2="17" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+    </svg>
+  );
+}
+
+// Amethyst — tall hexagon
+function CrystalAmethyst({ size = 28, fillColor = "#7B4FA6", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 2 L20 7 L20 21 L14 26 L8 21 L8 7 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="14" y1="2" x2="14" y2="26" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+    </svg>
+  );
+}
+
+// Citrine — diamond with top point
+function CrystalCitrine({ size = 28, fillColor = "#E8A020", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 2 L22 12 L14 26 L6 12 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="6" y1="12" x2="22" y2="12" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+    </svg>
+  );
+}
+
+// Rose Quartz — heart with facets
+function CrystalRoseQuartz({ size = 28, fillColor = "#E8A0B0", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 24 C14 24 4 16 4 10 A5 5 0 0 1 14 8 A5 5 0 0 1 24 10 C24 16 14 24 14 24 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} />
+      <line x1="14" y1="8" x2="14" y2="22" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+    </svg>
+  );
+}
+
+// Black Tourmaline — tall rectangle with lines
+function CrystalBlackTourmaline({ size = 28, fillColor = "#2A2A35", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M10 3 L18 3 L20 25 L8 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="10" y1="9" x2="18.5" y2="9" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <line x1="9" y1="15" x2="19" y2="15" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <line x1="8.5" y1="21" x2="19.5" y2="21" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+    </svg>
+  );
+}
+
+// Labradorite — irregular polygon
+function CrystalLabradorite({ size = 28, fillColor = "#4A6070", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3 L23 9 L21 22 L14 25 L7 20 L5 8 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="14" y1="3" x2="14" y2="25" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
+      <line x1="5" y1="8" x2="23" y2="9" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
+    </svg>
+  );
+}
+
+// Green Aventurine — regular hexagon
+function CrystalGreenAventurine({ size = 28, fillColor = "#3A8A50", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 3 L22 8 L22 20 L14 25 L6 20 L6 8 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="6" y1="8" x2="22" y2="8" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+      <line x1="6" y1="20" x2="22" y2="20" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+    </svg>
+  );
+}
+
+// Fluorite — regular hexagon (flat top)
+function CrystalFluorite({ size = 28, fillColor = "#5BA898", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M6 9 L14 4 L22 9 L22 19 L14 24 L6 19 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="14" y1="4" x2="14" y2="24" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+    </svg>
+  );
+}
+
+// Clear Quartz — hexagon with top point
+function CrystalClearQuartz({ size = 28, fillColor = "#E8E8F4", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M14 2 L19 7 L19 21 L14 26 L9 21 L9 7 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="9" y1="7" x2="19" y2="7" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <line x1="9" y1="14" x2="19" y2="14" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
+    </svg>
+  );
+}
+
+// Selenite — long wand with wave
+function CrystalSelenite({ size = 28, fillColor = "#F0EDE8", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M10 3 L18 3 L18 25 L10 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <path d="M10 12 Q14 9 18 12" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} fill="none" />
+      <path d="M10 17 Q14 14 18 17" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} fill="none" />
+    </svg>
+  );
+}
+
+// Default fallback — generic gem
+function CrystalDefault({ size = 28, fillColor = "#C9A84C", strokeColor = "#C9A84C" }: CrystalProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <path d="M8 8 L14 3 L20 8 L14 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
+      <line x1="8" y1="8" x2="20" y2="8" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+    </svg>
+  );
+}
+
+const CRYSTAL_COMPONENTS: Record<string, React.ComponentType<CrystalProps>> = {
+  "Carnelian":           CrystalCarnelian,
+  "Moonstone":           CrystalMoonstone,
+  "Amethyst":            CrystalAmethyst,
+  "Citrine":             CrystalCitrine,
+  "Rose Quartz":         CrystalRoseQuartz,
+  "Black Tourmaline":    CrystalBlackTourmaline,
+  "Labradorite":         CrystalLabradorite,
+  "Green Aventurine":    CrystalGreenAventurine,
+  "Fluorite":            CrystalFluorite,
+  "Clear Quartz":        CrystalClearQuartz,
+  "Selenite":            CrystalSelenite,
+  "Blue Lace Agate":     CrystalClearQuartz,  // similar hexagonal shape
+  "Rhodonite":           CrystalRoseQuartz,   // similar heart shape
+  "Morganite":           CrystalRoseQuartz,
+  "Pyrite":              CrystalCitrine,
+  "Obsidian":            CrystalLabradorite,
+};
+
+export function CrystalIcon({ name, size = 28 }: { name: string; size?: number }) {
+  const Component = CRYSTAL_COMPONENTS[name] ?? CrystalDefault;
+  return <Component size={size} />;
 }
 
 // ─── Check-in icon ────────────────────────────────────────────────────────────
