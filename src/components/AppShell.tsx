@@ -2,16 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { TodayTab } from "@/components/TodayTab";
+import { IconToday, IconMoon, IconCrystal, IconLearn, IconProfile } from "@/components/icons";
 
 type Tab = "today" | "calendar" | "crystals" | "learn" | "profile";
 type ColorMode = "morning" | "mid" | "dark";
 
-const TABS: { id: Tab; icon: string; label: string }[] = [
-  { id: "today",    icon: "✨", label: "Today"   },
-  { id: "calendar", icon: "📅", label: "Moon"    },
-  { id: "crystals", icon: "💎", label: "Crystals"},
-  { id: "learn",    icon: "🔮", label: "Learn"   },
-  { id: "profile",  icon: "👤", label: "Profile" },
+// Nav tab definitions with SVG icon components
+type TabDef = { id: Tab; label: string; Icon: React.ComponentType<{ size?: number; color?: string; active?: boolean }> };
+const TABS: TabDef[] = [
+  { id: "today",    label: "Today",    Icon: IconToday   },
+  { id: "calendar", label: "Moon",     Icon: IconMoon    },
+  { id: "crystals", label: "Crystals", Icon: IconCrystal },
+  { id: "learn",    label: "Learn",    Icon: IconLearn   },
+  { id: "profile",  label: "Profile",  Icon: IconProfile },
 ];
 
 function getColorMode(hour: number): ColorMode {
@@ -201,11 +204,11 @@ export function AppShell() {
               paddingBottom: "env(safe-area-inset-bottom, 8px)" }}>
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
+              const iconColor = isActive ? "var(--primary)" : "var(--icon-inactive, #6B5E8A)";
               return (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-all active:scale-95"
-                  style={{ opacity: isActive ? 1 : 0.45 }}>
-                  <span className="text-[22px] leading-none">{tab.icon}</span>
+                  className="flex-1 flex flex-col items-center gap-1 py-2.5 transition-all active:scale-95">
+                  <tab.Icon size={24} color={iconColor} active={isActive} />
                   <span className="text-[9px] tracking-widest uppercase"
                     style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
                       color: isActive ? activeColor : inactiveColor }}>

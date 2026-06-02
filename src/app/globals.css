@@ -83,6 +83,8 @@
   --sidebar-ring:         #C9A84C;
   --mode-bg-gradient:     none;
   --star-opacity:         0;
+  --icon-inactive:        #8B7355;
+  --icon-active:          #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -123,6 +125,8 @@
   --sidebar-ring:         #C9A84C;
   --mode-bg-gradient:     linear-gradient(180deg, #E8943A 0%, #C4687A 50%, #2A1510 100%);
   --star-opacity:         0;
+  --icon-inactive:        #8B6A4A;
+  --icon-active:          #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -163,6 +167,8 @@
   --sidebar-ring:         #C9A84C;
   --mode-bg-gradient:     none;
   --star-opacity:         1;
+  --icon-inactive:        #6B5E8A;
+  --icon-active:          #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

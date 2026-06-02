@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getDailyAstrology, MOON_PHASE_EMOJI, PLANET_SYMBOL, SIGN_SYMBOL, type DailyAstrology } from "@/lib/astrology";
+import { getDailyAstrology, PLANET_SYMBOL, SIGN_SYMBOL, type DailyAstrology } from "@/lib/astrology";
+// MOON_PHASE_EMOJI removed — replaced by MoonPhaseIcon2 SVG component
 import { getRitual, getGreeting, getSpecialSectionContent, getTriggeredRituals, type MasterRitual } from "@/lib/ritualContent";
 import { getProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitualUsed, type CheckinKey } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import {
+  MoonPhaseIcon2,
+  IconSunrise, IconEvening, IconJournal, IconMirror,
+  IconCrystalSection, IconGlamour, IconEnergy,
+  IconChecked, IconUnchecked,
+} from "@/components/icons";
 
 const MOON_PHASE_TAGLINE: Record<string, string> = {
   "New Moon":        "Set intentions",
@@ -54,7 +60,7 @@ Your ritual today weaves the energy of the moon's current phase with the planeta
 Tonight, before sleep, read what you wrote aloud. Then place your crystal on top of it. Let your words and your intention be held while you rest. The work you've done today doesn't disappear in sleep — it deepens.`;
 
 function SectionCard({
-  icon,
+  icon: Icon,
   title,
   checkinKey,
   checkedKeys,
@@ -62,7 +68,7 @@ function SectionCard({
   children,
   accent,
 }: {
-  icon: string;
+  icon: React.ComponentType<{ size?: number; color?: string }>;
   title: string;
   checkinKey?: CheckinKey;
   checkedKeys: CheckinKey[];
@@ -80,27 +86,24 @@ function SectionCard({
         transition: "border-color 0.3s, background 2000ms ease-in-out",
       }}>
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-xs tracking-widest uppercase"
-          style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
-            color: accent ?? "var(--primary)" }}>
-          {title}
-        </h3>
+        <div className="flex items-center gap-2.5">
+          <Icon size={20} color={accent ?? "var(--primary)"} />
+          <h3 className="text-xs tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
+              color: accent ?? "var(--primary)" }}>
+            {title}
+          </h3>
+        </div>
         {checkinKey && onToggle && (
           <button
             onClick={() => onToggle(checkinKey)}
-            className="shrink-0 rounded-md flex items-center justify-center transition-all active:scale-95"
-            style={{
-              width: 28, height: 28,
-              border: `2px solid ${checked ? "var(--primary)" : "var(--muted-foreground)"}`,
-              background: checked ? "var(--primary)" : "transparent",
-            }}
+            className="shrink-0 transition-all active:scale-90"
             aria-label={checked ? "Mark incomplete" : "Mark complete"}
           >
-            {checked && (
-              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                <path d="M1 5l4 4L13 1" stroke="var(--primary-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            )}
+            {checked
+              ? <IconChecked size={28} color="var(--primary)" />
+              : <IconUnchecked size={28} color="var(--muted-foreground)" />
+            }
           </button>
         )}
       </div>
@@ -148,7 +151,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
   const triggeredRituals = getTriggeredRituals(astro.moonPhase, astro.moonSign, astro.dayRuler);
   const greeting = profile
     ? getGreeting(profile.name, astro.moonSign, astro.moonPhase)
-    : `Welcome. ${MOON_PHASE_EMOJI[astro.moonPhase]} ${astro.moonPhase} in ${astro.moonSign} today.`;
+    : `Welcome. ${astro.moonPhase} in ${astro.moonSign} today.`;
 
   const toggle = (key: CheckinKey) => {
     setCheckins(toggleCheckin(key));
@@ -244,7 +247,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
           {/* Moon Phase */}
           <div className="flex flex-col items-center gap-1 p-4 text-center"
             style={{ borderRight: "1px solid var(--border)" }}>
-            <span className="text-2xl leading-none">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
+            <MoonPhaseIcon2 phase={astro.moonPhase} size={28} litColor="var(--foreground)" strokeColor="var(--primary)" />
             <span className="text-xs font-semibold mt-1 leading-tight"
               style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
               {astro.moonPhase}
@@ -264,7 +267,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
           {/* Day Ruler */}
           <div className="flex flex-col items-center gap-1 p-4 text-center"
             style={{ borderRight: "1px solid var(--border)" }}>
-            <span className="text-2xl leading-none">⚡</span>
+            <IconEnergy size={28} color="var(--primary)" />
             <span className="text-xs font-semibold mt-1 leading-tight"
               style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
               {DAY_RULER_TAGLINE[astro.dayRuler].label}
@@ -351,7 +354,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
         const content = getSpecialSectionContent(ev.type);
         if (!content) return null;
         return (
-          <SectionCard key={i} icon={content.icon} title={content.title}
+          <SectionCard key={i} icon={IconEnergy} title={content.title}
             checkedKeys={checkins} accent="var(--accent-warm, #a78bfa)">
             <p className="text-base leading-relaxed">{content.body}</p>
           </SectionCard>
@@ -359,13 +362,13 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       })}
 
       {/* Morning Ritual */}
-      <SectionCard icon="🌅" title="Morning Ritual" checkinKey="morning"
+      <SectionCard icon={IconSunrise} title="Morning Ritual" checkinKey="morning"
         checkedKeys={checkins} onToggle={toggle}>
         <RitualList steps={ritual.morningRitual} />
       </SectionCard>
 
       {/* Journal Prompt */}
-      <SectionCard icon="📖" title="Journal Prompt" checkinKey="journal"
+      <SectionCard icon={IconJournal} title="Journal Prompt" checkinKey="journal"
         checkedKeys={checkins} onToggle={toggle}>
         <blockquote className="border-l-2 pl-4 italic text-base leading-relaxed"
           style={{ borderColor: "var(--primary)" }}>
@@ -374,7 +377,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       </SectionCard>
 
       {/* Mirror Reflection */}
-      <SectionCard icon="🪞" title="Mirror Reflection" checkinKey="mirror"
+      <SectionCard icon={IconMirror} title="Mirror Reflection" checkinKey="mirror"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="rounded-xl p-4 text-center space-y-2"
           style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
@@ -388,7 +391,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       </SectionCard>
 
       {/* Crystal of the Day */}
-      <SectionCard icon="💎" title="Crystal of the Day" checkinKey="crystal"
+      <SectionCard icon={IconCrystalSection} title="Crystal of the Day" checkinKey="crystal"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="space-y-3">
           <p className="text-xl" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, color: "var(--primary)" }}>
@@ -403,7 +406,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       </SectionCard>
 
       {/* Glamour Magic */}
-      <SectionCard icon="✨" title="Glamour Magic — What to Wear" checkinKey="wear"
+      <SectionCard icon={IconGlamour} title="Glamour Magic — What to Wear" checkinKey="wear"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="space-y-2">
           <p className="text-lg" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, color: "var(--primary)" }}>
@@ -414,7 +417,7 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       </SectionCard>
 
       {/* Evening Ritual */}
-      <SectionCard icon="🌙" title="Evening Ritual" checkinKey="evening"
+      <SectionCard icon={IconEvening} title="Evening Ritual" checkinKey="evening"
         checkedKeys={checkins} onToggle={toggle}>
         <RitualList steps={ritual.eveningRitual} />
       </SectionCard>
