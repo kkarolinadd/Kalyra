@@ -35,15 +35,16 @@ function SectionCard({
   return (
     <div className="rounded-2xl p-5 space-y-4 fade-in"
       style={{
-        background: "#13152a",
-        border: `1px solid ${checked ? "#c9a84c40" : "#1e2140"}`,
-        transition: "border-color 0.3s",
+        background: "var(--card)",
+        border: `1px solid ${checked ? "var(--primary)" : "var(--border)"}`,
+        transition: "border-color 0.3s, background 2000ms ease-in-out",
       }}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-2xl">{icon}</span>
-          <h3 className="font-[family-name:var(--font-cinzel)] text-sm tracking-widest uppercase"
-            style={{ color: accent ?? "#c9a84c" }}>
+          <h3 className="text-xs tracking-widest uppercase"
+            style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 600,
+              color: accent ?? "var(--primary)" }}>
             {title}
           </h3>
         </div>
@@ -52,12 +53,12 @@ function SectionCard({
             <Checkbox
               checked={checked}
               onCheckedChange={() => onToggle(checkinKey)}
-              className="border-[#c9a84c] data-[state=checked]:bg-[#c9a84c] data-[state=checked]:border-[#c9a84c]"
+              className="border-[--primary] data-[state=checked]:bg-[--primary] data-[state=checked]:border-[--primary]"
             />
           </div>
         )}
       </div>
-      <div className="text-[#f5f0e8]">{children}</div>
+      <div style={{ color: "var(--foreground)" }}>{children}</div>
     </div>
   );
 }
@@ -67,8 +68,9 @@ function RitualList({ steps }: { steps: string[] }) {
     <ol className="space-y-3">
       {steps.map((step, i) => (
         <li key={i} className="flex gap-3">
-          <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-[family-name:var(--font-cinzel)]"
-            style={{ background: "#1e2140", color: "#c9a84c" }}>
+          <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 600,
+              background: "var(--secondary)", color: "var(--primary)" }}>
             {i + 1}
           </span>
           <span className="text-base leading-relaxed">{step}</span>
@@ -78,7 +80,7 @@ function RitualList({ steps }: { steps: string[] }) {
   );
 }
 
-export function TodayTab() {
+export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid" | "dark" }) {
   const [astro, setAstro] = useState<DailyAstrology | null>(null);
   const [checkins, setCheckins] = useState<CheckinKey[]>([]);
   const [aiState, setAiState] = useState<"idle" | "loading" | "done">("idle");
@@ -131,36 +133,36 @@ export function TodayTab() {
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
       {/* Greeting */}
       <div className="text-center space-y-1 pt-2">
-        <p className="text-[#8a8ba0] text-sm italic">{dateStr}</p>
-        <p className="text-[#f5f0e8] text-lg leading-snug">{greeting}</p>
+        <p className="text-sm italic" style={{ color: "var(--muted-foreground)" }}>{dateStr}</p>
+        <p className="kalyra-voice text-xl leading-snug" style={{ color: "var(--foreground)" }}>{greeting}</p>
       </div>
 
       {/* Cosmic Header */}
       <div className="rounded-2xl p-5 space-y-4"
-        style={{ background: "linear-gradient(135deg, #13152a 0%, #0f1126 100%)", border: "1px solid #1e2140" }}>
+        style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
         <div className="flex items-center justify-between">
-          <h1 className="shimmer font-[family-name:var(--font-cinzel)] text-2xl">
+          <h1 className="shimmer text-2xl" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600 }}>
             Kalyra
           </h1>
           <span className="text-3xl">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl p-3" style={{ background: "#0d0e1a" }}>
-            <p className="text-[#8a8ba0] text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase mb-1">Moon Phase</p>
-            <p className="text-[#f5f0e8] font-[family-name:var(--font-cinzel)] text-sm">{astro.moonPhase}</p>
-            <p className="text-[#8a8ba0] text-xs">{astro.moonIllumination}% illuminated · day {astro.phaseCycleDay}</p>
+          <div className="rounded-xl p-3" style={{ background: "var(--background)" }}>
+            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Moon Phase</p>
+            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>{astro.moonPhase}</p>
+            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>{astro.moonIllumination}% illuminated · day {astro.phaseCycleDay}</p>
           </div>
-          <div className="rounded-xl p-3" style={{ background: "#0d0e1a" }}>
-            <p className="text-[#8a8ba0] text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase mb-1">Moon Sign</p>
-            <p className="text-[#f5f0e8] font-[family-name:var(--font-cinzel)] text-sm">
+          <div className="rounded-xl p-3" style={{ background: "var(--background)" }}>
+            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Moon Sign</p>
+            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>
               {SIGN_SYMBOL[astro.moonSign]} {astro.moonSign}
             </p>
-            <p className="text-[#8a8ba0] text-xs">Sun in {SIGN_SYMBOL[astro.sunSign]} {astro.sunSign}</p>
+            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>Sun in {SIGN_SYMBOL[astro.sunSign]} {astro.sunSign}</p>
           </div>
-          <div className="rounded-xl p-3 col-span-2" style={{ background: "#0d0e1a" }}>
-            <p className="text-[#8a8ba0] text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase mb-1">Day Ruler</p>
-            <p className="text-[#f5f0e8] font-[family-name:var(--font-cinzel)] text-sm">
+          <div className="rounded-xl p-3 col-span-2" style={{ background: "var(--background)" }}>
+            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>Day Ruler</p>
+            <p className="text-sm" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 500, color: "var(--foreground)" }}>
               {PLANET_SYMBOL[astro.dayRuler]} {astro.dayRuler}
             </p>
           </div>
@@ -169,8 +171,10 @@ export function TodayTab() {
         {astro.specialEvents.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {astro.specialEvents.map((ev, i) => (
-              <Badge key={i} className="text-xs font-[family-name:var(--font-cinzel)]"
-                style={{ background: "#c9a84c20", color: "#c9a84c", border: "1px solid #c9a84c40" }}>
+              <Badge key={i} className="text-xs"
+                style={{ fontFamily: "var(--font-inter)", fontWeight: 600,
+                  background: "color-mix(in srgb, var(--primary) 15%, transparent)",
+                  color: "var(--primary)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}>
                 ✦ {ev.label}
               </Badge>
             ))}
@@ -181,8 +185,8 @@ export function TodayTab() {
       {/* Today's Rituals */}
       {triggeredRituals.length > 0 && (
         <div className="space-y-3 fade-in">
-          <p className="text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase text-center"
-            style={{ color: "#8a8ba0" }}>
+          <p className="text-xs tracking-widest uppercase text-center"
+            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Today&apos;s Rituals
           </p>
           <div className="flex flex-wrap gap-2 justify-center">
@@ -191,41 +195,32 @@ export function TodayTab() {
                 onClick={() => setExpandedRitual(expandedRitual === r.id ? null : r.id)}
                 className="flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all active:scale-95"
                 style={{
-                  background: expandedRitual === r.id ? "#c9a84c20" : "#13152a",
-                  border: `1px solid ${expandedRitual === r.id ? "#c9a84c" : "#1e2140"}`,
-                  color: expandedRitual === r.id ? "#c9a84c" : "#f5f0e8",
+                  background: expandedRitual === r.id
+                    ? "color-mix(in srgb, var(--primary) 15%, transparent)"
+                    : "var(--card)",
+                  border: `1px solid ${expandedRitual === r.id ? "var(--primary)" : "var(--border)"}`,
+                  color: expandedRitual === r.id ? "var(--primary)" : "var(--foreground)",
                 }}>
                 <span>{r.icon}</span>
-                <span className="font-[family-name:var(--font-cinzel)] text-xs tracking-wide">{r.name}</span>
+                <span className="text-xs tracking-wide" style={{ fontFamily: "var(--font-inter)", fontWeight: 600 }}>{r.name}</span>
               </button>
             ))}
           </div>
 
-          {/* Expanded ritual steps */}
           {expandedRitual && (() => {
             const r = triggeredRituals.find((x: MasterRitual) => x.id === expandedRitual);
             if (!r) return null;
             return (
               <div className="rounded-2xl p-5 space-y-4 fade-in"
-                style={{ background: "#13152a", border: "1px solid #c9a84c40" }}>
+                style={{ background: "var(--card)", border: "1px solid color-mix(in srgb, var(--primary) 30%, transparent)" }}>
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{r.icon}</span>
-                  <h3 className="font-[family-name:var(--font-cinzel)] text-sm tracking-widest uppercase"
-                    style={{ color: "#c9a84c" }}>
+                  <h3 className="text-sm tracking-widest uppercase"
+                    style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--primary)" }}>
                     {r.name}
                   </h3>
                 </div>
-                <ol className="space-y-3">
-                  {r.steps.map((step: string, i: number) => (
-                    <li key={i} className="flex gap-3">
-                      <span className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-[family-name:var(--font-cinzel)]"
-                        style={{ background: "#1e2140", color: "#c9a84c" }}>
-                        {i + 1}
-                      </span>
-                      <span className="text-base leading-relaxed text-[#f5f0e8]">{step}</span>
-                    </li>
-                  ))}
-                </ol>
+                <RitualList steps={r.steps} />
               </div>
             );
           })()}
@@ -238,7 +233,7 @@ export function TodayTab() {
         if (!content) return null;
         return (
           <SectionCard key={i} icon={content.icon} title={content.title}
-            checkedKeys={checkins} accent="#a78bfa">
+            checkedKeys={checkins} accent="var(--accent-warm, #a78bfa)">
             <p className="text-base leading-relaxed">{content.body}</p>
           </SectionCard>
         );
@@ -254,7 +249,7 @@ export function TodayTab() {
       <SectionCard icon="📖" title="Journal Prompt" checkinKey="journal"
         checkedKeys={checkins} onToggle={toggle}>
         <blockquote className="border-l-2 pl-4 italic text-base leading-relaxed"
-          style={{ borderColor: "#c9a84c" }}>
+          style={{ borderColor: "var(--primary)" }}>
           &ldquo;{ritual.journalPrompt}&rdquo;
         </blockquote>
       </SectionCard>
@@ -263,9 +258,11 @@ export function TodayTab() {
       <SectionCard icon="🪞" title="Mirror Reflection" checkinKey="mirror"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="rounded-xl p-4 text-center space-y-2"
-          style={{ background: "#0d0e1a", border: "1px solid #1e2140" }}>
-          <p className="text-[#8a8ba0] text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase">Read aloud · in the mirror</p>
-          <p className="text-lg italic leading-relaxed" style={{ color: "#f5e09a" }}>
+          style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
+          <p className="text-xs tracking-widest uppercase" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+            Read aloud · in the mirror
+          </p>
+          <p className="kalyra-voice text-lg leading-relaxed" style={{ color: "var(--primary)" }}>
             &ldquo;{ritual.mirrorReflection}&rdquo;
           </p>
         </div>
@@ -275,12 +272,12 @@ export function TodayTab() {
       <SectionCard icon="💎" title="Crystal of the Day" checkinKey="crystal"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="space-y-3">
-          <p className="font-[family-name:var(--font-cinzel)] text-xl" style={{ color: "#c9a84c" }}>
+          <p className="text-xl" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, color: "var(--primary)" }}>
             {ritual.crystal.name}
           </p>
-          <p className="text-sm" style={{ color: "#8a8ba0" }}>{ritual.crystal.why}</p>
-          <div className="rounded-xl p-3" style={{ background: "#0d0e1a" }}>
-            <p className="text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase mb-1" style={{ color: "#8a8ba0" }}>How to use today</p>
+          <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>{ritual.crystal.why}</p>
+          <div className="rounded-xl p-3" style={{ background: "var(--background)" }}>
+            <p className="text-xs tracking-widest uppercase mb-1" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>How to use today</p>
             <p className="text-base">{ritual.crystal.howToUse}</p>
           </div>
         </div>
@@ -290,7 +287,7 @@ export function TodayTab() {
       <SectionCard icon="✨" title="Glamour Magic — What to Wear" checkinKey="wear"
         checkedKeys={checkins} onToggle={toggle}>
         <div className="space-y-2">
-          <p className="font-[family-name:var(--font-cinzel)] text-lg" style={{ color: "#c9a84c" }}>
+          <p className="text-lg" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, color: "var(--primary)" }}>
             {ritual.glamour.color}
           </p>
           <p className="text-base leading-relaxed">{ritual.glamour.suggestion}</p>
@@ -307,11 +304,13 @@ export function TodayTab() {
       {doneCount > 0 && (
         <div className="rounded-2xl p-5 text-center space-y-2 fade-in"
           style={{
-            background: isFullAlignment ? "linear-gradient(135deg, #1a1a0d, #1a150a)" : "#13152a",
-            border: `1px solid ${isFullAlignment ? "#c9a84c" : "#1e2140"}`,
+            background: isFullAlignment
+              ? "color-mix(in srgb, var(--primary) 10%, var(--card))"
+              : "var(--card)",
+            border: `1px solid ${isFullAlignment ? "var(--primary)" : "var(--border)"}`,
           }}>
           <p className="text-3xl">{isFullAlignment ? "🌟" : isMostlyDone ? "✨" : "🌙"}</p>
-          <p className="font-[family-name:var(--font-cinzel)] text-base" style={{ color: "#c9a84c" }}>
+          <p className="text-base" style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, color: "var(--primary)" }}>
             {isFullAlignment
               ? "You're in full alignment today"
               : isMostlyDone
@@ -321,7 +320,7 @@ export function TodayTab() {
           <div className="flex justify-center gap-1 mt-2">
             {allCheckins.map((key) => (
               <div key={key} className="w-2 h-2 rounded-full"
-                style={{ background: checkins.includes(key) ? "#c9a84c" : "#1e2140" }} />
+                style={{ background: checkins.includes(key) ? "var(--primary)" : "var(--border)" }} />
             ))}
           </div>
         </div>
@@ -329,25 +328,26 @@ export function TodayTab() {
 
       {/* AI Ritual Generator */}
       <div className="rounded-2xl p-5 space-y-4"
-        style={{ background: "#13152a", border: "1px dashed #1e2140" }}>
+        style={{ background: "var(--card)", border: "1px dashed var(--border)" }}>
         <div className="flex items-center gap-3">
-          <span className="text-2xl">🤖</span>
+          <span className="text-2xl">✦</span>
           <div>
-            <h3 className="font-[family-name:var(--font-cinzel)] text-sm tracking-widest uppercase" style={{ color: "#8a8ba0" }}>
-              AI Ritual Generator
+            <h3 className="text-sm tracking-widest uppercase"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
+              Kalyra — Your Ritual
             </h3>
-            <p className="text-xs" style={{ color: "#8a8ba0" }}>
+            <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
               {aiUsed && aiState !== "done" ? "Used today — come back tomorrow" : "Personalized ritual · 1× per day"}
             </p>
           </div>
         </div>
 
         {aiState === "done" && (
-          <div className="rounded-xl p-4 space-y-3" style={{ background: "#0d0e1a" }}>
-            <p className="text-xs font-[family-name:var(--font-cinzel)] tracking-widest uppercase" style={{ color: "#c9a84c" }}>
+          <div className="rounded-xl p-4 space-y-3" style={{ background: "var(--background)" }}>
+            <p className="text-xs tracking-widest uppercase" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--primary)" }}>
               Your personalized ritual
             </p>
-            <p className="text-base leading-relaxed whitespace-pre-line">{aiContent}</p>
+            <p className="kalyra-voice text-base leading-relaxed whitespace-pre-line">{aiContent}</p>
           </div>
         )}
 
@@ -355,10 +355,11 @@ export function TodayTab() {
           <button
             onClick={handleGenerateRitual}
             disabled={aiUsed || aiState === "loading"}
-            className="w-full py-3 rounded-xl font-[family-name:var(--font-cinzel)] text-sm tracking-widest uppercase transition"
+            className="w-full py-3 rounded-xl text-sm tracking-widest uppercase transition"
             style={{
-              background: aiUsed ? "#1e2140" : "linear-gradient(90deg, #7a5e1f, #c9a84c, #7a5e1f)",
-              color: aiUsed ? "#8a8ba0" : "#0d0e1a",
+              fontFamily: "var(--font-inter)", fontWeight: 600,
+              background: aiUsed ? "var(--secondary)" : "linear-gradient(90deg, var(--gold-dim, #7a5e1f), var(--primary), var(--gold-dim, #7a5e1f))",
+              color: aiUsed ? "var(--muted-foreground)" : "var(--primary-foreground)",
               cursor: aiUsed ? "not-allowed" : "pointer",
               backgroundSize: "200% auto",
               animation: (!aiUsed && aiState === "idle") ? "shimmer 3s linear infinite" : "none",
