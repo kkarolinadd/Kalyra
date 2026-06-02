@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TodayTab } from "@/components/TodayTab";
+import { CalendarTab } from "@/components/CalendarTab";
 import { IconToday, IconMoon, IconCrystal, IconLearn, IconProfile } from "@/components/icons";
 
 type Tab = "today" | "calendar" | "crystals" | "learn" | "profile";
@@ -192,7 +193,7 @@ export function AppShell() {
           {/* Main content */}
           <main className="flex-1 overflow-y-auto relative z-10" style={{ paddingBottom: 80 }}>
             {activeTab === "today"    && <TodayTab colorMode={colorMode} />}
-            {activeTab === "calendar" && <PlaceholderTab name="Moon Calendar" />}
+            {activeTab === "calendar" && <CalendarTab colorMode={colorMode} />}
             {activeTab === "crystals" && <PlaceholderTab name="Crystals" />}
             {activeTab === "learn"    && <PlaceholderTab name="Learn" />}
             {activeTab === "profile"  && <PlaceholderTab name="Profile" />}
