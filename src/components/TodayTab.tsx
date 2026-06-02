@@ -142,10 +142,10 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
   return (
     <div className="max-w-lg mx-auto px-4 pt-6 pb-4 space-y-5">
 
-      {/* ── USER SECTION ─────────────────────────────── */}
-      <div className="space-y-3 px-1">
+      {/* ── USER SECTION — centered ───────────────────── */}
+      <div className="text-center space-y-4 px-1 pt-2">
         {/* Date + streak */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center gap-3">
           <p className="text-xs tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             {astro.date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
@@ -153,8 +153,8 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
             {astro.date.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase()}
           </p>
           {checkins.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              <span style={{ color: "var(--primary)", fontSize: 14 }}>✦</span>
+            <div className="flex items-center gap-1">
+              <span style={{ color: "var(--primary)", fontSize: 12 }}>✦</span>
               <span className="text-xs font-semibold" style={{ fontFamily: "var(--font-inter)", color: "var(--muted-foreground)" }}>
                 {checkins.length}
               </span>
@@ -168,54 +168,78 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
           Hello, {profile?.name ?? "friend"}.
         </h1>
 
-        {/* Personal signs — ⊙ Sun ☽ Moon ↑ Ascendant */}
+        {/* Sign pills — ☀ Sun + 🌙 Moon (+ ↑ Rising if available) */}
         {profile && (
-          <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.95rem", color: "var(--muted-foreground)", letterSpacing: "0.01em" }}>
-            <span style={{ color: "var(--foreground)" }}>⊙</span>
-            {" "}{profile.sun_sign}
-            {"  "}
-            <span style={{ color: "var(--foreground)" }}>☽</span>
-            {" "}{profile.moon_sign}
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              <span>☀️</span>
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", fontWeight: 600, color: "var(--foreground)" }}>
+                {profile.sun_sign}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+              style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+              <span>🌙</span>
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", fontWeight: 600, color: "var(--foreground)" }}>
+                {profile.moon_sign}
+              </span>
+            </div>
             {profile.rising_sign && (
-              <>
-                {"  "}
-                <span style={{ color: "var(--foreground)" }}>↑</span>
-                {" "}{profile.rising_sign}
-              </>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                style={{ border: "1px solid var(--border)", background: "var(--card)" }}>
+                <span style={{ fontFamily: "var(--font-inter)", fontWeight: 700, color: "var(--primary)" }}>↑</span>
+                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", fontWeight: 600, color: "var(--foreground)" }}>
+                  {profile.rising_sign}
+                </span>
+              </div>
             )}
-          </p>
+          </div>
         )}
       </div>
 
       {/* Divider */}
       <div style={{ height: 1, background: "var(--border)" }} />
 
-      {/* ── DAY SECTION ──────────────────────────────── */}
-      <div className="rounded-2xl p-4 flex items-center gap-4"
+      {/* ── DAY SECTION — 3 equal columns ────────────── */}
+      <div className="rounded-2xl p-4"
         style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
-        {/* Moon phase illustration */}
-        <div className="shrink-0 w-16 h-16 rounded-full flex items-center justify-center text-4xl"
-          style={{ background: "var(--background)", border: "1px solid var(--border)" }}>
-          {MOON_PHASE_EMOJI[astro.moonPhase]}
-        </div>
+        <div className="grid grid-cols-3 divide-x" style={{ borderColor: "var(--border)" }}>
+          {/* Moon Phase */}
+          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
+            <span className="text-2xl">{MOON_PHASE_EMOJI[astro.moonPhase]}</span>
+            <span className="text-xs tracking-widest uppercase leading-tight"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+              {astro.moonPhase}
+            </span>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+              {astro.moonIllumination}%
+            </span>
+          </div>
 
-        {/* Day info */}
-        <div className="flex-1 space-y-1">
-          <p className="text-xs tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-            Energy · {astro.moonPhase}
-          </p>
-          <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: "1.3rem", fontWeight: 500, color: "var(--foreground)", lineHeight: 1.2 }}>
-            {PLANET_SYMBOL[astro.dayRuler]} {astro.dayRuler}
-            <span style={{ color: "var(--muted-foreground)", fontWeight: 300 }}> · </span>
-            <span style={{ color: "var(--muted-foreground)", fontWeight: 300, fontSize: "1.1rem" }}>
+          {/* Day Ruler */}
+          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
+            <span className="text-2xl">{PLANET_SYMBOL[astro.dayRuler]}</span>
+            <span className="text-xs tracking-widest uppercase leading-tight"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+              {astro.dayRuler}
+            </span>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
               {DAY_RULER_KEYWORD[astro.dayRuler]}
             </span>
-          </p>
-          <p className="text-xs tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-            Crystal · {ritual.crystal.name}
-          </p>
+          </div>
+
+          {/* Crystal */}
+          <div className="flex flex-col items-center gap-1.5 px-2 text-center">
+            <span className="text-2xl">💎</span>
+            <span className="text-xs tracking-widest uppercase leading-tight"
+              style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--foreground)" }}>
+              {ritual.crystal.name}
+            </span>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+              crystal
+            </span>
+          </div>
         </div>
       </div>
 
@@ -236,15 +260,15 @@ export function TodayTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid"
       {/* Today's Rituals */}
       {triggeredRituals.length > 0 && (
         <div className="space-y-3 fade-in">
-          <p className="text-xs tracking-widest uppercase text-center"
+          <p className="text-xs tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Today&apos;s Rituals
           </p>
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
             {triggeredRituals.map((r: MasterRitual) => (
               <button key={r.id}
                 onClick={() => setExpandedRitual(expandedRitual === r.id ? null : r.id)}
-                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all active:scale-95"
+                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm transition-all active:scale-95 shrink-0"
                 style={{
                   background: expandedRitual === r.id
                     ? "color-mix(in srgb, var(--primary) 15%, transparent)"
