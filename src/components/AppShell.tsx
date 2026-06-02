@@ -167,9 +167,13 @@ export function AppShell() {
         <div className="flex flex-col overflow-hidden mode-transition"
           style={{ background: bgGrad, height: "100%", borderRadius: "clamp(0px, 44px, 44px)" }}>
 
-          {/* Status bar */}
-          <div className="hidden sm:block" style={{ height: 44 }} />
-          <StatusBar mode={colorMode} />
+          {/* Status bar — desktop only (phone has its own system status bar) */}
+          <div className="hidden sm:block">
+            <div style={{ height: 44 }} />
+            <StatusBar mode={colorMode} />
+          </div>
+          {/* Safe area spacer for iPhone notch/Dynamic Island */}
+          <div className="sm:hidden" style={{ height: "env(safe-area-inset-top, 0px)" }} />
 
           {/* Stars inside phone — Night mode */}
           {isNight && (
