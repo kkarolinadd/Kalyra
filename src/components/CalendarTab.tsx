@@ -6,7 +6,7 @@ import {
   type MoonPhase, type SpecialEvent, PLANET_SYMBOL, SIGN_SYMBOL,
 } from "@/lib/astrology";
 import { getRitual } from "@/lib/ritualContent";
-import { MoonPhaseIcon2, MoonFirstQuarter } from "@/components/icons";
+import { MoonPhaseIcon2, MoonFirstQuarter, IconMoon, IconCrystalSection, IconEnergy } from "@/components/icons";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -159,10 +159,11 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
       <div className="fixed inset-0 z-40" onClick={onClose}
         style={{ background: "rgba(0,0,0,0.4)" }} />
 
-      {/* Sheet */}
+      {/* Sheet — uses CSS variables, adapts to all color modes */}
       <div className="fixed inset-x-0 bottom-0 z-50 fade-in"
         style={{
-          background: "#130D2E",
+          background: "var(--card)",
+          borderTop: "1px solid var(--border)",
           borderRadius: "20px 20px 0 0",
           paddingBottom: "env(safe-area-inset-bottom, 24px)",
           maxHeight: "65vh",
@@ -170,7 +171,7 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
         }}>
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full" style={{ background: "#2D1B69" }} />
+          <div className="w-10 h-1 rounded-full" style={{ background: "var(--border)" }} />
         </div>
 
         <div className="px-5 py-4 space-y-4">
@@ -199,18 +200,18 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
           </div>
 
           {/* Divider */}
-          <div style={{ height: 1, background: "#2D1B69" }} />
+          <div style={{ height: 1, background: "var(--border)" }} />
 
-          {/* Day info */}
-          <div className="space-y-2">
+          {/* Day info — SVG icons, no emoji */}
+          <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <span style={{ color: GOLD, fontSize: 18 }}>{PLANET_SYMBOL[day.dayRuler]}</span>
+              <IconEnergy size={18} color={GOLD} />
               <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.9rem", color: "var(--foreground)" }}>
                 {day.dayRuler} rules today
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <span style={{ color: GOLD, fontSize: 16 }}>💎</span>
+              <IconCrystalSection size={18} color={GOLD} />
               <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.9rem", color: "var(--foreground)" }}>
                 {ritual.crystal.name}
                 <span style={{ color: "var(--muted-foreground)" }}> · carry today</span>
@@ -218,19 +219,31 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
             </div>
             {conjunctions.map((ev, i) => (
               <div key={i} className="flex items-center gap-3">
-                <span style={{ color: GOLD, fontSize: 14 }}>✦</span>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M9 1 L9.9 7.1 L16 9 L9.9 10.9 L9 17 L8.1 10.9 L2 9 L8.1 7.1 Z"
+                    stroke={GOLD} strokeWidth={1.5} strokeLinejoin="round" fill="none"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.9rem", color: "var(--foreground)" }}>{ev.label}</span>
               </div>
             ))}
             {day.events.filter(e => e.type === "sun_ingress").map((ev, i) => (
               <div key={i} className="flex items-center gap-3">
-                <span style={{ color: "#4A9B8E", fontSize: 14 }}>✦</span>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="4" stroke="#4A9B8E" strokeWidth={1.5} fill="none"/>
+                  <line x1="9" y1="1" x2="9" y2="3.5" stroke="#4A9B8E" strokeWidth={1.5} strokeLinecap="round"/>
+                  <line x1="9" y1="14.5" x2="9" y2="17" stroke="#4A9B8E" strokeWidth={1.5} strokeLinecap="round"/>
+                  <line x1="1" y1="9" x2="3.5" y2="9" stroke="#4A9B8E" strokeWidth={1.5} strokeLinecap="round"/>
+                  <line x1="14.5" y1="9" x2="17" y2="9" stroke="#4A9B8E" strokeWidth={1.5} strokeLinecap="round"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.9rem", color: "var(--foreground)" }}>{ev.label}</span>
               </div>
             ))}
             {day.events.filter(e => e.type.includes("_rx_")).map((ev, i) => (
               <div key={i} className="flex items-center gap-3">
-                <span style={{ color: "#9B8BB8", fontSize: 14 }}>☿</span>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path d="M4 9 A5 5 0 1 1 9 14" stroke="#9B8BB8" strokeWidth={1.5} strokeLinecap="round" fill="none"/>
+                  <path d="M9 14 L6 17 M9 14 L12 17" stroke="#9B8BB8" strokeWidth={1.5} strokeLinecap="round"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.9rem", color: "var(--foreground)" }}>{ev.label}</span>
               </div>
             ))}
@@ -239,18 +252,18 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
           {/* Kalyra's voice */}
           {kalyraVoice && (
             <>
-              <div style={{ height: 1, background: "#2D1B69" }} />
+              <div style={{ height: 1, background: "var(--border)" }} />
               <p className="kalyra-voice text-lg leading-relaxed"
-                style={{ color: GOLD, fontStyle: "italic" }}>
+                style={{ color: GOLD }}>
                 &ldquo;{kalyraVoice}&rdquo;
               </p>
             </>
           )}
 
           {/* CTA */}
-          <div className="rounded-xl overflow-hidden" style={{ border: `1px solid #2D1B69` }}>
+          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--border)" }}>
             <button className="w-full flex items-center justify-between px-4 py-3 transition-opacity active:opacity-70"
-              style={{ background: "transparent" }}>
+              style={{ background: "var(--background)" }}>
               <span style={{ fontFamily: "var(--font-inter)", fontWeight: 600, fontSize: "0.85rem",
                 color: "var(--foreground)", letterSpacing: "0.04em" }}>
                 {isToday ? "SEE TODAY'S RITUAL" : isFuture ? `RITUAL AVAILABLE ${day.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : "NO RITUAL RECORDED"}
