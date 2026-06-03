@@ -20,71 +20,93 @@ npx tsc --noEmit   # TypeScript check
 |---|---|
 | Framework | Next.js 15 (App Router, Turbopack) |
 | UI | React 19 + shadcn/ui + Tailwind CSS v4 |
-| Fonts | Cinzel (headings) + EB Garamond (body) via next/font/google |
+| Fonts | **Cormorant Garamond** (headings) + **Inter** (body) via next/font/google |
 | State | useState / useReducer (client-side only) |
 | Persistence | localStorage (no backend) |
 | Astrology | All calculations client-side, no external API |
+| Deploy | Vercel — auto-deploy on push to main |
+| PWA | manifest.json + icons — installable on iPhone/Android |
 
-## Color palette
+## Color system — 3 modes (auto by time of day)
 
-| Token | Value |
-|---|---|
-| Background | `#0d0e1a` (deep navy) |
-| Gold accent | `#c9a84c` |
-| Text primary | `#f5f0e8` (warm white) |
-| Text muted | `#8a8ba0` |
-| Card bg | `#13152a` |
-| Card border | `#1e2140` |
+| Mode | Hours | Key colors |
+|---|---|---|
+| Morning (`:root`) | 6–11h | `#F5EDE0` bg, `#1A1208` text, cream |
+| Afternoon (`.mid`) | 11–18h | `#2A1510` bg, `#F5EDE0` text, amber/sienna |
+| Night (`.dark`) | 18–6h | `#0D0A1A` bg, `#F0EAF8` text, cosmic purple |
+| Gold (all modes) | — | `#C9A84C` — always the same |
+
+Use CSS variables everywhere: `var(--background)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`. Never hardcode colors.
+
+## Icon system (`src/components/icons.tsx`)
+
+All icons are SVG linear, stroke-width 1.5, rounded caps — NO emoji in UI.
+- Nav: `IconToday`, `IconMoon`, `IconCrystal`, `IconLearn`, `IconProfile`
+- Sections: `IconSunrise`, `IconEvening`, `IconJournal`, `IconMirror`, `IconCrystalSection`, `IconGlamour`, `IconEnergy`
+- Moon phases: `MoonPhaseIcon2` — two-tone (`#E8E0F0` lit / `#1E1640` shadow), never transparent
+- Crystals: `CrystalIcon` — geometric shapes per mineral
+- Check-in: `IconChecked`, `IconUnchecked`
 
 ## Project structure
 
 ```
 src/
   app/
-    layout.tsx          # Cinzel + EB Garamond fonts, dark metadata
-    page.tsx            # Entry point: onboarding check → AppShell
-    globals.css         # CSS variables, dark theme, shimmer animation
+    layout.tsx            # Cormorant + Inter fonts, PWA meta tags
+    page.tsx              # Entry: onboarding check → AppShell
+    globals.css           # 3-mode CSS variables, animations, .kalyra-voice
   components/
-    AppShell.tsx        # Phone frame layout + bottom nav (5 tabs)
-    OnboardingFlow.tsx  # 4-step onboarding: welcome → name → birthdate → summary
-    TodayTab.tsx        # Main daily ritual screen (all sections)
-    ui/                 # shadcn components
+    AppShell.tsx          # Phone frame, bottom nav, color mode switching, stars
+    OnboardingFlow.tsx    # 4-step onboarding
+    TodayTab.tsx          # Daily ritual screen — all sections
+    CalendarTab.tsx       # Moon Calendar — grid, bottom sheet, event dots
+    icons.tsx             # Full SVG icon library
+    ui/                   # shadcn components
   lib/
-    astrology.ts        # Moon phase, moon sign, sun sign, day ruler, special events
-    ritualContent.ts    # 8-phase × 7-ruler ritual content + 12 Master Rituals
-    storage.ts          # localStorage read/write helpers
+    astrology.ts          # Moon phase, moon sign, sun sign, day ruler, events
+    ritualContent.ts      # Ritual content + 12 Master Rituals + triggers
+    storage.ts            # localStorage helpers
+public/
+  manifest.json           # PWA manifest
+  icon.svg / icon-192.png / icon-512.png / apple-touch-icon.png
 ```
 
 ## Key functions
 
 | Function | File | What it does |
 |---|---|---|
-| `getDailyAstrology(date)` | `astrology.ts` | Full daily astro data for any date |
-| `getRitual(phase, ruler)` | `ritualContent.ts` | Morning/journal/mirror/crystal/glamour/evening content |
-| `getTriggeredRituals(phase, moonSign, ruler)` | `ritualContent.ts` | Up to 3 active rituals per PRD 9.6 |
-| `getSpecialSectionContent(eventType)` | `ritualContent.ts` | Content for special events |
+| `getDailyAstrology(date)` | `astrology.ts` | Full daily astro data |
+| `getRitual(phase, ruler)` | `ritualContent.ts` | All section content for the day |
+| `getTriggeredRituals(phase, moonSign, ruler)` | `ritualContent.ts` | Up to 3 active rituals (PRD 9.6) |
+| `getMoonPhaseData(date)` | `astrology.ts` | Phase, illumination, cycle day |
+| `getSpecialEvents(date)` | `astrology.ts` | Events from hardcoded 2025–2030 calendar |
+| `MoonPhaseIcon2` | `icons.tsx` | Correct two-tone SVG for any phase |
+| `CrystalIcon` | `icons.tsx` | Geometric crystal shape per mineral |
 | `toggleCheckin(key)` | `storage.ts` | Toggles checkbox + updates streak |
 
-## What's built (MVP)
+## What's built
 
-- ✅ Onboarding (4 steps)
-- ✅ Today tab — 7 fixed sections + checkboxes + streak
-- ✅ Special event sections (Full Moon, Blue Moon, Mercury Rx, etc.)
-- ✅ Today's Rituals chips (phase-based, max 3, expandable)
-- ✅ AI Ritual Generator (mocked — UI complete, no live API yet)
-- ✅ Mobile layout: phone frame, status bar, bottom nav
+- ✅ Onboarding (4 steps, Sun + Moon sign calculation)
+- ✅ Today tab — full redesign with 3-column day card, SVG icons, ritual tags
+- ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
+- ✅ Special event sections (8 types)
+- ✅ 12 Master Rituals with steps
+- ✅ 3-mode color system (morning/mid/night, auto-switch)
+- ✅ SVG Icon System v1.0
+- ✅ PWA (installable, `kalyra-virid.vercel.app`)
+- ✅ AI Ritual Generator (mocked)
 
-## What's NOT built yet (V2)
+## What's NOT built yet
 
-- ❌ Moon Calendar tab
-- ❌ Crystals tab (30+ crystal cards)
-- ❌ Learn tab (Zodiac guide, Mirror Principle, meditations)
-- ❌ Profile tab (elemental bar, streak history, settings)
-- ❌ Live Claude API integration
-- ❌ PWA manifest (installable on phone)
+- ❌ Crystals tab
+- ❌ Learn tab
+- ❌ Profile tab
+- ❌ Live Claude API
+- ❌ Rising sign calculation
 - ❌ Backend / accounts
 
-## GitHub
+## Deployment
 
-Repository: https://github.com/kkarolinadd/Kalyra
-Push: `git push origin main` (authenticated via gh CLI)
+- Live: https://kalyra-virid.vercel.app
+- Push: `git push origin main` → Vercel auto-deploys
+- gh CLI authenticated via keychain (`gh auth status` to verify)
