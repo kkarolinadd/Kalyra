@@ -181,13 +181,114 @@ export function IconGlamour({ size = 20, color = "currentColor" }: IconProps) {
   );
 }
 
-/** Energy / Day Ruler — lightning bolt */
+/** Energy / Day Ruler — lightning bolt (generic fallback) */
 export function IconEnergy({ size = 20, color = "currentColor" }: IconProps) {
   return (
     <Svg size={size} color={color}>
       <path d="M13 2 L4 13 L11 13 L11 22 L20 11 L13 11 Z" />
     </Svg>
   );
+}
+
+// ─── Planet Icons (unique per ruler) ─────────────────────────────────────────
+
+/** Sun — circle with 8 rays */
+export function IconPlanetSun({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="2"  x2="12" y2="5.5"  />
+      <line x1="12" y1="18.5" x2="12" y2="22" />
+      <line x1="2"  y1="12" x2="5.5"  y2="12" />
+      <line x1="18.5" y1="12" x2="22" y2="12" />
+      <line x1="4.9"  y1="4.9"  x2="7.2"  y2="7.2"  />
+      <line x1="16.8" y1="16.8" x2="19.1" y2="19.1" />
+      <line x1="19.1" y1="4.9"  x2="16.8" y2="7.2"  />
+      <line x1="7.2"  y1="16.8" x2="4.9"  y2="19.1" />
+    </Svg>
+  );
+}
+
+/** Moon — crescent */
+export function IconPlanetMoon({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <path d="M20 13.5A9 9 0 1 1 10.5 4a7 7 0 0 0 9.5 9.5z" />
+    </Svg>
+  );
+}
+
+/** Mercury — circle with horns on top */
+export function IconPlanetMercury({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <circle cx="12" cy="12" r="4.5" />
+      <line x1="12" y1="16.5" x2="12" y2="21" />
+      <line x1="9" y1="19" x2="15" y2="19" />
+      {/* horns */}
+      <path d="M8 7.5 A4 4 0 0 1 16 7.5" fill="none" />
+    </Svg>
+  );
+}
+
+/** Venus — ♀ circle + cross below */
+export function IconPlanetVenus({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <circle cx="12" cy="9" r="5" />
+      <line x1="12" y1="14" x2="12" y2="21" />
+      <line x1="9"  y1="18" x2="15" y2="18" />
+    </Svg>
+  );
+}
+
+/** Mars — ♂ circle + arrow up-right */
+export function IconPlanetMars({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <circle cx="10" cy="13" r="5" />
+      <line x1="14" y1="9" x2="21" y2="2" />
+      <path d="M16 2 L21 2 L21 7" />
+    </Svg>
+  );
+}
+
+/** Jupiter — lightning bolt (ruler of expansion) */
+export function IconPlanetJupiter({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      <path d="M13 2 L4 13 L11 13 L11 22 L20 11 L13 11 Z" />
+    </Svg>
+  );
+}
+
+/** Saturn — h with ring through it */
+export function IconPlanetSaturn({ size = 20, color = "currentColor" }: IconProps) {
+  return (
+    <Svg size={size} color={color}>
+      {/* Vertical staff */}
+      <line x1="9" y1="3" x2="9" y2="21" />
+      {/* Curve to right */}
+      <path d="M9 12 Q16 12 16 17 Q16 21 11 21" />
+      {/* Ring cross-stroke */}
+      <line x1="6" y1="7" x2="14" y2="7" />
+    </Svg>
+  );
+}
+
+/** Planet icon picker */
+export function PlanetIcon({ planet, size = 20, color = "currentColor" }: { planet: string; size?: number; color?: string }) {
+  const p = { size, color };
+  switch (planet) {
+    case "Sun":     return <IconPlanetSun     {...p} />;
+    case "Moon":    return <IconPlanetMoon    {...p} />;
+    case "Mercury": return <IconPlanetMercury {...p} />;
+    case "Venus":   return <IconPlanetVenus   {...p} />;
+    case "Mars":    return <IconPlanetMars    {...p} />;
+    case "Jupiter": return <IconPlanetJupiter {...p} />;
+    case "Saturn":  return <IconPlanetSaturn  {...p} />;
+    default:        return <IconEnergy        {...p} />;
+  }
 }
 
 // ─── Moon Phases ─────────────────────────────────────────────────────────────

@@ -45,21 +45,20 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   MORNING MODE — 06:00–11:00
-   Energia: intencja, jasność, nowy początek
+   MODE 1 — DAWN  ·  6:00–11:00  ·  Świt lawendowo-brzoskwiniowy
 ───────────────────────────────────────────────────────────────────────────── */
 :root {
+  --bg-gradient:          linear-gradient(180deg, #E2D4F0 0%, #F0D4C8 50%, #F5EDE0 100%);
   --background:           #F5EDE0;
-  --bg-secondary:         #EDE0D0;
   --foreground:           #1A1208;
   --text-secondary:       #6B5744;
-  --card:                 #FDFAF6;
+  --card:                 #FFFFFF;
   --card-foreground:      #1A1208;
-  --popover:              #FDFAF6;
+  --popover:              #FFFFFF;
   --popover-foreground:   #1A1208;
   --primary:              #C9A84C;
   --primary-foreground:   #1A1208;
-  --secondary:            #EDE0D0;
+  --secondary:            #F0E8DC;
   --secondary-foreground: #1A1208;
   --muted:                #EDE0D0;
   --muted-foreground:     #6B5744;
@@ -67,77 +66,131 @@
   --accent-foreground:    #1A1208;
   --accent-warm:          #D4927A;
   --destructive:          oklch(0.577 0.245 27.325);
-  --border:               #DDD0C0;
+  --border:               rgba(0, 0, 0, 0.08);
+  --divider:              rgba(0, 0, 0, 0.08);
   --input:                #EDE0D0;
   --ring:                 #C9A84C;
   --radius:               0.75rem;
   --gold:                 #C9A84C;
   --gold-dim:             #9A7A2A;
-  --sidebar:              #FDFAF6;
+  --nav-bg:               rgba(245, 237, 224, 0.95);
+  --nav-border:           rgba(201, 168, 76, 0.2);
+  --pill-bg:              rgba(255, 255, 255, 0.6);
+  --pill-border:          rgba(201, 168, 76, 0.3);
+  --pill-text:            #1A1208;
+  --sidebar:              #FFFFFF;
   --sidebar-foreground:   #1A1208;
   --sidebar-primary:      #C9A84C;
   --sidebar-primary-foreground: #1A1208;
   --sidebar-accent:       #EDE0D0;
   --sidebar-accent-foreground: #1A1208;
-  --sidebar-border:       #DDD0C0;
+  --sidebar-border:       rgba(0, 0, 0, 0.08);
   --sidebar-ring:         #C9A84C;
-  --mode-bg-gradient:     none;
-  --star-opacity:         0;
   --icon-inactive:        #8B7355;
   --icon-active:          #C9A84C;
+  --star-opacity:         0;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   AFTERNOON / GOLDEN HOUR MODE — 11:00–18:00
-   Energia: działanie, szczyt mocy, zachód słońca
+   MODE 2 — DAY  ·  11:00–16:00  ·  Jasny dzień — subtelny błękit
 ───────────────────────────────────────────────────────────────────────────── */
-.mid {
-  --background:           #2A1510;
-  --bg-secondary:         #3D1F0F;
-  --foreground:           #F5EDE0;
-  --text-secondary:       #E8B88A;
-  --card:                 #4A2818;
-  --card-foreground:      #F5EDE0;
-  --popover:              #4A2818;
-  --popover-foreground:   #F5EDE0;
+.day {
+  --bg-gradient:          linear-gradient(180deg, #C8D8EC 0%, #DDE8F0 30%, #EEE8E0 70%, #F5EDE0 100%);
+  --background:           #EEE8E0;
+  --foreground:           #1A1208;
+  --text-secondary:       #5A5060;
+  --card:                 #FFFFFF;
+  --card-foreground:      #1A1208;
+  --popover:              #FFFFFF;
+  --popover-foreground:   #1A1208;
   --primary:              #C9A84C;
-  --primary-foreground:   #1A0A00;
-  --secondary:            #3D1F0F;
-  --secondary-foreground: #F5EDE0;
-  --muted:                #3D1F0F;
-  --muted-foreground:     #E8B88A;
+  --primary-foreground:   #1A1208;
+  --secondary:            #EEE8E0;
+  --secondary-foreground: #1A1208;
+  --muted:                #E8E0D8;
+  --muted-foreground:     #8A8090;
   --accent:               #C9A84C;
-  --accent-foreground:    #1A0A00;
-  --accent-warm:          #E8943A;
+  --accent-foreground:    #1A1208;
+  --accent-warm:          #D4927A;
   --destructive:          oklch(0.577 0.245 27.325);
-  --border:               #6B3D1E;
-  --input:                #3D1F0F;
+  --border:               rgba(0, 0, 0, 0.07);
+  --divider:              rgba(0, 0, 0, 0.07);
+  --input:                #EEE8E0;
   --ring:                 #C9A84C;
   --gold:                 #C9A84C;
-  --gold-dim:             #9A6A20;
-  --sidebar:              #2A1510;
-  --sidebar-foreground:   #F5EDE0;
+  --gold-dim:             #9A7A2A;
+  --nav-bg:               rgba(238, 232, 224, 0.95);
+  --nav-border:           rgba(200, 216, 236, 0.4);
+  --pill-bg:              rgba(255, 255, 255, 0.7);
+  --pill-border:          rgba(180, 200, 220, 0.5);
+  --pill-text:            #1A1208;
+  --sidebar:              #FFFFFF;
+  --sidebar-foreground:   #1A1208;
   --sidebar-primary:      #C9A84C;
-  --sidebar-primary-foreground: #1A0A00;
-  --sidebar-accent:       #3D1F0F;
-  --sidebar-accent-foreground: #F5EDE0;
-  --sidebar-border:       #6B3D1E;
+  --sidebar-primary-foreground: #1A1208;
+  --sidebar-accent:       #EEE8E0;
+  --sidebar-accent-foreground: #1A1208;
+  --sidebar-border:       rgba(0, 0, 0, 0.07);
   --sidebar-ring:         #C9A84C;
-  --mode-bg-gradient:     linear-gradient(180deg, #E8943A 0%, #C4687A 50%, #2A1510 100%);
-  --star-opacity:         0;
-  --icon-inactive:        #8B6A4A;
+  --icon-inactive:        #8B7355;
   --icon-active:          #C9A84C;
+  --star-opacity:         0;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   NIGHT MODE — 18:00–06:00
-   Energia: rytuał, mistycyzm, refleksja
+   MODE 3 — DUSK  ·  16:00–20:00  ·  Złota godzina — amber i rose
 ───────────────────────────────────────────────────────────────────────────── */
-.dark {
+.dusk {
+  --bg-gradient:          linear-gradient(180deg, #F5C080 0%, #E89060 35%, #D46870 65%, #8B3050 100%);
+  --background:           #D46870;
+  --foreground:           #FFF5EE;
+  --text-secondary:       #F5D4B8;
+  --card:                 rgba(255, 255, 255, 0.15);
+  --card-foreground:      #FFF5EE;
+  --popover:              rgba(255, 255, 255, 0.2);
+  --popover-foreground:   #FFF5EE;
+  --primary:              #FFD97A;
+  --primary-foreground:   #3A1A00;
+  --secondary:            rgba(255, 255, 255, 0.2);
+  --secondary-foreground: #FFF5EE;
+  --muted:                rgba(255, 255, 255, 0.1);
+  --muted-foreground:     #D4A890;
+  --accent:               #FFD97A;
+  --accent-foreground:    #3A1A00;
+  --accent-warm:          #F5C080;
+  --destructive:          oklch(0.577 0.245 27.325);
+  --border:               rgba(255, 255, 255, 0.25);
+  --divider:              rgba(255, 255, 255, 0.15);
+  --input:                rgba(255, 255, 255, 0.15);
+  --ring:                 #FFD97A;
+  --gold:                 #FFD97A;
+  --gold-dim:             #C9A84C;
+  --nav-bg:               rgba(139, 48, 80, 0.85);
+  --nav-border:           rgba(255, 255, 255, 0.15);
+  --pill-bg:              rgba(255, 255, 255, 0.2);
+  --pill-border:          rgba(255, 255, 255, 0.35);
+  --pill-text:            #FFF5EE;
+  --sidebar:              rgba(139, 48, 80, 0.85);
+  --sidebar-foreground:   #FFF5EE;
+  --sidebar-primary:      #FFD97A;
+  --sidebar-primary-foreground: #3A1A00;
+  --sidebar-accent:       rgba(255, 255, 255, 0.1);
+  --sidebar-accent-foreground: #FFF5EE;
+  --sidebar-border:       rgba(255, 255, 255, 0.15);
+  --sidebar-ring:         #FFD97A;
+  --icon-inactive:        #D4A890;
+  --icon-active:          #FFD97A;
+  --star-opacity:         0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MODE 4 — NIGHT  ·  20:00–6:00  ·  Kosmiczny granat + gwiazdy
+───────────────────────────────────────────────────────────────────────────── */
+.night {
+  --bg-gradient:          linear-gradient(180deg, #0D0A1A 0%, #1A0D35 40%, #2D1B69 70%, #1A0D35 100%);
   --background:           #0D0A1A;
-  --bg-secondary:         #130D2E;
   --foreground:           #F0EAF8;
-  --text-secondary:       #9B8BB8;
+  --text-secondary:       #C8B8D8;
   --card:                 #1A1238;
   --card-foreground:      #F0EAF8;
   --popover:              #1A1238;
@@ -153,10 +206,16 @@
   --accent-purple:        #6B3FA0;
   --destructive:          oklch(0.577 0.245 27.325);
   --border:               #2D1B69;
+  --divider:              rgba(255, 255, 255, 0.08);
   --input:                #2D1B69;
   --ring:                 #C9A84C;
   --gold:                 #C9A84C;
   --gold-dim:             #7A5E1F;
+  --nav-bg:               rgba(13, 10, 26, 0.95);
+  --nav-border:           rgba(201, 168, 76, 0.15);
+  --pill-bg:              rgba(45, 27, 105, 0.6);
+  --pill-border:          rgba(201, 168, 76, 0.25);
+  --pill-text:            #F0EAF8;
   --sidebar:              #130D2E;
   --sidebar-foreground:   #F0EAF8;
   --sidebar-primary:      #C9A84C;
@@ -165,10 +224,9 @@
   --sidebar-accent-foreground: #F0EAF8;
   --sidebar-border:       #2D1B69;
   --sidebar-ring:         #C9A84C;
-  --mode-bg-gradient:     none;
-  --star-opacity:         1;
   --icon-inactive:        #6B5E8A;
   --icon-active:          #C9A84C;
+  --star-opacity:         1;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -178,6 +236,24 @@
 @keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
+}
+
+@keyframes shimmerOnce {
+  0%   { background-position: -200% center; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { background-position: 200% center; opacity: 0; }
+}
+
+@keyframes checkBounce {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes particleBurst {
+  0%   { transform: scale(0) translate(0, 0); opacity: 1; }
+  100% { transform: scale(1) translate(var(--tx, 0px), var(--ty, -30px)); opacity: 0; }
 }
 
 @keyframes fadeIn {
@@ -212,6 +288,106 @@
   animation: fadeIn 0.4s ease forwards;
 }
 
+/* ─── Glassmorphism card surface ─────────────────────────────────────────── */
+
+.kalyra-card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dusk .kalyra-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.night .kalyra-card {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Card quote blocks ──────────────────────────────────────────────────── */
+
+.quote-block {
+  background: #F9F5EF;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #6B5744;
+}
+
+.night .quote-block {
+  background: #130D2E;
+  color: #C8B8D8;
+}
+
+.dusk .quote-block {
+  background: rgba(0, 0, 0, 0.15);
+  color: #F5D4B8;
+}
+
+.read-aloud-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9B8070;
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.night .read-aloud-label,
+.dusk .read-aloud-label {
+  color: var(--muted-foreground);
+}
+
+/* ─── Upsell card ────────────────────────────────────────────────────────── */
+
+.card--upsell {
+  border: 1.5px dashed #C9A84C;
+  background: transparent;
+  border-radius: 12px;
+  padding: 16px;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+.night .card--upsell {
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+.dusk .card--upsell {
+  border-color: rgba(255, 217, 122, 0.5);
+}
+
+.upsell-cta {
+  color: #C9A84C;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 12px;
+  display: block;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── Progress counter ───────────────────────────────────────────────────── */
+
+.progress-counter {
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  margin-bottom: 12px;
+}
+
 .mode-transition {
   transition: background-color 2000ms ease-in-out,
               color 2000ms ease-in-out,
@@ -230,7 +406,7 @@
   pointer-events: none;
 }
 
-.dark .star {
+.night .star {
   opacity: var(--star-base-opacity, 0.4);
 }
 

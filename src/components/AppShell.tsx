@@ -6,7 +6,7 @@ import { CalendarTab } from "@/components/CalendarTab";
 import { IconToday, IconMoon, IconCrystal, IconLearn, IconProfile } from "@/components/icons";
 
 type Tab = "today" | "calendar" | "crystals" | "learn" | "profile";
-type ColorMode = "morning" | "mid" | "dark";
+type ColorMode = "dawn" | "day" | "dusk" | "night";
 
 // Nav tab definitions with SVG icon components
 type TabDef = { id: Tab; label: string; Icon: React.ComponentType<{ size?: number; color?: string; active?: boolean }> };
@@ -19,16 +19,19 @@ const TABS: TabDef[] = [
 ];
 
 function getColorMode(hour: number): ColorMode {
-  if (hour >= 6  && hour < 11) return "morning";
-  if (hour >= 11 && hour < 18) return "mid";
-  return "dark";
+  if (hour >= 6  && hour < 11) return "dawn";
+  if (hour >= 11 && hour < 16) return "day";
+  if (hour >= 16 && hour < 20) return "dusk";
+  return "night";
 }
 
 function applyColorMode(mode: ColorMode) {
   const html = document.documentElement;
-  html.classList.remove("mid", "dark");
-  if (mode === "mid")  html.classList.add("mid");
-  if (mode === "dark") html.classList.add("dark");
+  html.classList.remove("day", "dusk", "night");
+  if (mode === "day")   html.classList.add("day");
+  if (mode === "dusk")  html.classList.add("dusk");
+  if (mode === "night") html.classList.add("night");
+  // dawn = no extra class (uses :root defaults)
 }
 
 // Stars — generated once, rendered in Night mode only
@@ -66,7 +69,10 @@ function StatusBar({ mode }: { mode: ColorMode }) {
     return () => clearInterval(id);
   }, []);
 
-  const textColor = mode === "morning" ? "#1A1208" : "var(--foreground)";
+  const textColor =
+    mode === "dawn" || mode === "day" ? "#1A1208" :
+    mode === "dusk"                   ? "#7A2A18" :
+    "var(--foreground)";
 
   return (
     <div className="flex items-center justify-between px-5 pt-3 pb-1 shrink-0">
@@ -98,13 +104,20 @@ function StatusBar({ mode }: { mode: ColorMode }) {
 }
 
 export function AppShell() {
-  const [activeTab, setActiveTab]   = useState<Tab>("today");
-  const [colorMode, setColorMode]   = useState<ColorMode>("dark");
-  const [mounted,   setMounted]     = useState(false);
+  const [activeTab,    setActiveTab]   = useState<Tab>("today");
+  const [colorMode,    setColorMode]   = useState<ColorMode>("night");
+  const [mounted,      setMounted]     = useState(false);
+  const [devMode,      setDevMode]     = useState(false);
+  const [manualMode,   setManualMode]  = useState<ColorMode | null>(null);
 
-  // Set mode on mount + every hour
+  // Set mode on mount + every 5 min (unless manually overridden)
   useEffect(() => {
+    const isDev = typeof window !== "undefined" &&
+      (window.location.search.includes("dev") || window.location.hostname === "localhost");
+    setDevMode(isDev);
+
     const update = () => {
+      if (manualMode) return; // don't override manual selection
       const mode = getColorMode(new Date().getHours());
       setColorMode(mode);
       applyColorMode(mode);
@@ -112,26 +125,35 @@ export function AppShell() {
     update();
     setMounted(true);
 
-    // Check every 5 minutes (smooth transition handles visual)
     const id = setInterval(update, 5 * 60 * 1000);
     return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isNight    = colorMode === "dark";
-  const isMorning  = colorMode === "morning";
-  const bgGrad     = colorMode === "mid"
-    ? "linear-gradient(180deg, #E8943A 0%, #C4687A 50%, #2A1510 100%)"
-    : "var(--background)";
+  // Apply manual override
+  const switchMode = (mode: ColorMode) => {
+    setManualMode(mode);
+    setColorMode(mode);
+    applyColorMode(mode);
+  };
 
-  // Desktop surround background
-  const desktopBg = isNight
-    ? "radial-gradient(ellipse at 60% 20%, #1a1035 0%, #080910 60%, #05060f 100%)"
-    : isMorning
-    ? "radial-gradient(ellipse at 40% 10%, #e8d5bb 0%, #c8b090 100%)"
-    : "radial-gradient(ellipse at 50% 0%, #8B3A1A 0%, #1A0800 100%)";
+  const isNight = colorMode === "night";
 
-  const navBg       = colorMode === "morning" ? "var(--card)"       : "var(--background)";
-  const navBorder   = "var(--border)";
+  // Use CSS variable for gradient — defined per mode in globals.css
+  const bgGrad = "var(--bg-gradient)";
+
+  // Desktop surround background (outside phone frame)
+  const desktopBg =
+    colorMode === "night"
+      ? "radial-gradient(ellipse at 60% 20%, #1a1035 0%, #080910 60%, #05060f 100%)"
+      : colorMode === "dusk"
+      ? "radial-gradient(ellipse at 50% 0%, #F5C080 0%, #D46870 50%, #8B3050 100%)"
+      : colorMode === "day"
+      ? "radial-gradient(ellipse at 40% 0%, #C8D8EC 0%, #DDE8F0 60%, #EEE8E0 100%)"
+      : "radial-gradient(ellipse at 40% 0%, #E2D4F0 0%, #F0D4C8 60%, #F5EDE0 100%)";
+
+  const navBg     = "var(--nav-bg)";
+  const navBorder = "var(--nav-border)";
   const activeColor = "var(--primary)";
   const inactiveColor = "var(--muted-foreground)";
 
@@ -176,6 +198,32 @@ export function AppShell() {
             <div style={{ height: 44 }} />
             <StatusBar mode={colorMode} />
           </div>
+
+          {/* Dev mode switcher — visible on localhost or ?dev */}
+          {devMode && (
+            <div className="flex items-center justify-center gap-1 py-1.5 shrink-0"
+              style={{ borderBottom: "1px solid var(--divider)" }}>
+              {(["dawn","day","dusk","night"] as ColorMode[]).map((m) => (
+                <button key={m} onClick={() => switchMode(m)}
+                  style={{
+                    padding: "2px 10px",
+                    borderRadius: 20,
+                    fontSize: 10,
+                    fontFamily: "var(--font-inter)",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    border: "1px solid var(--divider)",
+                    background: colorMode === m ? "var(--primary)" : "transparent",
+                    color: colorMode === m ? "var(--primary-foreground)" : "var(--muted-foreground)",
+                    transition: "all 200ms",
+                  }}>
+                  {m}
+                </button>
+              ))}
+            </div>
+          )}
           {/* Safe area spacer for iPhone notch/Dynamic Island */}
           <div className="sm:hidden" style={{ height: "env(safe-area-inset-top, 0px)" }} />
 
@@ -202,6 +250,7 @@ export function AppShell() {
           {/* Bottom nav */}
           <nav className="shrink-0 flex border-t relative z-10"
             style={{ background: navBg, borderColor: navBorder,
+              backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
               paddingBottom: "env(safe-area-inset-bottom, 8px)" }}>
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;

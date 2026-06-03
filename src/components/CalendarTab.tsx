@@ -281,7 +281,7 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
 
 // ─── Main Calendar ────────────────────────────────────────────────────────────
 
-export function CalendarTab({ colorMode = "dark" }: { colorMode?: "morning" | "mid" | "dark" }) {
+export function CalendarTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" | "dusk" | "night" }) {
   const today = new Date();
   const [viewYear,  setViewYear]  = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
