@@ -147,7 +147,7 @@ export function AppShell() {
     colorMode === "night"
       ? "radial-gradient(ellipse at 60% 20%, #1a1035 0%, #080910 60%, #05060f 100%)"
       : colorMode === "dusk"
-      ? "radial-gradient(ellipse at 50% 0%, #F5C080 0%, #D46870 50%, #8B3050 100%)"
+      ? "radial-gradient(ellipse at 50% 0%, #F0C890 0%, #A878A8 50%, #784868 100%)"
       : colorMode === "day"
       ? "radial-gradient(ellipse at 40% 0%, #C8D8EC 0%, #DDE8F0 60%, #EEE8E0 100%)"
       : "radial-gradient(ellipse at 40% 0%, #E2D4F0 0%, #F0D4C8 60%, #F5EDE0 100%)";

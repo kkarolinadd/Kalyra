@@ -141,7 +141,7 @@
    MODE 3 — DUSK  ·  16:00–20:00  ·  Złota godzina — amber i rose
 ───────────────────────────────────────────────────────────────────────────── */
 .dusk {
-  --bg-gradient:          linear-gradient(180deg, #F5C080 0%, #E89060 35%, #D46870 65%, #8B3050 100%);
+  --bg-gradient:          linear-gradient(180deg, #F0C890 0%, #D4A0B8 40%, #A878A8 70%, #784868 100%);
   --background:           #D46870;
   --foreground:           #FFF5EE;
   --text-secondary:       #F5D4B8;
