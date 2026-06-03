@@ -145,8 +145,8 @@
   --background:           #D46870;
   --foreground:           #FFF5EE;
   --text-secondary:       #F5D4B8;
-  --card:                 rgba(255, 255, 255, 0.15);
-  --card-foreground:      #FFF5EE;
+  --card:                 rgba(255, 255, 255, 0.25);
+  --card-foreground:      #3A1810;
   --popover:              rgba(255, 255, 255, 0.2);
   --popover-foreground:   #FFF5EE;
   --primary:              #FFD97A;
@@ -159,9 +159,9 @@
   --accent-foreground:    #3A1A00;
   --accent-warm:          #F5C080;
   --destructive:          oklch(0.577 0.245 27.325);
-  --border:               rgba(255, 255, 255, 0.25);
-  --divider:              rgba(255, 255, 255, 0.15);
-  --input:                rgba(255, 255, 255, 0.15);
+  --border:               rgba(255, 255, 255, 0.32);
+  --divider:              rgba(255, 255, 255, 0.2);
+  --input:                rgba(255, 255, 255, 0.2);
   --ring:                 #FFD97A;
   --gold:                 #FFD97A;
   --gold-dim:             #C9A84C;
@@ -294,14 +294,37 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
+/* ─── DUSK: dark text inside cards (cards are light/glassmorphism) ─────────
+   Rule: white text ONLY directly on the gradient (date, greeting, pills).
+   Text ON cards must be dark — cards are semi-transparent over light bg.
+─────────────────────────────────────────────────────────────────────────── */
 .dusk .kalyra-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* Override CSS vars for all children inside cards */
+  --foreground:        #3A1810;
+  --card-foreground:   #3A1810;
+  --muted-foreground:  #8B4030;
+  --primary:           #A07820;   /* darker gold — readable on light card bg */
+  --secondary:         rgba(122, 48, 32, 0.08);
+  --secondary-foreground: #3A1810;
+  --border:            rgba(122, 48, 32, 0.15);
 }
 
 .night .kalyra-card {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── DUSK: header text directly on gradient (white + shadow) ───────────── */
+
+.dusk .header-date {
+  color: #FFFFFF !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+}
+
+.dusk .header-greeting {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
 }
 
 /* ─── Card quote blocks ──────────────────────────────────────────────────── */
@@ -323,8 +346,8 @@
 }
 
 .dusk .quote-block {
-  background: rgba(0, 0, 0, 0.15);
-  color: #F5D4B8;
+  background: rgba(0, 0, 0, 0.14);
+  color: #FFF5EE;  /* light — quote block has dark bg, overrides card's dark text */
 }
 
 .read-aloud-label {

@@ -697,7 +697,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         <div className="text-center space-y-4 px-1 pt-2 mb-5">
           <div className="flex items-center justify-center gap-3">
             <p
-              className="text-xs tracking-widest uppercase"
+              className="header-date text-xs tracking-widest uppercase"
               style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}
             >
               {astro.date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()}
@@ -707,7 +707,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           </div>
 
           <h1
-            className="kalyra-voice leading-none"
+            className="header-greeting kalyra-voice leading-none"
             style={{ fontSize: "clamp(2.4rem, 10vw, 3rem)", color: "var(--foreground)", fontWeight: 300 }}
           >
             Hello, {profile?.name ?? "friend"}.
