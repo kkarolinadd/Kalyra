@@ -37,14 +37,15 @@ const DAY_RULER_TAGLINE: Record<string, { label: string; action: string }> = {
   Saturn:  { label: "Saturn rules today",  action: "Do the work"     },
 };
 
+// CSS variables — values defined per mode in globals.css
 const CARD_ACCENTS: Record<CheckinKey | "energy", string> = {
-  morning: "#E8943A",
-  evening: "#6B3FA0",
-  journal: "#C9A84C",
-  mirror:  "#C4687A",
-  crystal: "#4A9B8E",
-  wear:    "#D4927A",
-  energy:  "#C9A84C",
+  morning: "var(--accent-morning)",
+  evening: "var(--accent-evening)",
+  journal: "var(--accent-journal)",
+  mirror:  "var(--accent-mirror)",
+  crystal: "var(--accent-crystal)",
+  wear:    "var(--accent-wear)",
+  energy:  "var(--accent-energy)",
 };
 
 const GLAMOUR_COLOR_MAP: Record<string, string> = {

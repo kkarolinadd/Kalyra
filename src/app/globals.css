@@ -89,6 +89,15 @@
   --icon-inactive:        #8B7355;
   --icon-active:          #C9A84C;
   --star-opacity:         0;
+
+  /* Card accent colors */
+  --accent-morning: #E8943A;
+  --accent-evening: #6B3FA0;
+  --accent-journal: #C9A84C;
+  --accent-mirror:  #C4687A;
+  --accent-crystal: #4A9B8E;
+  --accent-wear:    #D4927A;
+  --accent-energy:  #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -135,6 +144,15 @@
   --icon-inactive:        #8B7355;
   --icon-active:          #C9A84C;
   --star-opacity:         0;
+
+  /* Card accent colors (same as dawn) */
+  --accent-morning: #E8943A;
+  --accent-evening: #6B3FA0;
+  --accent-journal: #C9A84C;
+  --accent-mirror:  #C4687A;
+  --accent-crystal: #4A9B8E;
+  --accent-wear:    #D4927A;
+  --accent-energy:  #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -165,22 +183,31 @@
   --ring:                 #FFD97A;
   --gold:                 #FFD97A;
   --gold-dim:             #C9A84C;
-  --nav-bg:               rgba(139, 48, 80, 0.85);
-  --nav-border:           rgba(255, 255, 255, 0.15);
+  --nav-bg:               rgba(30, 12, 50, 0.88);
+  --nav-border:           rgba(180, 140, 220, 0.15);
   --pill-bg:              rgba(255, 255, 255, 0.2);
   --pill-border:          rgba(255, 255, 255, 0.35);
   --pill-text:            #FFF5EE;
-  --sidebar:              rgba(139, 48, 80, 0.85);
+  --sidebar:              rgba(30, 12, 50, 0.88);
   --sidebar-foreground:   #FFF5EE;
   --sidebar-primary:      #FFD97A;
   --sidebar-primary-foreground: #3A1A00;
   --sidebar-accent:       rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #FFF5EE;
-  --sidebar-border:       rgba(255, 255, 255, 0.15);
+  --sidebar-border:       rgba(180, 140, 220, 0.15);
   --sidebar-ring:         #FFD97A;
-  --icon-inactive:        #D4A890;
+  --icon-inactive:        rgba(200, 170, 230, 0.55);
   --icon-active:          #FFD97A;
   --star-opacity:         0;
+
+  /* Luminous card accents — visible on dark glassmorphism */
+  --accent-morning: #FFD080;
+  --accent-evening: #C8A0FF;
+  --accent-journal: #FFE080;
+  --accent-mirror:  #FFB0C8;
+  --accent-crystal: #80E0D0;
+  --accent-wear:    #FFD0A0;
+  --accent-energy:  #FFD080;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -227,6 +254,15 @@
   --icon-inactive:        #6B5E8A;
   --icon-active:          #C9A84C;
   --star-opacity:         1;
+
+  /* Card accent colors (same as dawn) */
+  --accent-morning: #E8943A;
+  --accent-evening: #6B3FA0;
+  --accent-journal: #C9A84C;
+  --accent-mirror:  #C4687A;
+  --accent-crystal: #4A9B8E;
+  --accent-wear:    #D4927A;
+  --accent-energy:  #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -292,6 +328,12 @@
 
 .kalyra-card {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── DUSK: thicker card accent border ──────────────────────────────────── */
+
+.dusk .kalyra-card {
+  border-left-width: 4px !important;
 }
 
 /* ─── DUSK: dark text inside cards (cards are light/glassmorphism) ─────────
@@ -381,7 +423,16 @@
 }
 
 .dusk .card--upsell {
-  border-color: rgba(255, 217, 122, 0.5);
+  border-color: rgba(255, 217, 122, 0.4);
+  background:   rgba(30, 12, 50, 0.35);
+}
+
+.dusk .card--upsell p {
+  color: rgba(255, 240, 220, 0.85);
+}
+
+.dusk .upsell-cta {
+  color: #FFD97A;
 }
 
 .upsell-cta {
