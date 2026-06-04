@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { TodayTab } from "@/components/TodayTab";
 import { CalendarTab } from "@/components/CalendarTab";
+import { LearnTab } from "@/components/LearnTab";
 import { IconToday, IconMoon, IconLearn, IconProfile } from "@/components/icons";
 
 // 4 tabs — Crystals merged into Learn (LearnTab spec v1.1)
@@ -242,8 +243,7 @@ export function AppShell() {
           <main className="flex-1 overflow-y-auto relative z-10" style={{ paddingBottom: 80 }}>
             {activeTab === "today"    && <TodayTab colorMode={colorMode} />}
             {activeTab === "calendar" && <CalendarTab colorMode={colorMode} />}
-            {/* crystals tab removed — Crystal Library is now inside Learn tab (spec v1.1) */}
-            {activeTab === "learn"    && <PlaceholderTab name="Learn" />}
+            {activeTab === "learn"    && <LearnTab colorMode={colorMode} />}
             {activeTab === "profile"  && <PlaceholderTab name="Profile" />}
           </main>
 
