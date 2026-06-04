@@ -27,21 +27,32 @@ npx tsc --noEmit   # TypeScript check
 | Deploy | Vercel — auto-deploy on push to main |
 | PWA | manifest.json + icons — installable on iPhone/Android |
 
-## Color system — 3 modes (auto by time of day)
+## Color system — 4 Sky Modes (auto by time of day)
 
-| Mode | Hours | Key colors |
-|---|---|---|
-| Morning (`:root`) | 6–11h | `#F5EDE0` bg, `#1A1208` text, cream |
-| Afternoon (`.mid`) | 11–18h | `#2A1510` bg, `#F5EDE0` text, amber/sienna |
-| Night (`.dark`) | 18–6h | `#0D0A1A` bg, `#F0EAF8` text, cosmic purple |
-| Gold (all modes) | — | `#C9A84C` — always the same |
+| Mode | CSS class | Hours | Sky |
+|---|---|---|---|
+| DAWN | `:root` | 6–11h | Lavender-peach, white cards, dark text |
+| DAY | `.day` | 11–16h | Subtle blue gradient, white cards, dark text |
+| DUSK | `.dusk` | 16–20h | Amber→mauve gradient, glassmorphism cards, dark card text |
+| NIGHT | `.night` | 20–6h | Cosmic navy `#0D0A1A→#2D1B69`, `#1A1238` cards, light text |
 
-Use CSS variables everywhere: `var(--background)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`. Never hardcode colors.
+Key vars: `var(--bg-gradient)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`, `var(--nav-bg)`, `var(--pill-bg)`.
+Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous in DUSK.
+**DUSK rule:** text on cards = dark `#3A1810`; text directly on gradient = white `#FFF5EE`.
+Never hardcode colors — always use CSS variables.
+
+## Nav bar — 4 tabs (Crystals merged into Learn)
+
+```
+TODAY  |  MOON  |  LEARN  |  PROFILE
+```
+
+Crystal Library is a section inside Learn tab (spec: `Kalyra_LearnTab_Spec.md`).
 
 ## Icon system (`src/components/icons.tsx`)
 
 All icons are SVG linear, stroke-width 1.5, rounded caps — NO emoji in UI.
-- Nav: `IconToday`, `IconMoon`, `IconCrystal`, `IconLearn`, `IconProfile`
+- Nav (4 tabs): `IconToday`, `IconMoon`, `IconLearn`, `IconProfile`
 - Sections: `IconSunrise`, `IconEvening`, `IconJournal`, `IconMirror`, `IconCrystalSection`, `IconGlamour`, `IconEnergy`
 - Moon phases: `MoonPhaseIcon2` — two-tone (`#E8E0F0` lit / `#1E1640` shadow), never transparent
 - Crystals: `CrystalIcon` — geometric shapes per mineral
@@ -54,7 +65,7 @@ src/
   app/
     layout.tsx            # Cormorant + Inter fonts, PWA meta tags
     page.tsx              # Entry: onboarding check → AppShell
-    globals.css           # 3-mode CSS variables, animations, .kalyra-voice
+    globals.css           # 4-mode CSS variables (dawn/day/dusk/night), glassmorphism, animations
   components/
     AppShell.tsx          # Phone frame, bottom nav, color mode switching, stars
     OnboardingFlow.tsx    # 4-step onboarding
@@ -87,19 +98,20 @@ public/
 ## What's built
 
 - ✅ Onboarding (4 steps, Sun + Moon sign calculation)
-- ✅ Today tab — full redesign with 3-column day card, SVG icons, ritual tags
+- ✅ Today Tab v1.1 — checkboxes + animations, color accents per card, auto-collapse, upsell, progress counter
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ 3-mode color system (morning/mid/night, auto-switch)
-- ✅ SVG Icon System v1.0
+- ✅ Color System v2.1 — 4 sky modes (dawn/day/dusk/night), glassmorphism in DUSK
+- ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
+- ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
 - ✅ AI Ritual Generator (mocked)
+- ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
 
 ## What's NOT built yet
 
-- ❌ Crystals tab
-- ❌ Learn tab
+- ❌ Learn tab (spec ready: `Kalyra_LearnTab_Spec.md`) — Crystal Library + articles + Ask Kalyra
 - ❌ Profile tab
 - ❌ Live Claude API
 - ❌ Rising sign calculation

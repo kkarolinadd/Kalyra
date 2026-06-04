@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
-**Last updated:** June 3, 2026
-**Version:** 0.3.0 — Today Tab + Moon Calendar
+**Last updated:** June 4, 2026
+**Version:** 0.5.0 — Today Tab v1.1 + Color System v2.1 + 4-tab nav
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -14,7 +14,7 @@
 - **PWA** — installable on iPhone/Android (manifest.json, icons, apple-touch-icon)
 - **Vercel deployment** — auto-deploys on every push to `main`
 - Mobile layout — phone frame on desktop, full screen on mobile (status bar hidden on real phone)
-- **3-mode color system** — Morning (cream, 6–11h) / Afternoon (amber, 11–18h) / Night (cosmic dark, 18–6h)
+- **4-mode color system** — DAWN (6–11h) / DAY (11–16h) / DUSK (16–20h) / NIGHT (20–6h)
 - Smooth 2s CSS transitions between modes, auto-switch every 5 min
 - localStorage persistence (user profile, daily check-ins, streak)
 - TypeScript — fully typed, zero errors
@@ -22,10 +22,10 @@
 
 ### Fonts & Design System
 - **Cormorant Garamond** (headings, editorial serif) + **Inter** (body, UI labels)
-- Gold `#C9A84C` — constant across all 3 modes
+- Gold `#C9A84C` (DAWN/DAY/NIGHT) / `#FFD97A` (DUSK) — per-mode accent
 - `.kalyra-voice` class — italic Cormorant for Kalyra's persona text
 - **Icon System v1.0** (`src/components/icons.tsx`) — all SVG linear icons, no emoji in UI
-  - Nav bar: Today (half-moon), Moon (crescent), Crystals (gem), Learn (4-star), Profile (silhouette)
+  - Nav bar (4 tabs): Today (half-moon), Moon (crescent), Learn (4-star), Profile (silhouette)
   - Section icons: Sunrise, Evening, Journal (quill), Mirror, Crystal, Glamour (3 stars), Energy (bolt)
   - Moon phases: 8 SVG icons, two-tone (#E8E0F0 lit / #1E1640 shadow), Full Moon with glow
   - Crystal shapes: 12 geometric per mineral (Carnelian teardrop, Amethyst hexagon, etc.)
@@ -65,6 +65,8 @@
 - `PRD.md` — Kalyra tech PRD v1.1
 - `Kalyra_Icon_System.md` — icon spec v1.0
 - `Kalyra_MoonCalendar_Spec.md` — calendar spec v1.0
+- `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library merged in, 4-tab nav)
+- `Kalyra_ColorSystem_v2.md` — Color System v2.1 (4 sky modes)
 
 ---
 
@@ -77,12 +79,11 @@ Nothing currently in progress.
 ## 📋 Up Next
 
 ### High priority
-- [ ] **Crystals tab** — 30+ crystal cards, search + filter by intention / zodiac affinity
+- [ ] **Learn tab** — Crystal Library + 38 articles + Ask Kalyra AI (spec: `Kalyra_LearnTab_Spec.md`)
 - [ ] **Profile tab** — elemental balance bar, Sun/Moon/Rising cards, streak history, settings
 - [ ] **Live Claude API** — replace mock with real `claude-sonnet-4-6` call
 
 ### Medium priority
-- [ ] **Learn tab** — Zodiac guide (12 signs), Mirror Principle (5-part course), 6 meditations
 - [ ] **Rising sign calculation** — Swiss Ephemeris or Astro API integration
 - [ ] Kalyra as character — persona voice, onboarding screens 1 & 3
 
@@ -104,11 +105,11 @@ Nothing currently in progress.
 | `src/lib/ritualContent.ts` | 56-combination ritual content + 12 Master Rituals + triggered ritual logic |
 | `src/lib/storage.ts` | localStorage read/write helpers |
 | `src/components/icons.tsx` | Full icon system — all SVG, 8 moon phases, 12 crystal shapes |
-| `src/components/AppShell.tsx` | Phone frame, bottom nav, 3-mode color switching, stars animation |
+| `src/components/AppShell.tsx` | Phone frame, bottom nav, 4-mode color switching (dawn/day/dusk/night), stars animation |
 | `src/components/TodayTab.tsx` | Main daily ritual screen |
 | `src/components/CalendarTab.tsx` | Moon Calendar — grid, bottom sheet, event dots |
 | `src/components/OnboardingFlow.tsx` | First-launch onboarding |
-| `src/app/globals.css` | 3-mode CSS variables (morning/mid/dark), animations |
+| `src/app/globals.css` | 4-mode CSS variables (dawn/day/dusk/night), glassmorphism, animations |
 | `public/manifest.json` | PWA manifest |
 
 ---

@@ -3,19 +3,19 @@
 import { useState, useEffect } from "react";
 import { TodayTab } from "@/components/TodayTab";
 import { CalendarTab } from "@/components/CalendarTab";
-import { IconToday, IconMoon, IconCrystal, IconLearn, IconProfile } from "@/components/icons";
+import { IconToday, IconMoon, IconLearn, IconProfile } from "@/components/icons";
 
-type Tab = "today" | "calendar" | "crystals" | "learn" | "profile";
+// 4 tabs — Crystals merged into Learn (LearnTab spec v1.1)
+type Tab = "today" | "calendar" | "learn" | "profile";
 type ColorMode = "dawn" | "day" | "dusk" | "night";
 
 // Nav tab definitions with SVG icon components
 type TabDef = { id: Tab; label: string; Icon: React.ComponentType<{ size?: number; color?: string; active?: boolean }> };
 const TABS: TabDef[] = [
-  { id: "today",    label: "Today",    Icon: IconToday   },
-  { id: "calendar", label: "Moon",     Icon: IconMoon    },
-  { id: "crystals", label: "Crystals", Icon: IconCrystal },
-  { id: "learn",    label: "Learn",    Icon: IconLearn   },
-  { id: "profile",  label: "Profile",  Icon: IconProfile },
+  { id: "today",    label: "Today",   Icon: IconToday   },
+  { id: "calendar", label: "Moon",    Icon: IconMoon    },
+  { id: "learn",    label: "Learn",   Icon: IconLearn   },
+  { id: "profile",  label: "Profile", Icon: IconProfile },
 ];
 
 function getColorMode(hour: number): ColorMode {
@@ -242,7 +242,7 @@ export function AppShell() {
           <main className="flex-1 overflow-y-auto relative z-10" style={{ paddingBottom: 80 }}>
             {activeTab === "today"    && <TodayTab colorMode={colorMode} />}
             {activeTab === "calendar" && <CalendarTab colorMode={colorMode} />}
-            {activeTab === "crystals" && <PlaceholderTab name="Crystals" />}
+            {/* crystals tab removed — Crystal Library is now inside Learn tab (spec v1.1) */}
             {activeTab === "learn"    && <PlaceholderTab name="Learn" />}
             {activeTab === "profile"  && <PlaceholderTab name="Profile" />}
           </main>
