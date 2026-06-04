@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { TodayTab } from "@/components/TodayTab";
 import { CalendarTab } from "@/components/CalendarTab";
 import { LearnTab } from "@/components/LearnTab";
+import { ProfileTab } from "@/components/ProfileTab";
 import { IconToday, IconMoon, IconLearn, IconProfile } from "@/components/icons";
 
 // 4 tabs — Crystals merged into Learn (LearnTab spec v1.1)
@@ -244,7 +245,7 @@ export function AppShell() {
             {activeTab === "today"    && <TodayTab colorMode={colorMode} />}
             {activeTab === "calendar" && <CalendarTab colorMode={colorMode} />}
             {activeTab === "learn"    && <LearnTab colorMode={colorMode} />}
-            {activeTab === "profile"  && <PlaceholderTab name="Profile" />}
+            {activeTab === "profile"  && <ProfileTab />}
           </main>
 
           {/* Bottom nav */}

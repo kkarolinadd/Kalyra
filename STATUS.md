@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.6.0 — Learn Tab
+**Version:** 0.7.0 — Profile Tab
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -60,6 +60,17 @@
 - Bottom sheet uses CSS variables — adapts to all 3 color modes
 - Legend: half-moon icon + TODAY circle + eclipse dot + special dot
 
+### Profile Tab
+- **User Header** — gold initials avatar, name, birth date + city, "Edit →" button
+- **Kalyra's Reading** — italic serif, gold left border, text per Sun×Moon combination (26 hardcoded + element fallback)
+- **Sign Cards** — SUN / MOON / RISING with element color background, symbol, modality
+- **Elemental Makeup** — dual gradient progress bar (Sun=40%, Moon=60%), same-element handled
+- **Rising Sign locked/unlocked** — dashed card with "Add birth time →" CTA when no birth time
+- **Top Rituals For You** — top 4 from ritual affinity matrix, gold bar + "natural gift / strong / medium" labels
+- **Practice Stats** — 3 cards: day streak, rituals this cycle, moon cycles since birth
+- **Settings** — notification toggles (Morning/Evening reminder, Full/New Moon), My Data, Sign out
+- **Edit Profile modal** — bottom sheet: name, date, city, birth time, Sun sign, Moon sign dropdowns
+
 ### Learn Tab
 - **Featured Today** — 200px gradient card, auto-selects article by moon phase + planet of day
 - **Crystal Library** — 12 crystals, horizontal scroll, 100×130px cards with geometric icons
@@ -89,7 +100,7 @@ Nothing currently in progress.
 ## 📋 Up Next
 
 ### High priority
-- [ ] **Profile tab** — elemental balance bar, Sun/Moon/Rising cards, streak history, settings
+- [x] **Profile tab** — ✅ done in v0.7.0
 - [ ] **Live Claude API** — replace mocks (AI Ritual Generator + Ask Kalyra) with real `claude-sonnet-4-6`
 - [ ] **Learn tab — expand content** — currently 13 articles, spec calls for 38
 
@@ -115,6 +126,7 @@ Nothing currently in progress.
 | `src/lib/ritualContent.ts` | 56-combination ritual content + 12 Master Rituals + triggered ritual logic |
 | `src/lib/storage.ts` | localStorage read/write helpers |
 | `src/components/icons.tsx` | Full icon system — all SVG, 8 moon phases, 12 crystal shapes |
+| `src/components/ProfileTab.tsx` | Profile screen — signs, elemental bar, ritual affinity, stats, settings, edit modal |
 | `src/components/AppShell.tsx` | Phone frame, bottom nav, 4-mode color switching (dawn/day/dusk/night), stars animation |
 | `src/components/TodayTab.tsx` | Main daily ritual screen |
 | `src/components/CalendarTab.tsx` | Moon Calendar — grid, bottom sheet, event dots |
