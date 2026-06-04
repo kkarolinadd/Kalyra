@@ -71,6 +71,7 @@ src/
     OnboardingFlow.tsx    # 4-step onboarding
     TodayTab.tsx          # Daily ritual screen — all sections
     CalendarTab.tsx       # Moon Calendar — grid, bottom sheet, event dots
+    LearnTab.tsx          # Learn tab — Featured, Crystal Library, Topics, Articles, Ask Kalyra
     icons.tsx             # Full SVG icon library
     ui/                   # shadcn components
   lib/
@@ -105,15 +106,16 @@ public/
 - ✅ Color System v2.1 — 4 sky modes (dawn/day/dusk/night), glassmorphism in DUSK
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
+- ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
-- ✅ AI Ritual Generator (mocked)
+- ✅ AI Ritual Generator + Ask Kalyra (mocked)
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
 
 ## What's NOT built yet
 
-- ❌ Learn tab (spec ready: `Kalyra_LearnTab_Spec.md`) — Crystal Library + articles + Ask Kalyra
 - ❌ Profile tab
-- ❌ Live Claude API
+- ❌ Live Claude API (two mocks: AI Ritual Generator + Ask Kalyra)
+- ❌ Learn — remaining 25 articles (13/38 done)
 - ❌ Rising sign calculation
 - ❌ Backend / accounts
 

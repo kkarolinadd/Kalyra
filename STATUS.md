@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.5.0 — Today Tab v1.1 + Color System v2.1 + 4-tab nav
+**Version:** 0.6.0 — Learn Tab
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -60,6 +60,16 @@
 - Bottom sheet uses CSS variables — adapts to all 3 color modes
 - Legend: half-moon icon + TODAY circle + eclipse dot + special dot
 
+### Learn Tab
+- **Featured Today** — 200px gradient card, auto-selects article by moon phase + planet of day
+- **Crystal Library** — 12 crystals, horizontal scroll, 100×130px cards with geometric icons
+- **Crystal detail view** — full-screen overlay: properties, how-to-use (carry/place/meditate), moon phases, Kalyra quote
+- **Explore Topics** — 5 gradient tiles (Moon/Planets/Glamour/Chakra/Rituals), tap → filtered article list
+- **Recently Added** — 6 articles with color-coded left border per category
+- **Ask Kalyra** — dashed box, rotating daily question, mocked AI response in Kalyra's voice
+- **Article detail view** — full-screen: Kalyra intro, body text, key takeaways
+- **13 articles** with full content in Kalyra's voice (spec target: 38)
+
 ### Design Docs in project folder
 - `Glamour_Magic_PRD.md` — full PRD v1.0
 - `PRD.md` — Kalyra tech PRD v1.1
@@ -79,9 +89,9 @@ Nothing currently in progress.
 ## 📋 Up Next
 
 ### High priority
-- [ ] **Learn tab** — Crystal Library + 38 articles + Ask Kalyra AI (spec: `Kalyra_LearnTab_Spec.md`)
 - [ ] **Profile tab** — elemental balance bar, Sun/Moon/Rising cards, streak history, settings
-- [ ] **Live Claude API** — replace mock with real `claude-sonnet-4-6` call
+- [ ] **Live Claude API** — replace mocks (AI Ritual Generator + Ask Kalyra) with real `claude-sonnet-4-6`
+- [ ] **Learn tab — expand content** — currently 13 articles, spec calls for 38
 
 ### Medium priority
 - [ ] **Rising sign calculation** — Swiss Ephemeris or Astro API integration
