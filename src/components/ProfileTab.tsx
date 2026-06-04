@@ -118,7 +118,11 @@ function getKalryaReading(sunSign: ZodiacSign, moonSign: ZodiacSign): string {
 
 // ─── Helper: calculate elemental makeup ──────────────────────────────────────
 
-function getElementalMakeup(sunSign: ZodiacSign, moonSign: ZodiacSign) {
+type ElementalSame = { same: true; element: string; elementClass: string };
+type ElementalSplit = { same: false; primary: { element: string; percent: number; elementClass: string }; secondary: { element: string; percent: number; elementClass: string } };
+type ElementalMakeup = ElementalSame | ElementalSplit;
+
+function getElementalMakeup(sunSign: ZodiacSign, moonSign: ZodiacSign): ElementalMakeup {
   const sunEl  = signData[sunSign].element;
   const moonEl = signData[moonSign].element;
   if (sunEl === moonEl) {
@@ -597,7 +601,7 @@ export function ProfileTab() {
             <div style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               My Data
             </div>
-            <button onClick={() => setEditOpen(true)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderBottom: "0.5px solid var(--divider)", background: "none", border: "none", cursor: "pointer", borderBottom: "0.5px solid var(--divider)" as string }}>
+            <button onClick={() => setEditOpen(true)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", background: "none", borderTop: "none", borderLeft: "none", borderRight: "none", borderBottom: "0.5px solid var(--divider)", cursor: "pointer" }}>
               <span style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif" }}>Birth details</span>
               <span style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>Edit →</span>
             </button>
