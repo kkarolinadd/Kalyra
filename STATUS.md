@@ -88,13 +88,15 @@
 - **Article detail view** — full-screen: Kalyra intro, body text, key takeaways
 - **13 articles** with full content in Kalyra's voice (spec target: 38)
 
-### Design Docs in project folder
+### Design Docs in project folder (`Kalyra - glamour magic/`)
 - `Glamour_Magic_PRD.md` — full PRD v1.0
 - `PRD.md` — Kalyra tech PRD v1.1
-- `Kalyra_Icon_System.md` — icon spec v1.0
-- `Kalyra_MoonCalendar_Spec.md` — calendar spec v1.0
-- `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library merged in, 4-tab nav)
-- `Kalyra_ColorSystem_v2.md` — Color System v2.5 (4 sky modes)
+- `Kalyra_Icon_System.md` — icon spec v1.0 (SVG system, no emoji)
+- `Kalyra_MoonCalendar_Spec.md` — Moon Calendar spec v1.0
+- `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library, 4-tab nav)
+- `Kalyra_ProfileTab_Spec.md` — Profile tab spec v1.0
+- `Kalyra_ColorSystem_v2.md` — Color System v2.5 (4 sky modes, opacity hierarchy)
+- `Kalyra_DuskMode_Overrides.md` — kompletna specyfikacja DUSK CSS (50+ klas, 5 tabów)
 - `Kalyra_DuskMode_Overrides.md` — kompletna specyfikacja dusk CSS (50+ klas, 5 tabów, zasady opacity)
 
 ---
