@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.7.3 — Profile dusk polish
+**Version:** 0.7.4 — Profile dusk full pass
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -68,9 +68,10 @@
 - **Elemental Makeup** — dual gradient progress bar (Sun=40%, Moon=60%); `card__muted` class on percentage labels
 - **Rising Sign locked/unlocked** — dashed card, SVG lock icon (rect+arc, stroke `#C9A84C`), `card__body-text` + `card__muted` classes
 - **Top Rituals For You** — top 4 from ritual affinity matrix, gold bar + "natural gift / strong / medium" labels
-- **Practice Stats** — 3 cards: day streak, rituals this cycle, moon cycles since birth
+- **Practice Stats** — 3 cards: day streak, rituals this cycle, moon cycles since **first app use** (not birth); `stat-card` / `stat-card__label` classes
 - **Settings** — notification toggles (Morning/Evening reminder, Full/New Moon), My Data, Sign out
 - **Edit Profile modal** — bottom sheet: name, date, city, birth time, Sun sign, Moon sign dropdowns
+- **Dusk full contrast pass** — `profile-card` (0.75), `sign-card`/`stat-card` (0.70), `section-label`, `settings-section-label`, `settings-row__value`, `settings-cta`, `kalyra-reading` text-shadow; opacity hierarchy documented in CLAUDE.md
 
 ### Learn Tab
 - **Featured Today** — 200px gradient card, auto-selects article by moon phase + planet of day
