@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getProfile, saveProfile, getStreak } from "@/lib/storage";
 import type { UserProfile } from "@/lib/storage";
-import type { ZodiacSign } from "@/lib/astrology";
+import { getSunSign, getMoonSign, type ZodiacSign } from "@/lib/astrology";
 
 // ─── Sign data ────────────────────────────────────────────────────────────────
 
@@ -206,7 +206,7 @@ function EditProfileModal({ profile, onSave, onClose }: {
 }) {
   const [form, setForm] = useState({ ...profile });
 
-  const field = (key: keyof UserProfile, label: string, type = "text") => (
+  const field = (key: keyof UserProfile, label: string, type = "text", hint?: string) => (
     <div style={{ marginBottom: 14 }}>
       <label style={{ display: "block", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 4, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
         {label}
@@ -219,76 +219,70 @@ function EditProfileModal({ profile, onSave, onClose }: {
           width: "100%", padding: "10px 12px", borderRadius: 8,
           border: "1px solid var(--border)", background: "var(--input)",
           color: "var(--foreground)", fontSize: 15, outline: "none",
-          fontFamily: "Inter, sans-serif",
+          fontFamily: "Inter, sans-serif", boxSizing: "border-box",
         }}
       />
+      {hint && (
+        <p style={{ fontSize: 11, color: "var(--muted-foreground)", margin: "4px 0 0", fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>
+          {hint}
+        </p>
+      )}
     </div>
   );
 
+  const handleSave = () => {
+    const updated = { ...form };
+    // Recalculate sun & moon sign from birth_date if it changed
+    if (form.birth_date) {
+      const d = new Date(form.birth_date);
+      if (!isNaN(d.getTime())) {
+        updated.sun_sign  = getSunSign(d);
+        updated.moon_sign = getMoonSign(d);
+      }
+    }
+    onSave(updated);
+    onClose();
+  };
+
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 100,
-      background: "rgba(0,0,0,0.6)",
-      display: "flex", alignItems: "flex-end",
-    }}
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "flex-end" }}
       onClick={onClose}
     >
-      <div style={{
-        width: "100%", maxWidth: 390, margin: "0 auto",
-        background: "var(--card)", borderRadius: "20px 20px 0 0",
-        padding: "24px 20px 36px",
-      }}
+      <div
+        style={{ width: "100%", maxWidth: 390, margin: "0 auto", background: "var(--card)", borderRadius: "20px 20px 0 0", display: "flex", flexDirection: "column", maxHeight: "85vh" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+        {/* Header — fixed inside modal */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 0" }}>
           <h3 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 22, color: "var(--foreground)", margin: 0 }}>
             Edit Profile
           </h3>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", fontSize: 22, lineHeight: 1 }}>✕</button>
         </div>
 
-        {field("name", "Name")}
-        {field("birth_date", "Date of birth", "date")}
-        {field("birth_city", "City of birth")}
-        {field("birth_time", "Time of birth (optional)", "time")}
-
-        <div style={{ marginBottom: 14 }}>
-          <label style={{ display: "block", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 4, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
-            Sun Sign
-          </label>
-          <select
-            value={form.sun_sign}
-            onChange={(e) => setForm({ ...form, sun_sign: e.target.value as ZodiacSign })}
-            style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--input)", color: "var(--foreground)", fontSize: 15, fontFamily: "Inter, sans-serif" }}
-          >
-            {ZODIAC_SIGNS.map((s) => <option key={s} value={s}>{signData[s].symbol} {s}</option>)}
-          </select>
+        {/* Scrollable fields */}
+        <div style={{ overflowY: "auto", padding: "16px 20px 0", flex: 1 }}>
+          {field("name", "Name")}
+          {field("birth_date", "Date of birth", "date", "Sun & Moon sign are calculated automatically from this date.")}
+          {field("birth_city", "City of birth")}
+          {field("birth_time", "Time of birth (optional)", "time", "Used to calculate your Rising sign.")}
         </div>
 
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 4, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
-            Moon Sign
-          </label>
-          <select
-            value={form.moon_sign}
-            onChange={(e) => setForm({ ...form, moon_sign: e.target.value as ZodiacSign })}
-            style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid var(--border)", background: "var(--input)", color: "var(--foreground)", fontSize: 15, fontFamily: "Inter, sans-serif" }}
+        {/* Save — always visible at bottom */}
+        <div style={{ padding: "16px 20px", paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))" }}>
+          <button
+            onClick={handleSave}
+            style={{
+              width: "100%", padding: "14px", borderRadius: 12,
+              background: "#C9A84C", color: "#1A1208",
+              fontSize: 15, fontWeight: 600, fontFamily: "Inter, sans-serif",
+              border: "none", cursor: "pointer",
+            }}
           >
-            {ZODIAC_SIGNS.map((s) => <option key={s} value={s}>{signData[s].symbol} {s}</option>)}
-          </select>
+            Save changes
+          </button>
         </div>
-
-        <button
-          onClick={() => { onSave(form); onClose(); }}
-          style={{
-            width: "100%", padding: "14px", borderRadius: 12,
-            background: "#C9A84C", color: "#1A1208",
-            fontSize: 15, fontWeight: 600, fontFamily: "Inter, sans-serif",
-            border: "none", cursor: "pointer",
-          }}
-        >
-          Save changes
-        </button>
       </div>
     </div>
   );
