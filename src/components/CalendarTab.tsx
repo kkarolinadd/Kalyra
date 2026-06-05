@@ -162,9 +162,10 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
       {/* Sheet — uses CSS variables, adapts to all color modes */}
       <div className="fixed bottom-0 z-50 fade-in"
         style={{
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "min(390px, 100vw)",
+          left: 0,
+          right: 0,
+          marginLeft: "max(0px, calc((100vw - 390px) / 2))",
+          marginRight: "max(0px, calc((100vw - 390px) / 2))",
           background: "var(--card)",
           borderTop: "1px solid var(--border)",
           borderRadius: "20px 20px 0 0",
