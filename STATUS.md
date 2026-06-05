@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.7.0 — Profile Tab
+**Version:** 0.7.1 — Dusk polish
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -54,11 +54,11 @@
 - Two-tone moon SVGs — always readable on dark and light backgrounds
 - TODAY: gold ring + gold date number
 - Full Moon: gold date + subtle glow stroke
-- **Event dots** — 5 tiers: gold (Full/New Moon), purple (Eclipse), teal (Sun ingress), gray (Retrograde), pink (Conjunction), max 3 per day
+- **Event dots** — 5 tiers: gold (Full/New Moon), purple (Eclipse), teal (Sun ingress), gray (Retrograde), pink (Conjunction), max 3 per day; **5px in dusk** (4px elsewhere)
 - Navigation: ‹ PREV / NEXT › arrows + swipe left/right
 - **Bottom sheet** on day tap: phase + sign + traditional name (Strawberry Moon etc.) + illumination, planet ruler, crystal, Kalyra's voice quote, CTA
 - Bottom sheet uses CSS variables — adapts to all 3 color modes
-- Legend: half-moon icon + TODAY circle + eclipse dot + special dot
+- Legend: half-moon icon + TODAY circle + eclipse dot + special dot; `.calendar-legend__label` class — dark in dusk `rgba(60,20,40,0.8)`
 
 ### Profile Tab
 - **User Header** — gold initials avatar, name, birth date + city, "Edit →" button
@@ -87,7 +87,7 @@
 - `Kalyra_Icon_System.md` — icon spec v1.0
 - `Kalyra_MoonCalendar_Spec.md` — calendar spec v1.0
 - `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library merged in, 4-tab nav)
-- `Kalyra_ColorSystem_v2.md` — Color System v2.1 (4 sky modes)
+- `Kalyra_ColorSystem_v2.md` — Color System v2.3 (4 sky modes, dusk polish)
 
 ---
 

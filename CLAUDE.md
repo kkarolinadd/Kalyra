@@ -45,6 +45,10 @@ Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous 
 - `.dusk .card` — background `rgba(255, 248, 240, 0.55)`, border `rgba(255,255,255,0.4)` — warmer, more readable
 - `.dusk .card__header-label` — `#7A2530` (dark warm red for section labels)
 - `.dusk .card__body-text` — `#2A1015` (near-black for body text contrast)
+- `.dusk .calendar-legend__label` — `rgba(60,20,40,0.8)` — legend text (Eclipse/Special) readable on gradient
+
+**Nav bar active state rule:** gold icon + label + dot only — never a background rectangle.
+`nav button { background: none !important; outline: none !important; }` enforced globally.
 
 Never hardcode colors — always use CSS variables.
 
@@ -111,7 +115,7 @@ public/
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ Color System v2.2 — 4 sky modes (dawn/day/dusk/night), glassmorphism in DUSK, improved DUSK card readability
+- ✅ Color System v2.3 — 4 sky modes, glassmorphism in DUSK, improved card readability, legend contrast fix, unified nav active state
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
