@@ -46,6 +46,16 @@ Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous 
 - `.dusk .card__header-label` — `#7A2530` (dark warm red for section labels)
 - `.dusk .card__body-text` — `#2A1015` (near-black for body text contrast)
 - `.dusk .calendar-legend__label` — `rgba(60,20,40,0.8)` — legend text (Eclipse/Special) readable on gradient
+- `.dusk .card--collapsed` — background `rgba(255,248,240,0.40)` — collapsed cards (Evening Ritual) visible
+- `.dusk .card--collapsed .card__header-label` — `#6A2530`
+- `.dusk .card__sublabel` — `#6A2530` — sublabels like "How to use today"
+
+**CSS class conventions:**
+- `card--collapsed` — add to SectionCard when `collapsed=true`
+- `card__header-label` — section title labels inside cards
+- `card__body-text` — body text inside cards
+- `card__sublabel` — secondary uppercase labels (e.g. "How to use today")
+- `calendar-legend__label` — legend text in CalendarTab
 
 **Nav bar active state rule:** gold icon + label + dot only — never a background rectangle.
 `nav button { background: none !important; outline: none !important; }` enforced globally.
@@ -115,12 +125,12 @@ public/
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ Color System v2.3 — 4 sky modes, glassmorphism in DUSK, improved card readability, legend contrast fix, unified nav active state
+- ✅ Color System v2.4 — 4 sky modes, glassmorphism in DUSK, card/collapsed/sublabel contrast, legend fix, unified nav active state
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
-- ✅ AI Ritual Generator + Ask Kalyra (mocked)
+- ✅ AI Ritual Generator — tap-on-card pattern (no button); Ask Kalyra (mocked)
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
 
 ## What's NOT built yet

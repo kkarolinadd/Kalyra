@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.7.1 — Dusk polish
+**Version:** 0.7.2 — Today tab polish
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -46,8 +46,9 @@
 - Ritual tags in card headers (e.g. "Meditation" tag on Evening card when triggered)
 - Daily Check-in summary — alignment celebration
 - Special event sections: Full Moon, New Moon, Blue Moon, Mercury Rx, Sun ingress, Eclipse, Conjunctions
-- AI Ritual Generator — UI complete, mocked (1×/day limit)
+- AI Ritual Generator — tap-on-card pattern (no button), mocked (1×/day limit); subtitle "Tap to generate · 1× per day"
 - 12 Master Rituals with steps, phase-based assignment (max 3/day)
+- **Dusk polish:** `card--collapsed` class on collapsed cards → `rgba(255,248,240,0.40)` bg; `card__sublabel` class on "How to use today" → `#6A2530`
 
 ### Moon Calendar Tab — full spec implementation
 - Monthly grid, 7 columns, 80px cell height, 40px moon phase icons
@@ -87,7 +88,7 @@
 - `Kalyra_Icon_System.md` — icon spec v1.0
 - `Kalyra_MoonCalendar_Spec.md` — calendar spec v1.0
 - `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library merged in, 4-tab nav)
-- `Kalyra_ColorSystem_v2.md` — Color System v2.3 (4 sky modes, dusk polish)
+- `Kalyra_ColorSystem_v2.md` — Color System v2.4 (4 sky modes, dusk: cards/collapsed/sublabel/legend/nav)
 
 ---
 
