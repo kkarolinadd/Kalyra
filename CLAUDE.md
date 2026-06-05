@@ -38,7 +38,14 @@ npx tsc --noEmit   # TypeScript check
 
 Key vars: `var(--bg-gradient)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`, `var(--nav-bg)`, `var(--pill-bg)`.
 Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous in DUSK.
-**DUSK rule:** text on cards = dark `#3A1810`; text directly on gradient = white `#FFF5EE`.
+
+**DUSK rules:**
+- Text directly on gradient = white `#FFF5EE`
+- Text on cards = dark `#3A1810` (via `.dusk .kalyra-card` CSS var override)
+- `.dusk .card` — background `rgba(255, 248, 240, 0.55)`, border `rgba(255,255,255,0.4)` — warmer, more readable
+- `.dusk .card__header-label` — `#7A2530` (dark warm red for section labels)
+- `.dusk .card__body-text` — `#2A1015` (near-black for body text contrast)
+
 Never hardcode colors — always use CSS variables.
 
 ## Nav bar — 4 tabs (Crystals merged into Learn)
@@ -72,6 +79,7 @@ src/
     TodayTab.tsx          # Daily ritual screen — all sections
     CalendarTab.tsx       # Moon Calendar — grid, bottom sheet, event dots
     LearnTab.tsx          # Learn tab — Featured, Crystal Library, Topics, Articles, Ask Kalyra
+    ProfileTab.tsx        # Profile tab — signs, elemental bar, ritual affinity, stats, settings
     icons.tsx             # Full SVG icon library
     ui/                   # shadcn components
   lib/
@@ -103,7 +111,7 @@ public/
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ Color System v2.1 — 4 sky modes (dawn/day/dusk/night), glassmorphism in DUSK
+- ✅ Color System v2.2 — 4 sky modes (dawn/day/dusk/night), glassmorphism in DUSK, improved DUSK card readability
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
@@ -113,7 +121,7 @@ public/
 
 ## What's NOT built yet
 
-- ❌ Profile tab
+- ✅ Profile tab v1.0 — signs, elemental bar, ritual affinity, stats, settings, edit modal
 - ❌ Live Claude API (two mocks: AI Ritual Generator + Ask Kalyra)
 - ❌ Learn — remaining 25 articles (13/38 done)
 - ❌ Rising sign calculation
