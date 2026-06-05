@@ -89,8 +89,8 @@
 - **13 articles** with full content in Kalyra's voice (spec target: 38)
 
 ### Design Docs in project folder (`Kalyra - glamour magic/`)
-- `Glamour_Magic_PRD.md` — full PRD v1.0
-- `PRD.md` — Kalyra tech PRD v1.1
+- `PRD.md` — Kalyra tech PRD v1.1 ← aktywna specyfikacja
+- ~~`Glamour_Magic_PRD.md`~~ — przeniesiony do `archiwum/` (oryginalna wizja "Glamour Magic" przed rebrandingiem na Kalyra)
 - `Kalyra_Icon_System.md` — icon spec v1.0 (SVG system, no emoji)
 - `Kalyra_MoonCalendar_Spec.md` — Moon Calendar spec v1.0
 - `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library, 4-tab nav)
