@@ -377,6 +377,53 @@
   color: #8A4550;
 }
 
+/* ─── DUSK: Profile tab — opacity hierarchy (most text = highest opacity) ───── */
+/*
+ * Today tab (visual-heavy):    0.55
+ * Learn tab (text-heavy):      0.65
+ * Profile tab (most text):     0.75
+ */
+
+.dusk .profile-card {
+  background: rgba(255, 248, 240, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.dusk .profile-card .text-primary   { color: #2A1015; }
+.dusk .profile-card .text-secondary { color: #6A3040; }
+.dusk .profile-card .text-muted     { color: #8A5060; }
+
+/* Sign cards */
+.dusk .sign-card {
+  background: rgba(255, 248, 240, 0.70);
+}
+.dusk .sign-card .sign-name   { color: #2A1015; }
+.dusk .sign-card .sign-label  { color: #8A5060; }
+.dusk .sign-card .sign-traits { color: #6A3040; }
+
+/* Elemental Makeup */
+.dusk .elemental-label { color: #6A3040; }
+.dusk .elemental-value { color: #6A3040; }
+
+/* Stats */
+.dusk .stat-card {
+  background: rgba(255, 248, 240, 0.70);
+}
+.dusk .stat-card__label { color: #8A5060; }
+
+/* Settings */
+.dusk .settings-section-label { color: rgba(42, 16, 21, 0.60); }
+.dusk .settings-row__value    { color: #8A5060; }
+.dusk .settings-cta           { color: #C9A84C; }
+
+/* Section labels outside cards */
+.dusk .section-label { color: rgba(42, 16, 21, 0.65); }
+
+/* Kalyra's Reading — text shadow for mauve background */
+.dusk .kalyra-reading {
+  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.4);
+}
+
 /* ─── DUSK: collapsed cards + HOW TO USE sublabel ───────────────────────────── */
 
 .dusk .card--collapsed {

@@ -174,11 +174,22 @@ function formatBirthDate(dateStr: string): string {
 
 // ─── Moon cycles since birth ──────────────────────────────────────────────────
 
-function moonCyclesSinceBirth(birthDate: string): number {
-  const birth = new Date(birthDate);
-  const now   = new Date();
-  const days  = (now.getTime() - birth.getTime()) / (1000 * 60 * 60 * 24);
-  return Math.floor(days / 29.53);
+// Moon cycles since first app use (earliest daily_checkin key), NOT since birth
+function moonCyclesSinceFirstUse(): number {
+  if (typeof window === "undefined") return 0;
+  try {
+    const raw = localStorage.getItem("kalyra");
+    if (!raw) return 0;
+    const data = JSON.parse(raw);
+    const keys = Object.keys(data?.daily_checkin ?? {}).sort();
+    if (!keys.length) return 0;
+    const first = new Date(keys[0]);
+    const now   = new Date();
+    const days  = (now.getTime() - first.getTime()) / (1000 * 60 * 60 * 24);
+    return Math.max(1, Math.floor(days / 29.53));
+  } catch {
+    return 0;
+  }
 }
 
 // ─── Edit Profile Modal ────────────────────────────────────────────────────────
@@ -295,24 +306,24 @@ const elementBg: Record<string, string> = {
 function SignCard({ type, sign }: { type: "SUN" | "MOON" | "RISING"; sign: ZodiacSign }) {
   const data = signData[sign];
   return (
-    <div style={{
+    <div className="sign-card" style={{
       flex: 1,
       background: elementBg[data.elementClass] ?? "var(--card)",
       borderRadius: 14,
       padding: "14px 12px",
       border: "0.5px solid var(--divider)",
     }}>
-      <div className="card__header-label" style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
+      <div className="sign-label card__header-label" style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
         {type}
       </div>
       {/* font-variant-emoji:text forces typographic rendering, no OS emoji substitution */}
       <div style={{ fontSize: 26, marginBottom: 4, lineHeight: 1, fontFamily: "serif", fontVariantEmoji: "text" } as React.CSSProperties}>
         {data.symbol}
       </div>
-      <div className="card__body-text" style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "var(--foreground)", marginBottom: 4 }}>
+      <div className="sign-name card__body-text" style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "var(--foreground)", marginBottom: 4 }}>
         {sign}
       </div>
-      <div className="card__muted" style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+      <div className="sign-traits card__muted" style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
         {data.element} · {data.modality}
       </div>
     </div>
@@ -380,13 +391,13 @@ export function ProfileTab() {
   const reading  = getKalryaReading(sun_sign, moon_sign);
   const elemental = getElementalMakeup(sun_sign, moon_sign);
   const rituals   = getRitualScores(sun_sign, moon_sign);
-  const moonCycles = birth_date ? moonCyclesSinceBirth(birth_date) : 0;
+  const moonCycles = moonCyclesSinceFirstUse();
 
   // Rituals this cycle: sum checkins across this 29-day window (mocked from streak)
   const ritualsThisCycle = Math.min(streak.current * 2 + 3, 60);
 
   const sectionLabel = (text: string) => (
-    <div style={{
+    <div className="section-label" style={{
       fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase",
       color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif",
       fontWeight: 600, marginBottom: 12,
@@ -436,7 +447,7 @@ export function ProfileTab() {
         </div>
 
         {/* ── Section 4: Kalyra's Reading ────────────────────────────────────── */}
-        <div style={{
+        <div className="kalyra-reading" style={{
           borderLeft: "3px solid #C9A84C",
           padding: "14px 16px",
           fontFamily: "Cormorant Garamond, serif",
@@ -460,7 +471,7 @@ export function ProfileTab() {
         </div>
 
         {/* ── Section 6: Elemental Makeup ────────────────────────────────────── */}
-        <div style={{
+        <div className="profile-card" style={{
           background: "var(--card)", borderRadius: 16,
           padding: "16px", border: "0.5px solid var(--divider)",
           marginBottom: 16,
@@ -471,7 +482,7 @@ export function ProfileTab() {
               <div style={{ height: 6, borderRadius: 3, overflow: "hidden", background: "var(--muted)", marginBottom: 8 }}>
                 <div style={{ height: "100%", width: "100%", background: elementBarGradient[elemental.element], borderRadius: 3 }} />
               </div>
-              <div className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+              <div className="elemental-value card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                 {elemental.element} · 100%
               </div>
             </>
@@ -495,10 +506,10 @@ export function ProfileTab() {
                 }} />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+                <span className="elemental-value card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                   {elemental.secondary!.element} ({sun_sign}) {elemental.secondary!.percent}%
                 </span>
-                <span className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+                <span className="elemental-value card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                   {elemental.primary!.element} ({moon_sign}) {elemental.primary!.percent}%
                 </span>
               </div>
@@ -538,7 +549,7 @@ export function ProfileTab() {
         )}
 
         {/* ── Section 8: Top Rituals For You ─────────────────────────────────── */}
-        <div style={{
+        <div className="profile-card" style={{
           background: "var(--card)", borderRadius: 16,
           padding: "16px", border: "0.5px solid var(--divider)",
           marginBottom: 16,
@@ -546,7 +557,7 @@ export function ProfileTab() {
           {sectionLabel("Top Rituals For You")}
           {rituals.map(({ ritual, percent, label }) => (
             <div key={ritual} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "0.5px solid var(--divider)" }}>
-              <div style={{ fontSize: 14, color: "var(--foreground)", fontFamily: "Inter, sans-serif", minWidth: 120, flexShrink: 0 }}>
+              <div className="card__body-text" style={{ fontSize: 14, color: "var(--foreground)", fontFamily: "Inter, sans-serif", minWidth: 120, flexShrink: 0 }}>
                 {ritualDisplayNames[ritual]}
               </div>
               <div style={{ flex: 1, height: 4, background: "var(--muted)", borderRadius: 2, overflow: "hidden" }}>
@@ -575,7 +586,7 @@ export function ProfileTab() {
               { number: ritualsThisCycle, label: "rituals\nthis cycle" },
               { number: moonCycles, label: "moon\ncycles" },
             ].map(({ number, label }) => (
-              <div key={label} style={{
+              <div key={label} className="stat-card" style={{
                 background: "var(--card)", borderRadius: 14,
                 padding: "14px 10px", textAlign: "center",
                 border: "0.5px solid var(--divider)",
@@ -583,7 +594,7 @@ export function ProfileTab() {
                 <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 28, color: "#C9A84C", lineHeight: 1, marginBottom: 6 }}>
                   {number}
                 </div>
-                <div style={{ fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.06em", textTransform: "uppercase", lineHeight: 1.3, fontFamily: "Inter, sans-serif", whiteSpace: "pre-line" }}>
+                <div className="stat-card__label" style={{ fontSize: 10, color: "var(--muted-foreground)", letterSpacing: "0.06em", textTransform: "uppercase", lineHeight: 1.3, fontFamily: "Inter, sans-serif", whiteSpace: "pre-line" }}>
                   {label}
                 </div>
               </div>
@@ -595,8 +606,8 @@ export function ProfileTab() {
         <div style={{ marginBottom: 24 }}>
           {sectionLabel("Settings")}
 
-          <div style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
-            <div style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
+          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
+            <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               Notifications
             </div>
             <SettingsToggle label="Morning ritual reminder" sub="8:00 AM" defaultOn />
@@ -605,27 +616,27 @@ export function ProfileTab() {
             <SettingsToggle label="New Moon alert" defaultOn />
           </div>
 
-          <div style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
-            <div style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
+          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
+            <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               My Data
             </div>
             <button onClick={() => setEditOpen(true)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", background: "none", borderTop: "none", borderLeft: "none", borderRight: "none", borderBottom: "0.5px solid var(--divider)", cursor: "pointer" }}>
-              <span style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif" }}>Birth details</span>
-              <span style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>Edit →</span>
+              <span className="card__body-text" style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif" }}>Birth details</span>
+              <span className="settings-row__value" style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>Edit →</span>
             </button>
             {!birth_time && (
               <button onClick={() => setEditOpen(true)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", background: "none", border: "none", cursor: "pointer" }}>
-                <span style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif" }}>Birth time</span>
-                <span style={{ fontSize: 13, color: "#C9A84C", fontFamily: "Inter, sans-serif" }}>Add →</span>
+                <span className="card__body-text" style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif" }}>Birth time</span>
+                <span className="settings-cta" style={{ fontSize: 13, color: "#C9A84C", fontFamily: "Inter, sans-serif" }}>Add →</span>
               </button>
             )}
           </div>
 
-          <div style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)" }}>
-            <div style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
+          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)" }}>
+            <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               Account
             </div>
-            <button style={{ width: "100%", textAlign: "left", padding: "13px 0", background: "none", border: "none", cursor: "pointer", fontSize: 15, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+            <button style={{ width: "100%", textAlign: "left", padding: "13px 0", background: "none", border: "none", cursor: "pointer", fontSize: 15, fontFamily: "Inter, sans-serif" }} className="settings-row__value">
               Sign out
             </button>
           </div>
