@@ -49,13 +49,28 @@ Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous 
 - `.dusk .card--collapsed` — background `rgba(255,248,240,0.40)` — collapsed cards (Evening Ritual) visible
 - `.dusk .card--collapsed .card__header-label` — `#6A2530`
 - `.dusk .card__sublabel` — `#6A2530` — sublabels like "How to use today"
+- `.dusk .card__header-label` — `#6A2530` — section/card header labels
+- `.dusk .card__body-text` — `#3A1018` — primary text on cards
+- `.dusk .card__muted` — `#8A4550` — secondary/muted text on cards (e.g. element percentages)
 
 **CSS class conventions:**
 - `card--collapsed` — add to SectionCard when `collapsed=true`
-- `card__header-label` — section title labels inside cards
-- `card__body-text` — body text inside cards
+- `card__header-label` — section title labels inside cards (e.g. SUN / MOON / RISING)
+- `card__body-text` — primary body text inside cards
+- `card__muted` — secondary/muted text inside cards
 - `card__sublabel` — secondary uppercase labels (e.g. "How to use today")
 - `calendar-legend__label` — legend text in CalendarTab
+
+**Zodiac symbols — typographic rendering rule:**
+All zodiac symbols (♈–♓) must render as text glyphs, NOT as platform emoji.
+Two layers of protection required:
+1. Append `︎` (variation selector-15) to the symbol string in `signData`
+2. Set `font-variant-emoji: text` + `font-family: serif` on the container element
+Example: `{ symbol: "♊︎" }` + `style={{ fontVariantEmoji: "text", fontFamily: "serif" }}`
+
+**No emoji in UI — rule:**
+Replace any emoji with inline SVG or typographic character.
+Lock icon: `<rect x="5" y="11" w="14" h="10" rx="2"/>` + `<path d="M8 11V7a4 4 0 0 1 8 0v4"/>`, stroke `#C9A84C`, strokeWidth 1.5.
 
 **Nav bar active state rule:** gold icon + label + dot only — never a background rectangle.
 `nav button { background: none !important; outline: none !important; }` enforced globally.
@@ -125,12 +140,13 @@ public/
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ Color System v2.4 — 4 sky modes, glassmorphism in DUSK, card/collapsed/sublabel contrast, legend fix, unified nav active state
-- ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals
+- ✅ Color System v2.4 — 4 sky modes, glassmorphism in DUSK, full card contrast system (header/body/muted/collapsed/sublabel), legend fix, unified nav
+- ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals; NO emoji anywhere in UI
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
 - ✅ AI Ritual Generator — tap-on-card pattern (no button); Ask Kalyra (mocked)
+- ✅ Profile tab dusk polish — typographic zodiac symbols (VS-15 + font-variant-emoji:text), SVG lock icon, card__body-text / card__muted classes
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
 
 ## What's NOT built yet

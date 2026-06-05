@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
 **Last updated:** June 4, 2026
-**Version:** 0.7.2 — Today tab polish
+**Version:** 0.7.3 — Profile dusk polish
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -64,9 +64,9 @@
 ### Profile Tab
 - **User Header** — gold initials avatar, name, birth date + city, "Edit →" button
 - **Kalyra's Reading** — italic serif, gold left border, text per Sun×Moon combination (26 hardcoded + element fallback)
-- **Sign Cards** — SUN / MOON / RISING with element color background, symbol, modality
-- **Elemental Makeup** — dual gradient progress bar (Sun=40%, Moon=60%), same-element handled
-- **Rising Sign locked/unlocked** — dashed card with "Add birth time →" CTA when no birth time
+- **Sign Cards** — SUN / MOON / RISING with element color background, typographic zodiac symbol (VS-15 + font-variant-emoji:text, never emoji), modality
+- **Elemental Makeup** — dual gradient progress bar (Sun=40%, Moon=60%); `card__muted` class on percentage labels
+- **Rising Sign locked/unlocked** — dashed card, SVG lock icon (rect+arc, stroke `#C9A84C`), `card__body-text` + `card__muted` classes
 - **Top Rituals For You** — top 4 from ritual affinity matrix, gold bar + "natural gift / strong / medium" labels
 - **Practice Stats** — 3 cards: day streak, rituals this cycle, moon cycles since birth
 - **Settings** — notification toggles (Morning/Evening reminder, Full/New Moon), My Data, Sign out
