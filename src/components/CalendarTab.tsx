@@ -160,15 +160,14 @@ function BottomSheet({ day, onClose }: { day: DayData; onClose: () => void }) {
         style={{ background: "rgba(0,0,0,0.4)" }} />
 
       {/* Sheet — uses CSS variables, adapts to all color modes */}
-      <div className="fixed inset-x-0 z-50 fade-in"
+      <div className="fixed inset-x-0 bottom-0 z-50 fade-in"
         style={{
-          bottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
           background: "var(--card)",
           borderTop: "1px solid var(--border)",
           borderRadius: "20px 20px 0 0",
-          paddingBottom: 24,
           maxHeight: "65vh",
           overflowY: "auto",
+          paddingBottom: "calc(64px + env(safe-area-inset-bottom, 8px))",
         }}>
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1">
