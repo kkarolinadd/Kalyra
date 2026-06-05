@@ -444,6 +444,136 @@
   color: rgba(60, 20, 40, 0.8) !important;
 }
 
+/* ─── DUSK: §1 Global — card backdrop + page labels ─────────────────────────── */
+
+.dusk .card {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(100, 40, 60, 0.12);
+}
+
+.dusk .page-title    { color: #2A1015; text-shadow: none; }
+.dusk .page-subtitle { color: rgba(42, 16, 21, 0.55); font-size: 14px; }
+
+/* ─── DUSK: §2 Today tab ─────────────────────────────────────────────────────── */
+
+.dusk .ritual-card  { background: rgba(255, 248, 240, 0.55); }
+.dusk .card__subtext { color: #8A4550; }
+.dusk .how-to-use-label {
+  color: #7A2530;
+  background: rgba(255, 248, 240, 0.60);
+}
+.dusk .step-number {
+  background: rgba(255, 248, 240, 0.60);
+  color: #7A2530;
+}
+.dusk .energy-card__divider  { background: rgba(255, 255, 255, 0.30); }
+.dusk .energy-card__title    { color: #2A1015; }
+.dusk .energy-card__subtitle { color: #8A4550; }
+.dusk .progress-counter {
+  background: rgba(255, 248, 240, 0.45);
+  color: #2A1015;
+}
+.dusk .card--upsell {
+  border-color: rgba(201, 168, 76, 0.45);
+  background: rgba(255, 248, 240, 0.30);
+}
+.dusk .card--upsell p           { color: rgba(42, 16, 21, 0.85); }
+.dusk .card--upsell .upsell-cta { color: #C9A84C; }
+
+/* ─── DUSK: §3 Moon Calendar ────────────────────────────────────────────────── */
+
+.dusk .day-number { color: rgba(42, 16, 21, 0.75); }
+.dusk .month-nav  { color: rgba(42, 16, 21, 0.55); }
+.dusk .month-title { color: #2A1015; }
+.dusk .bottom-sheet {
+  background: rgba(255, 248, 240, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.dusk .bottom-sheet__title   { color: #2A1015; }
+.dusk .bottom-sheet__content { color: #6A3040; }
+.dusk .bottom-sheet__kalyra  { color: #2A1015; font-style: italic; }
+
+/* ─── DUSK: §4 Learn tab ─────────────────────────────────────────────────────── */
+
+.dusk .featured-card__tag   { color: rgba(255, 255, 255, 0.65); }
+.dusk .featured-card__title { color: #FFFFFF; }
+.dusk .featured-card__quote { color: rgba(255, 255, 255, 0.80); }
+.dusk .featured-card__meta  { color: rgba(255, 255, 255, 0.55); }
+
+.dusk .crystal-card {
+  background: rgba(255, 248, 240, 0.70);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+.dusk .crystal-card__name     { color: #2A1015; }
+.dusk .crystal-card__keywords { color: #8A5060; }
+.dusk .crystal-card__planet   { color: #C9A84C; }
+
+.dusk .article-row { background: rgba(255, 248, 240, 0.65); }
+.dusk .article-row__title { color: #2A1015; }
+.dusk .article-row__meta  { color: #8A5060; }
+
+.dusk .ask-kalyra {
+  background: rgba(255, 248, 240, 0.35);
+  border: 1.5px dashed rgba(201, 168, 76, 0.50);
+}
+.dusk .ask-kalyra__label   { color: #2A1015; }
+.dusk .ask-kalyra__example { color: rgba(42, 16, 21, 0.60); font-style: italic; }
+.dusk .ask-kalyra__arrow   { color: #C9A84C; }
+
+.dusk .crystal-detail__name          { color: #2A1015; }
+.dusk .crystal-detail__keywords      { color: #8A5060; }
+.dusk .crystal-detail__body          { color: #3A1820; }
+.dusk .crystal-detail__section-label { color: #7A2530; }
+
+.dusk .article-view__title       { color: #2A1015; }
+.dusk .article-view__body        { color: #3A1820; }
+.dusk .article-view__kalyra-text { color: #2A1015; }
+.dusk .article-view__takeaway {
+  background: rgba(255, 248, 240, 0.70);
+  color: #3A1820;
+}
+
+/* ─── DUSK: §5 Profile tab (complement existing rules) ──────────────────────── */
+
+.dusk .profile-header-card {
+  background: rgba(255, 248, 240, 0.65);
+}
+.dusk .profile-header__name     { color: #2A1015; }
+.dusk .profile-header__meta     { color: #8A5060; }
+.dusk .profile-header__edit-cta { color: #C9A84C; }
+
+.dusk .kalyra-reading {
+  border-left-color: #C9A84C;
+  text-shadow: 0 1px 8px rgba(100, 40, 60, 0.25);
+}
+
+.dusk .sign-card__label  { color: #8A5060; }
+.dusk .sign-card__symbol { color: #2A1015; }
+.dusk .sign-card__name   { color: #2A1015; }
+.dusk .sign-card__traits { color: #8A5060; }
+
+.dusk .elemental-card { background: rgba(255, 248, 240, 0.65); }
+
+.dusk .rising-locked {
+  background: rgba(255, 248, 240, 0.40);
+  border: 1.5px dashed rgba(201, 168, 76, 0.45);
+}
+.dusk .rising-locked__title { color: #2A1015; }
+.dusk .rising-locked__body  { color: #8A5060; }
+.dusk .rising-locked__cta   { color: #C9A84C; }
+
+.dusk .rituals-card { background: rgba(255, 248, 240, 0.70); }
+.dusk .ritual-row__name  { color: #2A1015; }
+.dusk .ritual-row__label { color: #8A5060; }
+
+.dusk .settings-card { background: rgba(255, 248, 240, 0.65); }
+.dusk .settings-row__label { color: #2A1015; }
+
+.dusk .toggle--on  { background: #C9A84C; }
+.dusk .toggle--off { background: rgba(42, 16, 21, 0.20); }
+
 /* ─── Nav bar — unified active state (gold icon+label+dot, never background) ── */
 
 nav button {

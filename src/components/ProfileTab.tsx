@@ -411,7 +411,7 @@ export function ProfileTab() {
       <div style={{ padding: "20px 20px 8px" }}>
 
         {/* ── Section 3: User Header ─────────────────────────────────────────── */}
-        <div style={{
+        <div className="profile-header-card" style={{
           display: "flex", alignItems: "center", gap: 14,
           padding: "16px", background: "var(--card)",
           borderRadius: 16, border: "0.5px solid var(--divider)",
@@ -427,15 +427,16 @@ export function ProfileTab() {
             {initials}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 17, fontWeight: 600, color: "var(--foreground)", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div className="profile-header__name" style={{ fontSize: 17, fontWeight: 600, color: "var(--foreground)", fontFamily: "Inter, sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {name}
             </div>
-            <div style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
+            <div className="profile-header__meta" style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", marginTop: 2 }}>
               {birth_date && formatBirthDate(birth_date)}{birth_city ? ` · ${birth_city}` : ""}
             </div>
           </div>
           <button
             onClick={() => setEditOpen(true)}
+            className="profile-header__edit-cta"
             style={{
               background: "none", border: "none", cursor: "pointer",
               color: "#C9A84C", fontSize: 13, fontFamily: "Inter, sans-serif",
@@ -519,26 +520,26 @@ export function ProfileTab() {
 
         {/* ── Section 7: Rising Sign ──────────────────────────────────────────── */}
         {!rising_sign && !birth_time && (
-          <div style={{
+          <div className="rising-locked" style={{
             border: "1px dashed rgba(201,168,76,0.4)",
             borderRadius: 14, padding: "16px",
             marginBottom: 16,
           }}>
             <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-              {/* Linear lock icon — circle + shackle arc + body rect, stroke only */}
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
                 <rect x="5" y="11" width="14" height="10" rx="2" />
                 <path d="M8 11V7a4 4 0 0 1 8 0v4" />
               </svg>
               <div>
-                <div className="card__body-text" style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif", marginBottom: 6 }}>
+                <div className="rising-locked__title" style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif", marginBottom: 6 }}>
                   Your Rising sign is hidden
                 </div>
-                <div className="card__muted" style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}>
+                <div className="rising-locked__body" style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}>
                   Add your birth time and Kalyra will calculate your Ascendant — the mask you show the world.
                 </div>
                 <button
                   onClick={() => setEditOpen(true)}
+                  className="rising-locked__cta"
                   style={{ background: "none", border: "none", cursor: "pointer", color: "#C9A84C", fontSize: 13, fontFamily: "Inter, sans-serif", fontWeight: 500, padding: 0, marginTop: 10 }}
                 >
                   Add birth time →
@@ -549,7 +550,7 @@ export function ProfileTab() {
         )}
 
         {/* ── Section 8: Top Rituals For You ─────────────────────────────────── */}
-        <div className="profile-card" style={{
+        <div className="profile-card rituals-card" style={{
           background: "var(--card)", borderRadius: 16,
           padding: "16px", border: "0.5px solid var(--divider)",
           marginBottom: 16,
@@ -557,7 +558,7 @@ export function ProfileTab() {
           {sectionLabel("Top Rituals For You")}
           {rituals.map(({ ritual, percent, label }) => (
             <div key={ritual} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "0.5px solid var(--divider)" }}>
-              <div className="card__body-text" style={{ fontSize: 14, color: "var(--foreground)", fontFamily: "Inter, sans-serif", minWidth: 120, flexShrink: 0 }}>
+              <div className="ritual-row__name card__body-text" style={{ fontSize: 14, color: "var(--foreground)", fontFamily: "Inter, sans-serif", minWidth: 120, flexShrink: 0 }}>
                 {ritualDisplayNames[ritual]}
               </div>
               <div style={{ flex: 1, height: 4, background: "var(--muted)", borderRadius: 2, overflow: "hidden" }}>
@@ -606,7 +607,7 @@ export function ProfileTab() {
         <div style={{ marginBottom: 24 }}>
           {sectionLabel("Settings")}
 
-          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
+          <div className="profile-card settings-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
             <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               Notifications
             </div>
@@ -616,7 +617,7 @@ export function ProfileTab() {
             <SettingsToggle label="New Moon alert" defaultOn />
           </div>
 
-          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
+          <div className="profile-card settings-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)", marginBottom: 12 }}>
             <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               My Data
             </div>
@@ -632,7 +633,7 @@ export function ProfileTab() {
             )}
           </div>
 
-          <div className="profile-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)" }}>
+          <div className="profile-card settings-card" style={{ background: "var(--card)", borderRadius: 16, padding: "0 16px", border: "0.5px solid var(--divider)" }}>
             <div className="settings-section-label" style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", fontWeight: 600, padding: "14px 0 4px" }}>
               Account
             </div>
