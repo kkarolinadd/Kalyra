@@ -260,6 +260,17 @@ public/
 - ✅ DUSK mode CSS — complete implementation of `Kalyra_DuskMode_Overrides.md`: Today/Calendar/Learn/Profile all tabs, classNames wired in components
 - ✅ Moon Cycles stat — counts from first app use (earliest daily_checkin), not birth date
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
+- ✅ CalendarTab bottom sheet — fixed and correctly positioned:
+  - Sits flush at bottom: 0 (native iOS feel), padding-bottom clears nav bar
+  - Constrained to phone frame width on desktop: `margin-left/right: max(0px, (100vw - 390px) / 2)`
+  - NOTE: never use `left: 50% + translateX(-50%)` on elements with fade-in class —
+    the `fadeIn` animation (`transform: translateY`) overrides translateX and breaks centering
+- ✅ Edit Profile modal — simplified and fixed:
+  - Removed Sun Sign / Moon Sign dropdowns (auto-calculated from birth_date on save via getSunSign/getMoonSign)
+  - Scrollable fields + Save button pinned outside scroll area, always visible
+  - Save button padding-bottom: 80px + safe-area-inset to clear nav bar
+  - Hint text under Date of Birth: "Sun & Moon sign are calculated automatically from this date."
+  - Hint text under Time of Birth: "Used to calculate your Rising sign."
 - ✅ UI Fixes Brief v1.0 (June 2026) — editorial luxury pass:
   - P0: Emoji → SVG gold glyphs in Sun/Moon pills (outline, stroke #C9A84C)
   - P0: Sacred geometry divider (gold diamond + 0.5px lines, opacity 0.45) between energy bar and ritual cards
