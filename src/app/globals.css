@@ -358,6 +358,21 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* ─── DUSK: improved card readability ───────────────────────────────────────── */
+
+.dusk .card {
+  background: rgba(255, 248, 240, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dusk .card__header-label {
+  color: #7A2530;
+}
+
+.dusk .card__body-text {
+  color: #2A1015;
+}
+
 /* ─── DUSK: header text directly on gradient (white + shadow) ───────────── */
 
 .dusk .header-date {
