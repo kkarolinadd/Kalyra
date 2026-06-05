@@ -1,7 +1,7 @@
 # Kalyra — Project Status
 
-**Last updated:** June 4, 2026
-**Version:** 0.7.4 — Profile dusk full pass
+**Last updated:** June 5, 2026
+**Version:** 0.7.5 — DUSK mode complete
 **Live URL:** https://kalyra-virid.vercel.app
 **Repository:** https://github.com/kkarolinadd/Kalyra
 
@@ -71,7 +71,12 @@
 - **Practice Stats** — 3 cards: day streak, rituals this cycle, moon cycles since **first app use** (not birth); `stat-card` / `stat-card__label` classes
 - **Settings** — notification toggles (Morning/Evening reminder, Full/New Moon), My Data, Sign out
 - **Edit Profile modal** — bottom sheet: name, date, city, birth time, Sun sign, Moon sign dropdowns
-- **Dusk full contrast pass** — `profile-card` (0.75), `sign-card`/`stat-card` (0.70), `section-label`, `settings-section-label`, `settings-row__value`, `settings-cta`, `kalyra-reading` text-shadow; opacity hierarchy documented in CLAUDE.md
+- **Dusk full contrast pass** — complete per `Kalyra_DuskMode_Overrides.md`:
+  - Today: `ritual-card`, `card__subtext`, `step-number`, `energy-card__*`, `progress-counter`
+  - Calendar: `day-number`, `month-nav/title`, `bottom-sheet*`
+  - Learn: `crystal-card*`, `article-row*`, `ask-kalyra*`, `crystal-detail*`, `article-view*`
+  - Profile: `profile-header-card*`, `rising-locked*`, `rituals-card`, `ritual-row__*`, `settings-card`, `toggle--on/off`
+  - Opacity hierarchy: Today 0.55 / Learn 0.65 / Profile 0.75 / Crystal+Sign+Stat 0.70 / Collapsed 0.40
 
 ### Learn Tab
 - **Featured Today** — 200px gradient card, auto-selects article by moon phase + planet of day
@@ -89,7 +94,8 @@
 - `Kalyra_Icon_System.md` — icon spec v1.0
 - `Kalyra_MoonCalendar_Spec.md` — calendar spec v1.0
 - `Kalyra_LearnTab_Spec.md` — Learn tab spec v1.1 (Crystal Library merged in, 4-tab nav)
-- `Kalyra_ColorSystem_v2.md` — Color System v2.4 (4 sky modes, dusk: cards/collapsed/sublabel/legend/nav)
+- `Kalyra_ColorSystem_v2.md` — Color System v2.5 (4 sky modes)
+- `Kalyra_DuskMode_Overrides.md` — kompletna specyfikacja dusk CSS (50+ klas, 5 tabów, zasady opacity)
 
 ---
 

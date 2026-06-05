@@ -45,52 +45,131 @@ Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous 
 
 **DUSK — card opacity hierarchy** (im więcej tekstu, tym wyższa opacity):
 ```
-Today tab  (visual-heavy):   0.55   →  .dusk .card
-Learn tab  (text-heavy):     0.65   →  (todo)
-Profile tab (most text):     0.75   →  .dusk .profile-card
-Sign/Stat cards in Profile:  0.70   →  .dusk .sign-card, .dusk .stat-card
-Collapsed cards (Today):     0.40   →  .dusk .card--collapsed
+Today tab     (visual-heavy):   0.55  →  .dusk .card / .ritual-card
+Crystal cards (małe, treściwe): 0.70  →  .dusk .crystal-card
+Learn tab     (text-heavy):     0.65  →  .dusk .article-row / .ask-kalyra
+Profile tab   (most text):      0.75  →  .dusk .profile-card
+Sign/Stat cards (Profile):      0.70  →  .dusk .sign-card / .stat-card
+Collapsed cards (Today):        0.40  →  .dusk .card--collapsed
 ```
 
-**DUSK — full color token table:**
-| Class | Property | Value | Used on |
-|---|---|---|---|
-| `.dusk .card` | background | `rgba(255,248,240,0.55)` | Today cards |
-| `.dusk .profile-card` | background | `rgba(255,248,240,0.75)` | Profile main cards |
-| `.dusk .sign-card` | background | `rgba(255,248,240,0.70)` | Sign cards |
-| `.dusk .stat-card` | background | `rgba(255,248,240,0.70)` | Stats cards |
-| `.dusk .card--collapsed` | background | `rgba(255,248,240,0.40)` | Collapsed (Evening Ritual) |
-| `.dusk .card__header-label` | color | `#6A2530` | SUN/MOON/RISING labels |
-| `.dusk .card__body-text` | color | `#3A1018` | Primary text on cards |
-| `.dusk .card__muted` | color | `#8A4550` | Muted text on cards |
-| `.dusk .card__sublabel` | color | `#6A2530` | "How to use today" etc. |
-| `.dusk .sign-name` | color | `#2A1015` | Sign name in SignCard |
-| `.dusk .sign-label` | color | `#8A5060` | SUN/MOON/RISING label |
-| `.dusk .sign-traits` | color | `#6A3040` | Element · Modality |
-| `.dusk .elemental-value` | color | `#6A3040` | Elemental % text |
-| `.dusk .stat-card__label` | color | `#8A5060` | DAY STREAK etc. |
-| `.dusk .settings-section-label` | color | `rgba(42,16,21,0.60)` | MY DATA / ACCOUNT |
-| `.dusk .settings-row__value` | color | `#8A5060` | Edit → / Sign out |
-| `.dusk .settings-cta` | color | `#C9A84C` | Add → gold links |
-| `.dusk .section-label` | color | `rgba(42,16,21,0.65)` | ELEMENTAL MAKEUP etc. |
-| `.dusk .calendar-legend__label` | color | `rgba(60,20,40,0.8)` | Legend text |
-| `.dusk .kalyra-reading` | text-shadow | `0 1px 6px rgba(255,255,255,0.4)` | Reading on gradient |
+**DUSK — 6 zasad (ściąga dla developera):**
+```
+1. Tekst wewnątrz karty   → ciemny (#2A1015 lub #8A5060)
+2. Tekst na gradiencie    → biały (#FFFFFF lub rgba(255,255,255,0.9))
+3. Akcent / CTA           → gold (#C9A84C lub #FFD97A)
+4. Opacity kart           → 0.40–0.75 (wyżej = więcej tekstu)
+5. Nav bar                → ciemny fiolet rgba(30,12,50,0.88)
+6. Featured/topic cards   → zachowaj ciemne własne tła (biały tekst OK)
+```
 
-**CSS class conventions:**
-- `profile-card` — main card containers in ProfileTab
-- `sign-card` — individual sign card (SUN/MOON/RISING)
-- `sign-name / sign-label / sign-traits` — text inside sign card
-- `stat-card / stat-card__label` — Practice Stats cards
-- `section-label` — uppercase section headings outside cards
-- `settings-section-label / settings-row__value / settings-cta` — Settings rows
-- `elemental-value` — percentage text in Elemental Makeup
-- `card--collapsed` — add to SectionCard when `collapsed=true`
-- `card__header-label` — section title labels inside cards
-- `card__body-text` — primary body text inside cards
-- `card__muted` — secondary/muted text inside cards
-- `card__sublabel` — secondary uppercase labels (e.g. "How to use today")
-- `calendar-legend__label` — legend text in CalendarTab
-- `kalyra-reading` — Kalyra's Reading italic block in ProfileTab
+**DUSK — pełna tabela klas CSS** (źródło: `Kalyra_DuskMode_Overrides.md`):
+
+*§1 Global*
+| Klasa | Właściwość | Wartość |
+|---|---|---|
+| `.dusk .card` | background | `rgba(255,248,240,0.55)` + blur(16px) |
+| `.dusk .page-title` | color | `#2A1015` |
+| `.dusk .page-subtitle` | color | `rgba(42,16,21,0.55)` |
+| `.dusk .section-label` | color | `rgba(42,16,21,0.65)` |
+
+*§2 Today*
+| Klasa | Właściwość | Wartość |
+|---|---|---|
+| `.dusk .ritual-card` | background | `rgba(255,248,240,0.55)` |
+| `.dusk .card__header-label` | color | `#6A2530` |
+| `.dusk .card__body-text` | color | `#3A1018` |
+| `.dusk .card__subtext` | color | `#8A4550` |
+| `.dusk .card__sublabel` | color | `#6A2530` |
+| `.dusk .card__muted` | color | `#8A4550` |
+| `.dusk .how-to-use-label` | color | `#7A2530` |
+| `.dusk .step-number` | color | `#7A2530` |
+| `.dusk .energy-card__title` | color | `#2A1015` |
+| `.dusk .energy-card__subtitle` | color | `#8A4550` |
+| `.dusk .card--collapsed` | background | `rgba(255,248,240,0.40)` |
+| `.dusk .progress-counter` | background | `rgba(255,248,240,0.45)` |
+
+*§3 Moon Calendar*
+| Klasa | Właściwość | Wartość |
+|---|---|---|
+| `.dusk .day-number` | color | `rgba(42,16,21,0.75)` |
+| `.dusk .month-nav` | color | `rgba(42,16,21,0.55)` |
+| `.dusk .month-title` | color | `#2A1015` |
+| `.dusk .calendar-legend__label` | color | `rgba(42,16,21,0.75)` |
+| `.dusk .bottom-sheet` | background | `rgba(255,248,240,0.90)` + blur(20px) |
+| `.dusk .bottom-sheet__title` | color | `#2A1015` |
+| `.dusk .bottom-sheet__content` | color | `#6A3040` |
+
+*§4 Learn*
+| Klasa | Właściwość | Wartość |
+|---|---|---|
+| `.dusk .crystal-card` | background | `rgba(255,248,240,0.70)` |
+| `.dusk .crystal-card__name` | color | `#2A1015` |
+| `.dusk .crystal-card__keywords` | color | `#8A5060` |
+| `.dusk .crystal-card__planet` | color | `#C9A84C` |
+| `.dusk .article-row` | background | `rgba(255,248,240,0.65)` |
+| `.dusk .article-row__title` | color | `#2A1015` |
+| `.dusk .article-row__meta` | color | `#8A5060` |
+| `.dusk .ask-kalyra` | background | `rgba(255,248,240,0.35)` |
+| `.dusk .ask-kalyra__label` | color | `#2A1015` |
+| `.dusk .crystal-detail__body` | color | `#3A1820` |
+| `.dusk .article-view__body` | color | `#3A1820` |
+| `.dusk .article-view__takeaway` | background | `rgba(255,248,240,0.70)` |
+
+*§5 Profile*
+| Klasa | Właściwość | Wartość |
+|---|---|---|
+| `.dusk .profile-header-card` | background | `rgba(255,248,240,0.65)` |
+| `.dusk .profile-header__name` | color | `#2A1015` |
+| `.dusk .profile-header__meta` | color | `#8A5060` |
+| `.dusk .profile-card` | background | `rgba(255,248,240,0.75)` |
+| `.dusk .sign-card` | background | `rgba(255,248,240,0.70)` |
+| `.dusk .sign-card__name` | color | `#2A1015` |
+| `.dusk .sign-card__traits` | color | `#8A5060` |
+| `.dusk .elemental-card` | background | `rgba(255,248,240,0.65)` |
+| `.dusk .elemental-value` | color | `#6A3040` |
+| `.dusk .rising-locked` | border | `dashed rgba(201,168,76,0.45)` |
+| `.dusk .rising-locked__title` | color | `#2A1015` |
+| `.dusk .rising-locked__body` | color | `#8A5060` |
+| `.dusk .rituals-card` | background | `rgba(255,248,240,0.70)` |
+| `.dusk .ritual-row__name` | color | `#2A1015` |
+| `.dusk .stat-card` | background | `rgba(255,248,240,0.65)` |
+| `.dusk .stat-card__label` | color | `#8A5060` |
+| `.dusk .settings-card` | background | `rgba(255,248,240,0.65)` |
+| `.dusk .settings-section-label` | color | `rgba(42,16,21,0.60)` |
+| `.dusk .settings-row__label` | color | `#2A1015` |
+| `.dusk .settings-row__value` | color | `#8A5060` |
+| `.dusk .kalyra-reading` | text-shadow | `0 1px 8px rgba(100,40,60,0.25)` |
+| `.dusk .toggle--on` | background | `#C9A84C` |
+| `.dusk .toggle--off` | background | `rgba(42,16,21,0.20)` |
+
+**CSS class conventions (wszystkie taby):**
+- `page-title / page-subtitle` — nagłówek i podtytuł ekranu na gradiencie
+- `section-label` — sekcyjne nagłówki poza kartami
+- `card__header-label` — etykiety w nagłówkach kart (SUN/MOON/RISING)
+- `card__body-text` — główny tekst w kartach
+- `card__muted / card__subtext` — drugi plan w kartach
+- `card__sublabel` — małe uppercase labels (np. "How to use today")
+- `card--collapsed` — dodaj do SectionCard gdy `collapsed=true`
+- `kalyra-reading` — blok italic z cytatu Kalyry (ProfileTab)
+- `ritual-card` — karty rytuałów (TodayTab)
+- `energy-card__title/subtitle/divider` — karta energii (TodayTab)
+- `progress-counter` — licznik ukończonych rytuałów
+- `day-number / month-nav / month-title` — CalendarTab
+- `bottom-sheet / bottom-sheet__*` — bottom sheet kalendarza
+- `calendar-legend__label` — legenda kalendarza
+- `crystal-card / crystal-card__*` — karty kryształów (LearnTab)
+- `article-row / article-row__*` — wiersze artykułów (LearnTab)
+- `ask-kalyra / ask-kalyra__*` — sekcja Ask Kalyra (LearnTab)
+- `crystal-detail__* / article-view__*` — widoki detali (LearnTab)
+- `profile-header-card / profile-header__*` — header użytkownika (ProfileTab)
+- `profile-card` — główne karty ProfileTab (opacity 0.75)
+- `sign-card / sign-card__*` — karty znaków zodiaku
+- `elemental-card / elemental-value` — Elemental Makeup
+- `rising-locked / rising-locked__*` — zablokowany Rising sign
+- `rituals-card / ritual-row__*` — Top Rituals
+- `stat-card / stat-card__label` — Practice Stats
+- `settings-card / settings-section-label / settings-row__*` — Settings
 
 **Zodiac symbols — typographic rendering rule:**
 All zodiac symbols (♈–♓) must render as text glyphs, NOT as platform emoji.
@@ -171,13 +250,14 @@ public/
 - ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
-- ✅ Color System v2.4 — 4 sky modes, glassmorphism in DUSK, full card contrast system (header/body/muted/collapsed/sublabel), legend fix, unified nav
+- ✅ Color System v2.5 — 4 sky modes; DUSK fully specced per `Kalyra_DuskMode_Overrides.md` — all 5 tabs, 50+ CSS classes, opacity hierarchy table
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals; NO emoji anywhere in UI
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
 - ✅ AI Ritual Generator — tap-on-card pattern (no button); Ask Kalyra (mocked)
 - ✅ Profile tab dusk polish — full contrast pass, opacity hierarchy (0.75), all text classes, typographic zodiac symbols, SVG lock icon
+- ✅ DUSK mode CSS — complete implementation of `Kalyra_DuskMode_Overrides.md`: Today/Calendar/Learn/Profile all tabs, classNames wired in components
 - ✅ Moon Cycles stat — counts from first app use (earliest daily_checkin), not birth date
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
 
