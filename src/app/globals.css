@@ -61,7 +61,7 @@
   --secondary:            #F0E8DC;
   --secondary-foreground: #1A1208;
   --muted:                #EDE0D0;
-  --muted-foreground:     #6B5744;
+  --muted-foreground:     #9B88A8;
   --accent:               #C9A84C;
   --accent-foreground:    #1A1208;
   --accent-warm:          #D4927A;
@@ -159,7 +159,7 @@
    MODE 3 — DUSK  ·  16:00–20:00  ·  Złota godzina — amber i rose
 ───────────────────────────────────────────────────────────────────────────── */
 .dusk {
-  --bg-gradient:          linear-gradient(180deg, #F0C890 0%, #D4A0B8 40%, #A878A8 70%, #784868 100%);
+  --bg-gradient:          linear-gradient(180deg, #F5C080 0%, #E89060 35%, #C45878 65%, #8B3050 100%);
   --background:           #C45878;
   --foreground:           #FFF5EE;
   --text-secondary:       #F5D4B8;
@@ -612,8 +612,8 @@ nav button {
 }
 
 .dusk .quote-block {
-  background: rgba(0, 0, 0, 0.14);
-  color: #FFF5EE;  /* light — quote block has dark bg, overrides card's dark text */
+  background: rgba(0, 0, 0, 0.18);
+  color: #FFF5EE;
 }
 
 .read-aloud-label {
@@ -706,6 +706,84 @@ nav button {
 
 .night .star {
   opacity: var(--star-base-opacity, 0.4);
+}
+
+/* ─── Ritual card states ────────────────────────────────────────────────────── */
+
+.ritual-card--active  { opacity: 1; }
+.ritual-card--done    { opacity: 0.7; }
+.ritual-card--upcoming { opacity: 0.5; pointer-events: none; }
+.ritual-card--missed  { opacity: 0.35; pointer-events: none; }
+
+.btn-mark-complete {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--accent, #C9A84C);
+  background: transparent;
+  color: var(--accent, #C9A84C);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-mark-complete:hover {
+  background: var(--accent, #C9A84C);
+  color: #1A1208;
+}
+
+/* ─── Sacred geometry divider ───────────────────────────────────────────────── */
+
+.sacred-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+  opacity: 0.45;
+}
+
+.sacred-divider::before,
+.sacred-divider::after {
+  content: '';
+  flex: 1;
+  height: 0.5px;
+  background: var(--accent-gold, #C9A84C);
+}
+
+.sacred-divider__glyph {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+/* ─── Progress dots ──────────────────────────────────────────────────────────── */
+
+.ritual-progress-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.progress-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--accent, #C9A84C);
+}
+
+.progress-dot--filled {
+  background: var(--accent, #C9A84C);
+}
+
+/* ─── Day mode quote block tint ──────────────────────────────────────────────── */
+
+.day .quote-block {
+  background: #F0F4F8;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

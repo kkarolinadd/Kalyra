@@ -260,6 +260,27 @@ public/
 - ✅ DUSK mode CSS — complete implementation of `Kalyra_DuskMode_Overrides.md`: Today/Calendar/Learn/Profile all tabs, classNames wired in components
 - ✅ Moon Cycles stat — counts from first app use (earliest daily_checkin), not birth date
 - ✅ Dev mode switcher (localhost only — DAWN/DAY/DUSK/NIGHT buttons)
+- ✅ UI Fixes Brief v1.0 (June 2026) — editorial luxury pass:
+  - P0: Emoji → SVG gold glyphs in Sun/Moon pills (outline, stroke #C9A84C)
+  - P0: Sacred geometry divider (gold diamond + 0.5px lines, opacity 0.45) between energy bar and ritual cards
+  - P0: Kalyra sigil — circle + vertical line SVG replacing ✦ sparkle in Kalyra card
+  - P1: Greeting headline weight 300→400, letter-spacing -0.01em
+  - P1: Day mode quote-block tint #F0F4F8
+  - P1: Dawn muted-foreground #6B5744→#9B88A8 (warm lila, no more brown)
+  - P1: Dusk quote-block contrast rgba(0,0,0,0.18) (was 0.14)
+  - P2: Progress indicator — 6 gold dots replacing ◐ emoji
+  - P2: "Read aloud · in the mirror" → sentence case (no uppercase)
+  - P2: Dusk gradient middle step #D46870→#C45878 (smoother transition)
+- ✅ UI Fixes Brief v2.0 (June 2026) — ritual card state system:
+  - 4 states: ACTIVE / DONE / UPCOMING / MISSED per card per colorMode
+  - Time windows: morning/journal/mirror=dawn, crystal=all-day, wear=dawn+day, evening=dusk
+  - Tap card = expand/collapse (whole surface); "Done" pill button = mark complete (ACTIVE only)
+  - DONE: opacity 0.7, collapsed, "✓ Done" badge, tap to re-read
+  - UPCOMING: opacity 0.5, pointer-events none, italic Kalyra message
+  - MISSED: opacity 0.35, pointer-events none, border loses accent color, italic message
+  - getRitualState(key, colorMode, checkedKeys) — MODE_ORDER=['dawn','day','dusk','night']
+  - "Done" pill: 10px, font-weight 600, gold outline, replaces radio button pattern
+  - Collapse bug fix: cards can be collapsed with ChevronUp (was one-directional before)
 
 ## What's NOT built yet
 

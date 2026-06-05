@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { getDailyAstrology, type DailyAstrology } from "@/lib/astrology";
-import { getRitual, getGreeting, getSpecialSectionContent, getTriggeredRituals } from "@/lib/ritualContent";
+import { getRitual, getSpecialSectionContent, getTriggeredRituals } from "@/lib/ritualContent";
 import { getProfile, saveProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitualUsed, type CheckinKey } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import {
   MoonPhaseIcon2,
   IconSunrise, IconEvening, IconJournal, IconMirror,
   IconCrystalSection, IconGlamour, IconEnergy,
-  IconChecked, IconUnchecked,
   CrystalIcon, PlanetIcon,
 } from "@/components/icons";
 
@@ -69,13 +68,44 @@ Your ritual today weaves the energy of the moon's current phase with the planeta
 
 Tonight, before sleep, read what you wrote aloud. Then place your crystal on top of it. Let your words and your intention be held while you rest. The work you've done today doesn't disappear in sleep — it deepens.`;
 
-// ─── Collapsing logic ─────────────────────────────────────────────────────────
+// ─── Ritual card state system ─────────────────────────────────────────────────
 
-function getRitualVisibility(): { morning: "expanded" | "collapsed"; evening: "expanded" | "collapsed" } {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 12)  return { morning: "expanded", evening: "collapsed" };
-  if (hour >= 12 && hour < 17) return { morning: "expanded", evening: "expanded" };
-  return { morning: "collapsed", evening: "expanded" };
+type RitualState = "active" | "done" | "upcoming" | "missed";
+
+const RITUAL_WINDOWS: Record<CheckinKey, string[]> = {
+  morning:  ["dawn"],
+  journal:  ["dawn"],
+  mirror:   ["dawn"],
+  crystal:  ["dawn", "day", "dusk", "night"],
+  wear:     ["dawn", "day"],
+  evening:  ["dusk"],
+};
+
+const MODE_ORDER = ["dawn", "day", "dusk", "night"] as const;
+
+const UPCOMING_MSGS: Partial<Record<CheckinKey, string>> = {
+  morning: "Dawn holds this ritual. Return at sunrise.",
+  journal: "Dawn holds this ritual. Return at sunrise.",
+  mirror:  "Dawn holds this ritual. Return at sunrise.",
+  wear:    "Dawn holds this ritual. Return at sunrise.",
+  evening: "The evening will bring this ritual to you.",
+};
+
+const MISSED_MSGS: Partial<Record<CheckinKey, string>> = {
+  morning: "This ritual lives in the morning. It will return tomorrow.",
+  journal: "This ritual lives in the morning. It will return tomorrow.",
+  mirror:  "This ritual lives in the morning. It will return tomorrow.",
+  wear:    "This ritual lives in the morning. It will return tomorrow.",
+  evening: "Some rituals belong to their hour. This one will meet you again.",
+};
+
+function getRitualState(key: CheckinKey, colorMode: string, checkedKeys: CheckinKey[]): RitualState {
+  if (checkedKeys.includes(key)) return "done";
+  const windows = RITUAL_WINDOWS[key];
+  if (windows.includes(colorMode)) return "active";
+  const currentIdx = MODE_ORDER.indexOf(colorMode as typeof MODE_ORDER[number]);
+  const firstIdx   = MODE_ORDER.indexOf(windows[0] as typeof MODE_ORDER[number]);
+  return currentIdx < firstIdx ? "upcoming" : "missed";
 }
 
 // ─── Upsell localStorage helpers ─────────────────────────────────────────────
@@ -113,44 +143,54 @@ function SectionCard({
   title,
   tag,
   checkinKey,
-  checkedKeys,
-  onToggle,
+  state = "active",
+  onMarkComplete,
   children,
   accent,
-  collapsed = false,
-  onExpand,
+  defaultExpanded = true,
+  stateMessage,
 }: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
   title: string;
   tag?: string;
   checkinKey?: CheckinKey;
-  checkedKeys: CheckinKey[];
-  onToggle?: (key: CheckinKey) => void;
+  state?: RitualState;
+  onMarkComplete?: () => void;
   children: React.ReactNode;
   accent?: string;
-  collapsed?: boolean;
-  onExpand?: () => void;
+  defaultExpanded?: boolean;
+  stateMessage?: string;
 }) {
-  const checked = checkinKey ? checkedKeys.includes(checkinKey) : false;
+  const [isExpanded, setIsExpanded] = useState(state === "active" ? defaultExpanded : false);
   const [shimmerActive, setShimmerActive] = useState(false);
-  const [bouncing, setBouncing]           = useState(false);
+  const prevStateRef = useRef(state);
 
-  const handleToggle = () => {
-    if (!checkinKey || !onToggle) return;
-    if (!checked) {
-      setBouncing(true);
-      setShimmerActive(true);
-      setTimeout(() => setBouncing(false),    250);
-      setTimeout(() => setShimmerActive(false), 450);
+  useEffect(() => {
+    if (prevStateRef.current === state) return;
+    if (state === "done") {
+      setTimeout(() => setIsExpanded(false), 1500);
+    } else if (state === "active") {
+      setIsExpanded(defaultExpanded);
+    } else {
+      setIsExpanded(false);
     }
-    onToggle(checkinKey);
+    prevStateRef.current = state;
+  }, [state, defaultExpanded]);
+
+  const handleMarkComplete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShimmerActive(true);
+    setTimeout(() => setShimmerActive(false), 450);
+    onMarkComplete?.();
   };
 
-  const accentColor = accent ?? "#C9A84C";
+  const canToggle   = state === "active" || state === "done";
+  const accentColor = state === "missed" ? "var(--divider)" : (accent ?? "#C9A84C");
+  const iconColor   = state === "upcoming" || state === "missed" ? "var(--muted-foreground)" : accentColor;
 
   return (
     <div
-      className={`fade-in kalyra-card${collapsed ? " card--collapsed" : ""}`}
+      className={`fade-in kalyra-card ritual-card--${state}`}
       style={{
         background:   "var(--card)",
         borderRadius: 16,
@@ -158,99 +198,95 @@ function SectionCard({
         marginBottom: 12,
         position:     "relative",
         overflow:     "hidden",
-        opacity:      checked ? 0.65 : 1,
         transition:   "opacity 300ms ease",
-        cursor:       collapsed ? "pointer" : "default",
-        height:       collapsed ? 48 : undefined,
+        cursor:       canToggle ? "pointer" : "default",
       }}
-      onClick={collapsed ? onExpand : undefined}
+      onClick={canToggle ? () => setIsExpanded((v) => !v) : undefined}
     >
-      {/* Gold shimmer sweep on check */}
+      {/* Gold shimmer on mark complete */}
       {shimmerActive && (
-        <div
-          style={{
-            position:         "absolute",
-            inset:            0,
-            background:       "linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 50%, transparent 100%)",
-            backgroundSize:   "200% 100%",
-            animation:        "shimmerOnce 400ms ease-out forwards",
-            pointerEvents:    "none",
-            zIndex:           2,
-          }}
-        />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 50%, transparent 100%)",
+          backgroundSize: "200% 100%",
+          animation: "shimmerOnce 400ms ease-out forwards",
+          pointerEvents: "none", zIndex: 2,
+        }} />
       )}
 
-      {/* Header row */}
-      <div
-        className="flex items-center justify-between gap-3"
-        style={{
-          padding: collapsed ? "0 16px 0 20px" : "16px 16px 0 20px",
-          height:  collapsed ? 48 : undefined,
-        }}
-      >
-        <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <Icon size={20} color={accentColor} />
-          <h3
-            style={{
-              fontFamily:    "var(--font-inter), sans-serif",
-              fontWeight:    600,
-              fontSize:      11,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color:         accentColor,
-              margin:        0,
-            }}
-          >
-            {title}
-            {checked && (
-              <span style={{ color: "var(--muted-foreground)", fontWeight: 500 }}>
-                {" · done"}
+      {/* Header */}
+      <div className="flex items-center justify-between gap-3" style={{ padding: "14px 16px 14px 20px" }}>
+        <div className="flex flex-col flex-1 min-w-0 gap-0.5">
+          <div className="flex items-center gap-2.5">
+            <Icon size={18} color={iconColor} />
+            <h3 style={{
+              fontFamily: "var(--font-inter), sans-serif",
+              fontWeight: 600, fontSize: 11,
+              letterSpacing: "0.08em", textTransform: "uppercase",
+              color: state === "upcoming" || state === "missed" ? "var(--muted-foreground)" : accentColor,
+              margin: 0,
+            }}>
+              {title}
+              {state === "done" && (
+                <span style={{ color: "var(--muted-foreground)", fontWeight: 500 }}>{" · done"}</span>
+              )}
+            </h3>
+            {tag && state === "active" && (
+              <span className="text-xs px-2 py-0.5 rounded-full shrink-0" style={{
+                fontFamily: "var(--font-inter)", fontWeight: 500,
+                color: "var(--muted-foreground)", border: "1px solid var(--border)",
+              }}>
+                {tag}
               </span>
             )}
-          </h3>
-          {tag && !collapsed && (
-            <span
-              className="text-xs px-2 py-0.5 rounded-full shrink-0"
-              style={{
-                fontFamily: "var(--font-inter)",
-                fontWeight: 500,
-                color:      "var(--muted-foreground)",
-                border:     "1px solid var(--border)",
-              }}
-            >
-              {tag}
-            </span>
+          </div>
+
+          {/* State messages */}
+          {(state === "upcoming" || state === "missed") && stateMessage && (
+            <p style={{
+              fontFamily: "var(--font-inter)", fontSize: 12,
+              color: "var(--muted-foreground)", margin: 0,
+              fontStyle: "italic", lineHeight: 1.4,
+            }}>
+              {stateMessage}
+            </p>
+          )}
+          {state === "done" && !isExpanded && (
+            <p style={{
+              fontFamily: "var(--font-inter)", fontSize: 11,
+              color: "var(--muted-foreground)", margin: 0, lineHeight: 1.4,
+            }}>
+              Tap to read · completed today
+            </p>
           )}
         </div>
 
+        {/* Right actions */}
         <div className="flex items-center gap-2 shrink-0">
-          {checkinKey && onToggle && !collapsed && (
-            <button
-              onClick={(e) => { e.stopPropagation(); handleToggle(); }}
-              style={{
-                background: "none",
-                border:     "none",
-                padding:    0,
-                cursor:     "pointer",
-                animation:  bouncing ? "checkBounce 250ms ease-out" : "none",
-              }}
-              aria-label={checked ? "Mark incomplete" : "Mark complete"}
-            >
-              {checked
-                ? <IconChecked  size={24} color={accentColor} />
-                : <IconUnchecked size={24} color="var(--muted-foreground)" />
-              }
+          {state === "active" && onMarkComplete && (
+            <button className="btn-mark-complete" onClick={handleMarkComplete}>
+              Done
             </button>
           )}
-          {collapsed && (
-            <ChevronDown size={20} color="var(--muted-foreground)" />
+          {state === "done" && (
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: 11, fontWeight: 600, color: "var(--primary)" }}>
+              ✓ Done
+            </span>
+          )}
+          {canToggle && (
+            isExpanded
+              ? <ChevronUp   size={16} color="var(--muted-foreground)" />
+              : <ChevronDown size={16} color="var(--muted-foreground)" />
           )}
         </div>
       </div>
 
-      {/* Body */}
-      {!collapsed && (
-        <div style={{ padding: "12px 16px 16px 20px", color: "var(--foreground)" }}>
+      {/* Body — only when expanded and interactive */}
+      {isExpanded && canToggle && (
+        <div
+          style={{ padding: "0 16px 16px 20px", color: "var(--foreground)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
           {children}
         </div>
       )}
@@ -305,6 +341,18 @@ function GlamourChip({ colorName }: { colorName: string }) {
         flexShrink:    0,
       }}
     />
+  );
+}
+
+// ─── SacredDivider ────────────────────────────────────────────────────────────
+
+function SacredDivider() {
+  return (
+    <div className="sacred-divider">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className="sacred-divider__glyph">
+        <path d="M5 0.5L9.5 5L5 9.5L0.5 5L5 0.5Z" stroke="#C9A84C" strokeWidth="0.75" fill="none"/>
+      </svg>
+    </div>
   );
 }
 
@@ -368,7 +416,14 @@ function ProgressCounter({ done, total }: { done: number; total: number }) {
         </>
       ) : (
         <>
-          <span style={{ color: "var(--muted-foreground)", fontSize: 18 }}>◐</span>
+          <div className="ritual-progress-dots">
+            {Array.from({ length: total }).map((_, i) => (
+              <span
+                key={i}
+                className={`progress-dot${i < done ? " progress-dot--filled" : ""}`}
+              />
+            ))}
+          </div>
           <span
             style={{
               fontFamily: "var(--font-inter)",
@@ -377,7 +432,7 @@ function ProgressCounter({ done, total }: { done: number; total: number }) {
               color:      "var(--muted-foreground)",
             }}
           >
-            {done} of {total} rituals completed
+            {done} of {total}
           </span>
         </>
       )}
@@ -583,11 +638,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
   const [aiContent, setAiContent] = useState("");
   const [aiUsed, setAiUsed]       = useState(false);
 
-  // Cards auto-collapsed after done (+ on load if already done today)
-  const [autoCollapsed, setAutoCollapsed] = useState<Set<CheckinKey>>(new Set());
-  // User-expanded overrides (reset on reload)
-  const [userExpanded, setUserExpanded]   = useState<Set<string>>(new Set());
-
   // Upsell
   const [showUpsell, setShowUpsell] = useState(false);
   const [showModal, setShowModal]   = useState(false);
@@ -597,10 +647,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
 
   useEffect(() => {
     setAstro(getDailyAstrology());
-    const loaded = getTodayCheckins();
-    setCheckins(loaded);
-    // Cards already done today start collapsed
-    setAutoCollapsed(new Set(loaded));
+    setCheckins(getTodayCheckins());
     setAiUsed(!canUseAiRitual());
     if (!profile?.birth_time) setShowUpsell(getUpsellVisible());
     const interval = setInterval(() => setAstro(getDailyAstrology()), 3600000);
@@ -624,38 +671,15 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
     if (card && !cardTags[card]) cardTags[card] = r.name;
   });
 
-  const toggle = (key: CheckinKey) => {
+  const markComplete = (key: CheckinKey) => {
     const next = toggleCheckin(key);
     setCheckins(next);
-    if (next.includes(key)) {
-      // Just checked → auto-collapse after 1.5s
-      setTimeout(() => {
-        setAutoCollapsed((prev) => new Set([...prev, key]));
-        setUserExpanded((prev) => { const n = new Set(prev); n.delete(key); return n; });
-      }, 1500);
-    } else {
-      // Unchecked → remove from auto-collapsed so it reopens
-      setAutoCollapsed((prev) => { const n = new Set(prev); n.delete(key); return n; });
-    }
   };
 
   const allCheckins: CheckinKey[] = ["morning", "journal", "mirror", "crystal", "wear", "evening"];
   const doneCount = checkins.length;
 
-  // Collapse logic per card
-  const isCardCollapsed = (key: CheckinKey): boolean => {
-    if (userExpanded.has(key)) return false;              // user tapped to open
-    if (autoCollapsed.has(key)) return true;              // done → auto-collapsed
-    const hour = new Date().getHours();
-    if (key === "morning") return hour >= 13;             // collapsed-late, no judgement
-    if (key === "evening") return hour < 17;              // not yet evening
-    return false;
-  };
-
-  const expand = (key: string) => {
-    setUserExpanded((prev) => new Set([...prev, key]));
-    setAutoCollapsed((prev) => { const n = new Set(prev); n.delete(key as CheckinKey); return n; });
-  };
+  const cardState = (key: CheckinKey) => getRitualState(key, colorMode, checkins);
 
   // Moon phase colors — warm brown/beige on light bg, default on dark bg
   const isLightMode  = colorMode === "dawn" || colorMode === "day";
@@ -709,7 +733,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
 
           <h1
             className="header-greeting kalyra-voice leading-none"
-            style={{ fontSize: "clamp(2.4rem, 10vw, 3rem)", color: "var(--foreground)", fontWeight: 300 }}
+            style={{ fontSize: "clamp(2.4rem, 10vw, 3rem)", color: "var(--foreground)", fontWeight: 400, letterSpacing: "-0.01em" }}
           >
             Hello, {profile?.name ?? "friend"}.
           </h1>
@@ -720,7 +744,17 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                 style={{ border: "1px solid var(--pill-border)", background: "var(--pill-bg)" }}
               >
-                <span>☀️</span>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+                  <circle cx="7" cy="7" r="2.8" stroke="#C9A84C" strokeWidth="1"/>
+                  <line x1="7" y1="0.5" x2="7" y2="2" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="7" y1="12" x2="7" y2="13.5" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="0.5" y1="7" x2="2" y2="7" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="12" y1="7" x2="13.5" y2="7" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="2.4" y1="2.4" x2="3.4" y2="3.4" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="10.6" y1="10.6" x2="11.6" y2="11.6" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="11.6" y1="2.4" x2="10.6" y2="3.4" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                  <line x1="3.4" y1="10.6" x2="2.4" y2="11.6" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", fontWeight: 600, color: "var(--pill-text)" }}>
                   {profile.sun_sign}
                 </span>
@@ -729,7 +763,9 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
                 style={{ border: "1px solid var(--pill-border)", background: "var(--pill-bg)" }}
               >
-                <span>🌙</span>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+                  <path d="M9.5 2.5A5 5 0 0 0 4.5 7.5a5 5 0 0 0 5 4.5A5.5 5.5 0 0 1 4 7 5.5 5.5 0 0 1 9.5 2.5z" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                </svg>
                 <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", fontWeight: 600, color: "var(--pill-text)" }}>
                   {profile.moon_sign}
                 </span>
@@ -835,12 +871,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           const content = getSpecialSectionContent(ev.type);
           if (!content) return null;
           return (
-            <SectionCard key={i} icon={IconEnergy} title={content.title}
-              checkedKeys={checkins} accent={CARD_ACCENTS.energy}>
+            <SectionCard key={i} icon={IconEnergy} title={content.title} accent={CARD_ACCENTS.energy}>
               <p className="text-base leading-relaxed">{content.body}</p>
             </SectionCard>
           );
         })}
+
+        <SacredDivider />
 
         {/* 3. Morning Ritual */}
         <SectionCard
@@ -848,11 +885,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           title="Morning Ritual"
           checkinKey="morning"
           tag={cardTags["morning"]}
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("morning")}
+          onMarkComplete={() => markComplete("morning")}
           accent={CARD_ACCENTS.morning}
-          collapsed={isCardCollapsed("morning")}
-          onExpand={() => expand("morning")}
+          stateMessage={
+            cardState("morning") === "upcoming" ? UPCOMING_MSGS.morning :
+            cardState("morning") === "missed"   ? MISSED_MSGS.morning   : undefined
+          }
         >
           <RitualList steps={ritual.morningRitual} />
         </SectionCard>
@@ -863,9 +902,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           title="Journal Prompt"
           checkinKey="journal"
           tag={cardTags["journal"]}
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("journal")}
+          onMarkComplete={() => markComplete("journal")}
           accent={CARD_ACCENTS.journal}
+          stateMessage={
+            cardState("journal") === "upcoming" ? UPCOMING_MSGS.journal :
+            cardState("journal") === "missed"   ? MISSED_MSGS.journal   : undefined
+          }
         >
           <div className="quote-block">
             &ldquo;{ritual.journalPrompt}&rdquo;
@@ -877,11 +920,15 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           icon={IconMirror}
           title="Mirror Reflection"
           checkinKey="mirror"
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("mirror")}
+          onMarkComplete={() => markComplete("mirror")}
           accent={CARD_ACCENTS.mirror}
+          stateMessage={
+            cardState("mirror") === "upcoming" ? UPCOMING_MSGS.mirror :
+            cardState("mirror") === "missed"   ? MISSED_MSGS.mirror   : undefined
+          }
         >
-          <p className="read-aloud-label">Read aloud · in the mirror</p>
+          <p className="read-aloud-label" style={{ textTransform: "none" }}>Read aloud · in the mirror</p>
           <div className="quote-block" style={{ textAlign: "center" }}>
             &ldquo;{ritual.mirrorReflection}&rdquo;
           </div>
@@ -892,8 +939,8 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           icon={IconCrystalSection}
           title="Crystal of the Day"
           checkinKey="crystal"
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("crystal")}
+          onMarkComplete={() => markComplete("crystal")}
           accent={CARD_ACCENTS.crystal}
         >
           <div className="space-y-3">
@@ -904,19 +951,11 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
               {ritual.crystal.why}
             </p>
             <div style={{ borderRadius: 10, background: "var(--secondary)", padding: "10px 12px" }}>
-              <p
-                className="card__sublabel"
-                style={{
-                  fontFamily:    "var(--font-inter)",
-                  fontWeight:    600,
-                  fontSize:      10,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color:         "var(--muted-foreground)",
-                  marginBottom:  6,
-                  margin:        "0 0 6px 0",
-                }}
-              >
+              <p className="card__sublabel" style={{
+                fontFamily: "var(--font-inter)", fontWeight: 600,
+                fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
+                color: "var(--muted-foreground)", margin: "0 0 6px 0",
+              }}>
                 How to use today
               </p>
               <p style={{ fontSize: 14, margin: 0 }}>{ritual.crystal.howToUse}</p>
@@ -929,9 +968,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           icon={IconGlamour}
           title="Glamour Magic — What to Wear"
           checkinKey="wear"
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("wear")}
+          onMarkComplete={() => markComplete("wear")}
           accent={CARD_ACCENTS.wear}
+          stateMessage={
+            cardState("wear") === "upcoming" ? UPCOMING_MSGS.wear :
+            cardState("wear") === "missed"   ? MISSED_MSGS.wear   : undefined
+          }
         >
           <div className="space-y-2">
             <p style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, fontSize: 20, color: "var(--primary)", margin: 0, display: "flex", alignItems: "center" }}>
@@ -948,11 +991,14 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           title="Evening Ritual"
           checkinKey="evening"
           tag={cardTags["evening"]}
-          checkedKeys={checkins}
-          onToggle={toggle}
+          state={cardState("evening")}
+          onMarkComplete={() => markComplete("evening")}
           accent={CARD_ACCENTS.evening}
-          collapsed={isCardCollapsed("evening")}
-          onExpand={() => expand("evening")}
+          defaultExpanded={colorMode === "dusk"}
+          stateMessage={
+            cardState("evening") === "upcoming" ? UPCOMING_MSGS.evening :
+            cardState("evening") === "missed"   ? MISSED_MSGS.evening   : undefined
+          }
         >
           <RitualList steps={ritual.eveningRitual} />
         </SectionCard>
@@ -982,7 +1028,10 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <span style={{ fontSize: 22, color: "var(--primary)" }}>✦</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="#C9A84C" strokeWidth="1"/>
+                  <line x1="10" y1="1" x2="10" y2="19" stroke="#C9A84C" strokeWidth="1"/>
+                </svg>
               <div>
                 <h3
                   className="text-sm tracking-widest uppercase"
