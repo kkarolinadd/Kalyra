@@ -373,6 +373,20 @@
   color: #2A1015;
 }
 
+/* ─── DUSK: collapsed cards + HOW TO USE sublabel ───────────────────────────── */
+
+.dusk .card--collapsed {
+  background: rgba(255, 248, 240, 0.40);
+}
+
+.dusk .card--collapsed .card__header-label {
+  color: #6A2530;
+}
+
+.dusk .card__sublabel {
+  color: #6A2530;
+}
+
 /* ─── Calendar legend labels — dusk ─────────────────────────────────────────── */
 
 .dusk .calendar-legend__label {

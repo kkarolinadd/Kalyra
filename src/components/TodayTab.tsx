@@ -150,7 +150,7 @@ function SectionCard({
 
   return (
     <div
-      className="fade-in kalyra-card"
+      className={`fade-in kalyra-card${collapsed ? " card--collapsed" : ""}`}
       style={{
         background:   "var(--card)",
         borderRadius: 16,
@@ -905,6 +905,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
             </p>
             <div style={{ borderRadius: 10, background: "var(--secondary)", padding: "10px 12px" }}>
               <p
+                className="card__sublabel"
                 style={{
                   fontFamily:    "var(--font-inter)",
                   fontWeight:    600,
@@ -969,55 +970,46 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           <ProgressCounter done={doneCount} total={allCheckins.length} />
         )}
 
-        {/* AI Ritual Generator */}
+        {/* AI Ritual Generator — subtle dashed card, tap to generate */}
         <div
           className="rounded-2xl p-5 space-y-4 mt-3 kalyra-card"
-          style={{ background: "var(--card)", border: "1px dashed var(--border)" }}
+          style={{
+            background: "var(--card)",
+            border: "1px dashed var(--border)",
+            cursor: (!aiUsed && aiState !== "done") ? "pointer" : "default",
+          }}
+          onClick={(!aiUsed && aiState === "idle") ? handleGenerateRitual : undefined}
         >
-          <div className="flex items-center gap-3">
-            <span style={{ fontSize: 22, color: "var(--primary)" }}>✦</span>
-            <div>
-              <h3
-                className="text-sm tracking-widest uppercase"
-                style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}
-              >
-                Kalyra — Your Ritual
-              </h3>
-              <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                {aiUsed && aiState !== "done" ? "Used today — come back tomorrow" : "Personalized ritual · 1× per day"}
-              </p>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span style={{ fontSize: 22, color: "var(--primary)" }}>✦</span>
+              <div>
+                <h3
+                  className="text-sm tracking-widest uppercase"
+                  style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}
+                >
+                  Kalyra — Your Ritual
+                </h3>
+                <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+                  {aiState === "loading"
+                    ? "Weaving your ritual…"
+                    : aiUsed && aiState !== "done"
+                    ? "Used today — come back tomorrow"
+                    : aiState === "done"
+                    ? "Your ritual for today"
+                    : "Tap to generate · 1× per day"}
+                </p>
+              </div>
             </div>
+            {!aiUsed && aiState === "idle" && (
+              <span style={{ fontSize: 16, color: "var(--primary)", opacity: 0.7 }}>→</span>
+            )}
           </div>
 
           {aiState === "done" && (
             <div className="rounded-xl p-4 space-y-3" style={{ background: "var(--background)" }}>
-              <p className="text-xs tracking-widest uppercase" style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--primary)" }}>
-                Your personalized ritual
-              </p>
               <p className="kalyra-voice text-base leading-relaxed whitespace-pre-line">{aiContent}</p>
             </div>
-          )}
-
-          {aiState !== "done" && (
-            <button
-              onClick={handleGenerateRitual}
-              disabled={aiUsed || aiState === "loading"}
-              className="w-full py-3 rounded-xl text-sm tracking-widest uppercase transition"
-              style={{
-                fontFamily:     "var(--font-inter)",
-                fontWeight:     600,
-                background:     aiUsed
-                  ? "var(--secondary)"
-                  : "linear-gradient(90deg, var(--gold-dim, #7a5e1f), var(--primary), var(--gold-dim, #7a5e1f))",
-                color:          aiUsed ? "var(--muted-foreground)" : "var(--primary-foreground)",
-                cursor:         aiUsed ? "not-allowed" : "pointer",
-                backgroundSize: "200% auto",
-                animation:      (!aiUsed && aiState === "idle") ? "shimmer 3s linear infinite" : "none",
-                border:         "none",
-              }}
-            >
-              {aiState === "loading" ? "Weaving your ritual..." : aiUsed ? "Come back tomorrow" : "Generate my ritual ✦"}
-            </button>
           )}
         </div>
 
