@@ -415,11 +415,11 @@ export function CalendarTab({ colorMode = "night" }: { colorMode?: "dawn" | "day
                 {day.date.getDate()}
               </span>
 
-              {/* Event dots — max 3, 4px */}
+              {/* Event dots — max 3, 4px (5px in dusk) */}
               <div className="flex items-center gap-[3px] mt-1" style={{ minHeight: 8 }}>
                 {dots.map((dot, di) => (
                   <div key={di}
-                    style={{ width: 4, height: 4, borderRadius: "50%", background: dot.color }} />
+                    style={{ width: colorMode === "dusk" ? 5 : 4, height: colorMode === "dusk" ? 5 : 4, borderRadius: "50%", background: dot.color }} />
                 ))}
               </div>
             </button>
@@ -432,28 +432,28 @@ export function CalendarTab({ colorMode = "night" }: { colorMode?: "dawn" | "day
         style={{ borderTop: "1px solid var(--border)" }}>
         <div className="flex items-center gap-1.5">
           <MoonFirstQuarter size={13} litColor={MOON_LIT} darkColor={MOON_SHADOW} strokeColor={MOON_STROKE} />
-          <span className="text-[10px] tracking-widest uppercase"
+          <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Full / New
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <div style={{ width: 13, height: 13, borderRadius: "50%", border: `1.5px solid ${GOLD}` }} />
-          <span className="text-[10px] tracking-widest uppercase"
+          <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Today
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#6B3FA0" }} />
-          <span className="text-[10px] tracking-widest uppercase"
+          <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Eclipse
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#9B8BB8" }} />
-          <span className="text-[10px] tracking-widest uppercase"
+          <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Special
           </span>

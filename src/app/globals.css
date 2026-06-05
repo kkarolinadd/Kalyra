@@ -373,6 +373,20 @@
   color: #2A1015;
 }
 
+/* ─── Calendar legend labels — dusk ─────────────────────────────────────────── */
+
+.dusk .calendar-legend__label {
+  color: rgba(60, 20, 40, 0.8) !important;
+}
+
+/* ─── Nav bar — unified active state (gold icon+label+dot, never background) ── */
+
+nav button {
+  background: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ─── DUSK: header text directly on gradient (white + shadow) ───────────── */
 
 .dusk .header-date {
