@@ -7,19 +7,20 @@ import type { ZodiacSign } from "@/lib/astrology";
 
 // ─── Sign data ────────────────────────────────────────────────────────────────
 
+// ︎ = variation selector-15 — forces text rendering, prevents OS emoji substitution
 const signData: Record<ZodiacSign, { symbol: string; element: string; modality: string; elementClass: string }> = {
-  Aries:       { symbol: "♈", element: "Fire",  modality: "Cardinal", elementClass: "fire"  },
-  Taurus:      { symbol: "♉", element: "Earth", modality: "Fixed",    elementClass: "earth" },
-  Gemini:      { symbol: "♊", element: "Air",   modality: "Mutable",  elementClass: "air"   },
-  Cancer:      { symbol: "♋", element: "Water", modality: "Cardinal", elementClass: "water" },
-  Leo:         { symbol: "♌", element: "Fire",  modality: "Fixed",    elementClass: "fire"  },
-  Virgo:       { symbol: "♍", element: "Earth", modality: "Mutable",  elementClass: "earth" },
-  Libra:       { symbol: "♎", element: "Air",   modality: "Cardinal", elementClass: "air"   },
-  Scorpio:     { symbol: "♏", element: "Water", modality: "Fixed",    elementClass: "water" },
-  Sagittarius: { symbol: "♐", element: "Fire",  modality: "Mutable",  elementClass: "fire"  },
-  Capricorn:   { symbol: "♑", element: "Earth", modality: "Cardinal", elementClass: "earth" },
-  Aquarius:    { symbol: "♒", element: "Air",   modality: "Fixed",    elementClass: "air"   },
-  Pisces:      { symbol: "♓", element: "Water", modality: "Mutable",  elementClass: "water" },
+  Aries:       { symbol: "♈︎", element: "Fire",  modality: "Cardinal", elementClass: "fire"  },
+  Taurus:      { symbol: "♉︎", element: "Earth", modality: "Fixed",    elementClass: "earth" },
+  Gemini:      { symbol: "♊︎", element: "Air",   modality: "Mutable",  elementClass: "air"   },
+  Cancer:      { symbol: "♋︎", element: "Water", modality: "Cardinal", elementClass: "water" },
+  Leo:         { symbol: "♌︎", element: "Fire",  modality: "Fixed",    elementClass: "fire"  },
+  Virgo:       { symbol: "♍︎", element: "Earth", modality: "Mutable",  elementClass: "earth" },
+  Libra:       { symbol: "♎︎", element: "Air",   modality: "Cardinal", elementClass: "air"   },
+  Scorpio:     { symbol: "♏︎", element: "Water", modality: "Fixed",    elementClass: "water" },
+  Sagittarius: { symbol: "♐︎", element: "Fire",  modality: "Mutable",  elementClass: "fire"  },
+  Capricorn:   { symbol: "♑︎", element: "Earth", modality: "Cardinal", elementClass: "earth" },
+  Aquarius:    { symbol: "♒︎", element: "Air",   modality: "Fixed",    elementClass: "air"   },
+  Pisces:      { symbol: "♓︎", element: "Water", modality: "Mutable",  elementClass: "water" },
 };
 
 // ─── Ritual matrix ────────────────────────────────────────────────────────────
@@ -301,14 +302,17 @@ function SignCard({ type, sign }: { type: "SUN" | "MOON" | "RISING"; sign: Zodia
       padding: "14px 12px",
       border: "0.5px solid var(--divider)",
     }}>
-      <div style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
+      <div className="card__header-label" style={{ fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--muted-foreground)", marginBottom: 8, fontFamily: "Inter, sans-serif", fontWeight: 600 }}>
         {type}
       </div>
-      <div style={{ fontSize: 24, marginBottom: 4 }}>{data.symbol}</div>
-      <div style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "var(--foreground)", marginBottom: 4 }}>
+      {/* font-variant-emoji:text forces typographic rendering, no OS emoji substitution */}
+      <div style={{ fontSize: 26, marginBottom: 4, lineHeight: 1, fontFamily: "serif", fontVariantEmoji: "text" } as React.CSSProperties}>
+        {data.symbol}
+      </div>
+      <div className="card__body-text" style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 20, color: "var(--foreground)", marginBottom: 4 }}>
         {sign}
       </div>
-      <div style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+      <div className="card__muted" style={{ fontSize: 11, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
         {data.element} · {data.modality}
       </div>
     </div>
@@ -467,7 +471,7 @@ export function ProfileTab() {
               <div style={{ height: 6, borderRadius: 3, overflow: "hidden", background: "var(--muted)", marginBottom: 8 }}>
                 <div style={{ height: "100%", width: "100%", background: elementBarGradient[elemental.element], borderRadius: 3 }} />
               </div>
-              <div style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+              <div className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                 {elemental.element} · 100%
               </div>
             </>
@@ -491,10 +495,10 @@ export function ProfileTab() {
                 }} />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+                <span className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                   {elemental.secondary!.element} ({sun_sign}) {elemental.secondary!.percent}%
                 </span>
-                <span style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
+                <span className="card__muted" style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif" }}>
                   {elemental.primary!.element} ({moon_sign}) {elemental.primary!.percent}%
                 </span>
               </div>
@@ -510,12 +514,16 @@ export function ProfileTab() {
             marginBottom: 16,
           }}>
             <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-              <span style={{ fontSize: 20 }}>🔒</span>
+              {/* Linear lock icon — circle + shackle arc + body rect, stroke only */}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
               <div>
-                <div style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif", marginBottom: 6 }}>
+                <div className="card__body-text" style={{ fontSize: 15, color: "var(--foreground)", fontFamily: "Inter, sans-serif", marginBottom: 6 }}>
                   Your Rising sign is hidden
                 </div>
-                <div style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}>
+                <div className="card__muted" style={{ fontSize: 13, color: "var(--muted-foreground)", fontFamily: "Inter, sans-serif", lineHeight: 1.5 }}>
                   Add your birth time and Kalyra will calculate your Ascendant — the mask you show the world.
                 </div>
                 <button

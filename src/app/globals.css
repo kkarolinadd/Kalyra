@@ -366,11 +366,15 @@
 }
 
 .dusk .card__header-label {
-  color: #7A2530;
+  color: #6A2530;
 }
 
 .dusk .card__body-text {
-  color: #2A1015;
+  color: #3A1018;
+}
+
+.dusk .card__muted {
+  color: #8A4550;
 }
 
 /* ─── DUSK: collapsed cards + HOW TO USE sublabel ───────────────────────────── */
