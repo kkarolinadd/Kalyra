@@ -51,10 +51,10 @@
   --bg-gradient:          linear-gradient(180deg, #E2D4F0 0%, #F0D4C8 50%, #F5EDE0 100%);
   --background:           #F5EDE0;
   --foreground:           #1A1208;
-  --text-secondary:       #6B5744;
-  --card:                 #FFFFFF;
+  --text-secondary:       #7B6890;
+  --card:                 #FDF9FF;
   --card-foreground:      #1A1208;
-  --popover:              #FFFFFF;
+  --popover:              #FDF9FF;
   --popover-foreground:   #1A1208;
   --primary:              #C9A84C;
   --primary-foreground:   #1A1208;
@@ -108,9 +108,9 @@
   --background:           #EEE8E0;
   --foreground:           #1A1208;
   --text-secondary:       #5A5060;
-  --card:                 #FFFFFF;
+  --card:                 #F8FAFD;
   --card-foreground:      #1A1208;
-  --popover:              #FFFFFF;
+  --popover:              #F8FAFD;
   --popover-foreground:   #1A1208;
   --primary:              #C9A84C;
   --primary-foreground:   #1A1208;
@@ -160,7 +160,7 @@
 ───────────────────────────────────────────────────────────────────────────── */
 .dusk {
   --bg-gradient:          linear-gradient(180deg, #F0C890 0%, #D4A0B8 40%, #A878A8 70%, #784868 100%);
-  --background:           #D46870;
+  --background:           #C45878;
   --foreground:           #FFF5EE;
   --text-secondary:       #F5D4B8;
   --card:                 rgba(255, 255, 255, 0.25);
