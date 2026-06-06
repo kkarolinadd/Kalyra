@@ -361,6 +361,73 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* ─── Energy section — wrapper z warstwami atmosfery ────────────────────── */
+
+.energy-section {
+  position: relative;
+}
+
+/* Atmosphere pool — radialny cień za kartą, tło ciemnieje */
+.atmosphere-pool {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  width: 120%;
+  height: 80%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:root .atmosphere-pool,
+.dawn .atmosphere-pool {
+  background: radial-gradient(ellipse at center, rgba(80,60,110,0.30) 0%, transparent 65%);
+}
+.day  .atmosphere-pool {
+  background: radial-gradient(ellipse at center, rgba(50,70,110,0.28) 0%, transparent 65%);
+}
+.dusk .atmosphere-pool {
+  background: radial-gradient(ellipse at center, rgba(60,30,60,0.35) 0%, transparent 65%);
+}
+.night .atmosphere-pool { background: none; }
+
+/* Aurora — kosmiczne kolory bijące z karty w tło */
+.aurora {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 60%;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(12px);
+}
+
+:root .aurora,
+.dawn .aurora {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(140,110,180,0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 50%, rgba(110,90,160,0.22) 0%, transparent 55%);
+}
+.day  .aurora {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(90,110,180,0.26) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 50%, rgba(70,90,150,0.20) 0%, transparent 55%);
+}
+.dusk .aurora {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(120,80,160,0.30) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 50%, rgba(80,60,140,0.25) 0%, transparent 55%);
+}
+.night .aurora { background: none; }
+
+/* Energy card — nad pool i aurora */
+.energy-card {
+  position: relative;
+  z-index: 2;
+}
+
 /* ─── Energy card — poświata per tryb (ciemna karta na zmiennym tle) ─────── */
 
 /* Jasne tryby — ciepła aura łączy ciemną kartę z jasnym tłem */

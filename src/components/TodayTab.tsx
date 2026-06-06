@@ -1324,7 +1324,11 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         <div style={{ height: 1, background: "var(--divider)", marginBottom: 20 }} />
 
         {/* ── Energy of the Day Card ───────────────────────── */}
-        <EnergyCard moonPhase={astro.moonPhase} dayRuler={astro.dayRuler} />
+        <div className="energy-section">
+          <div className="atmosphere-pool" aria-hidden="true" />
+          <div className="aurora" aria-hidden="true" />
+          <EnergyCard moonPhase={astro.moonPhase} dayRuler={astro.dayRuler} />
+        </div>
 
         {/* Special event badges */}
         {astro.specialEvents.length > 0 && (
