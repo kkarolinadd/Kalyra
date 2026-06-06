@@ -269,6 +269,11 @@ public/
   - `PremiumMoon` SVG component: 5-layer rendering — atmospheric glow, sphere radial gradient, maria/craters (opacity 0.22), rim light, soft blurred terminator (`feGaussianBlur stdDeviation="2.2"`)
   - Shadow cx offset per phase creates moon phase shape; `isNew`/`isFull` special cases
   - Night Energy card: `border: 0.5px solid rgba(201,168,76,0.2)` + gold glow so card reads against dark bg
+- ✅ Energy Card Integration v6.2 (June 2026) — atmosphere pool + aurora:
+  - `.energy-section` wrapper with two absolute background layers behind `.energy-card` (z-index 2)
+  - Atmosphere pool: radial ellipse gradient darkening bg behind card — lila (dawn), blue (day), violet (dusk), none (night)
+  - Aurora: two overlapping radial gradients with `filter: blur(12px)` — cosmic colors bleed from card into sky
+  - Night: both layers disabled — card already in its element, only gold border from v6.1 remains
 - ✅ Visual Polish v6.1 (June 2026) — Divider & Energy card halo per mode:
   - Sacred divider uses `currentColor` (line + SVG stroke) — color set per mode via CSS class
   - Dawn: lila `rgba(123,104,144,0.7)` · Day: blue `rgba(90,110,140,0.7)` · Dusk: warm brown `rgba(160,100,90,0.8)` · Night: gold `rgba(201,168,76,0.8)`
