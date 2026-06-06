@@ -159,46 +159,46 @@
    MODE 3 — DUSK  ·  16:00–20:00  ·  Złota godzina — amber i rose
 ───────────────────────────────────────────────────────────────────────────── */
 .dusk {
-  /* ── "After the Sun — Refined" — klejnotowy gradient ───────────────────────── */
-  --bg-gradient:          linear-gradient(180deg, #E89B5C 0%, #C85A5A 32%, #8B3A5E 60%, #3D1E3D 100%);
-  --background:           #3D1E3D;
-  --foreground:           #FFF5EE;   /* tekst NA gradiencie — biały */
-  --text-secondary:       rgba(255, 245, 238, 0.75);
-  --card:                 #FFFBF7;  /* wewnętrzny gradient ustawiony na .dusk .card */
+  /* ── "Jasny Zachód" — rozjaśniony jak Dawn, zachowane ciepło ───────────────── */
+  --bg-gradient:          linear-gradient(180deg, #F5C8A0 0%, #F0B0A0 45%, #E8A8B8 100%);
+  --background:           #F5C8A0;
+  --foreground:           #3A2530;   /* ciemny — jak w Dawn */
+  --text-secondary:       #8B6B6B;
+  --card:                 #FFFBF7;
   --card-foreground:      #2A1820;
-  --popover:              rgba(255, 250, 245, 0.95);
+  --popover:              #FFFBF7;
   --popover-foreground:   #2A1820;
-  --primary:              #FFD97A;   /* gold na gradiencie (nagłówki, pills) */
-  --primary-foreground:   #3A1A00;
+  --primary:              #C9A84C;   /* standardowe złoto — jedno, nie dwa */
+  --primary-foreground:   #1A1208;
   --secondary:            rgba(58, 37, 48, 0.06);
   --secondary-foreground: #2A1820;
-  --muted:                rgba(255, 250, 245, 0.15);
-  --muted-foreground:     rgba(255, 245, 238, 0.65);  /* muted NA gradiencie — jasny */
-  --accent:               #FFD97A;
-  --accent-foreground:    #3A1A00;
+  --muted:                rgba(245, 200, 160, 0.3);
+  --muted-foreground:     #A89090;
+  --accent:               #C9A84C;
+  --accent-foreground:    #1A1208;
   --accent-warm:          #C97850;
   --destructive:          oklch(0.577 0.245 27.325);
-  --border:               rgba(58, 37, 48, 0.12);    /* border wewnątrz kart */
-  --divider:              rgba(255, 255, 255, 0.15);  /* divider NA gradiencie */
+  --border:               rgba(58, 37, 48, 0.1);
+  --divider:              rgba(58, 37, 48, 0.1);
   --input:                rgba(255, 250, 245, 0.9);
-  --ring:                 #FFD97A;
-  --gold:                 #FFD97A;
-  --gold-dim:             #C9A84C;
-  --nav-bg:               rgba(45, 22, 40, 0.92);    /* ciemny śliwkowy — dopasowany do dołu */
-  --nav-border:           rgba(255, 255, 255, 0.12);
-  --pill-bg:              rgba(255, 255, 255, 0.12);
-  --pill-border:          rgba(255, 215, 150, 0.4);   /* złoty border — biżuteryjny akcent */
-  --pill-text:            #FFF5EE;
-  --sidebar:              rgba(34, 20, 34, 0.9);
-  --sidebar-foreground:   #FFF5EE;
-  --sidebar-primary:      #FFD97A;
-  --sidebar-primary-foreground: #3A1A00;
-  --sidebar-accent:       rgba(255, 255, 255, 0.1);
-  --sidebar-accent-foreground: #FFF5EE;
-  --sidebar-border:       rgba(255, 255, 255, 0.12);
-  --sidebar-ring:         #FFD97A;
-  --icon-inactive:        #C9A899;   /* przygaszony warm dla nieaktywnych */
-  --icon-active:          #FFD97A;
+  --ring:                 #C9A84C;
+  --gold:                 #C9A84C;
+  --gold-dim:             #9A7A2A;
+  --nav-bg:               rgba(245, 235, 230, 0.92);  /* jasny ciepły — jak Dawn */
+  --nav-border:           rgba(200, 168, 130, 0.3);
+  --pill-bg:              rgba(255, 255, 255, 0.6);
+  --pill-border:          rgba(201, 168, 76, 0.3);
+  --pill-text:            #3A2530;
+  --sidebar:              #FFFBF7;
+  --sidebar-foreground:   #2A1820;
+  --sidebar-primary:      #C9A84C;
+  --sidebar-primary-foreground: #1A1208;
+  --sidebar-accent:       rgba(58, 37, 48, 0.06);
+  --sidebar-accent-foreground: #2A1820;
+  --sidebar-border:       rgba(58, 37, 48, 0.1);
+  --sidebar-ring:         #C9A84C;
+  --icon-inactive:        #B08870;
+  --icon-active:          #C9A84C;
   --star-opacity:         0;
 
   /* Card accent colors — standardowe (karty jasne jak w Dawn/Day) */
@@ -361,6 +361,22 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* ─── Energy card — poświata per tryb (ciemna karta na zmiennym tle) ─────── */
+
+/* Jasne tryby — ciepła aura łączy ciemną kartę z jasnym tłem */
+:root .energy-card,
+.dawn .energy-card { box-shadow: 0 0 30px 6px rgba(226, 212, 240, 0.5), 0 8px 24px rgba(100, 70, 120, 0.2); }
+.day  .energy-card { box-shadow: 0 0 30px 6px rgba(200, 216, 236, 0.5), 0 8px 24px rgba(80, 110, 150, 0.2); }
+.dusk .energy-card { box-shadow: 0 0 30px 6px rgba(255, 180, 140, 0.4), 0 8px 24px rgba(120, 40, 60, 0.22); }
+
+/* Night — złota poświata + border */
+.night .energy-card {
+  border: 0.5px solid rgba(201, 168, 76, 0.2);
+  box-shadow:
+    0 0 24px rgba(201, 168, 76, 0.08),
+    0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
 /* ─── DUSK: improved card readability ───────────────────────────────────────── */
 
 .dusk .card {
@@ -436,8 +452,8 @@
 .dusk .settings-row__value    { color: #8B6B5A; }
 .dusk .settings-cta           { color: #C9A84C; }
 
-/* Section labels outside cards — NA gradiencie = jasne */
-.dusk .section-label { color: rgba(255, 245, 238, 0.8); }
+/* Section labels outside cards — NA jasnym gradiencie = ciemne */
+.dusk .section-label { color: #8B6B6B; }
 
 /* Kalyra's Reading — ciemne tło, jasny tekst */
 .dusk .kalyra-reading {
@@ -461,7 +477,7 @@
 /* ─── Calendar legend labels — dusk ─────────────────────────────────────────── */
 
 .dusk .calendar-legend__label {
-  color: rgba(255, 245, 238, 0.75) !important;
+  color: #8B6B6B !important;
 }
 
 /* ─── DUSK: §1 Global — card backdrop + page labels ─────────────────────────── */
@@ -472,9 +488,9 @@
   -webkit-backdrop-filter: none;
 }
 
-/* Page titles — NA gradiencie (ciemnym) = jasne */
-.dusk .page-title    { color: #FFF5EE; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25); }
-.dusk .page-subtitle { color: rgba(255, 245, 238, 0.70); font-size: 14px; }
+/* Page titles — NA gradiencie (jasnym) = ciemne */
+.dusk .page-title    { color: #3A2530; text-shadow: none; }
+.dusk .page-subtitle { color: #8B6B6B; font-size: 14px; }
 
 /* ─── DUSK: §2 Today tab ─────────────────────────────────────────────────────── */
 
@@ -504,10 +520,10 @@
 
 /* ─── DUSK: §3 Moon Calendar ────────────────────────────────────────────────── */
 
-/* Kalendarz — NA gradiencie = jasne */
-.dusk .day-number  { color: rgba(255, 245, 238, 0.85); }
-.dusk .month-nav   { color: rgba(255, 245, 238, 0.65); }
-.dusk .month-title { color: #FFF5EE; }
+/* Kalendarz — NA jasnym gradiencie = ciemne */
+.dusk .day-number  { color: #3A2530; }
+.dusk .month-nav   { color: #8B6B6B; }
+.dusk .month-title { color: #3A2530; }
 /* Bottom sheet — solidne, jasne (jak karta) */
 .dusk .bottom-sheet {
   background: rgba(255, 250, 245, 0.97);
@@ -628,15 +644,16 @@ nav button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ─── DUSK: header text directly on gradient (white + shadow) ───────────── */
+/* ─── DUSK: header text directly on gradient (dark — jasny zachód) ──────── */
 
 .dusk .header-date {
-  color: #FFF5EE !important;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+  color: #8B6B6B !important;
+  text-shadow: none;
 }
 
 .dusk .header-greeting {
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  color: #3A2530;
+  text-shadow: none;
 }
 
 /* ─── Card quote blocks ──────────────────────────────────────────────────── */
@@ -693,16 +710,16 @@ nav button {
 }
 
 .dusk .card--upsell {
-  border-color: rgba(255, 217, 122, 0.4);
-  background:   rgba(30, 12, 50, 0.35);
+  border-color: rgba(201, 168, 76, 0.5);
+  background: rgba(255, 250, 245, 0.88);
 }
 
 .dusk .card--upsell p {
-  color: rgba(255, 240, 220, 0.85);
+  color: #2A1820;
 }
 
 .dusk .upsell-cta {
-  color: #FFD97A;
+  color: #C9A84C;
 }
 
 .upsell-cta {
@@ -798,7 +815,7 @@ nav button {
   content: '';
   flex: 1;
   height: 0.5px;
-  background: var(--accent-gold, #C9A84C);
+  background: currentColor;
 }
 
 .sacred-divider__glyph {
@@ -806,6 +823,21 @@ nav button {
   height: 10px;
   flex-shrink: 0;
 }
+
+/* ─── Sacred divider — kolor per tryb ───────────────────────────────────────── */
+
+/* Night — jasny złoty na ciemnym tle */
+.night .sacred-divider { color: rgba(201, 168, 76, 0.8); }
+
+/* Dawn — lila subtelny */
+.dawn .sacred-divider,
+:root .sacred-divider  { color: rgba(123, 104, 144, 0.7); }
+
+/* Day — niebieskawa */
+.day .sacred-divider   { color: rgba(90, 110, 140, 0.7); }
+
+/* Dusk — ciepły brązowy */
+.dusk .sacred-divider  { color: rgba(160, 100, 90, 0.8); }
 
 /* ─── Progress dots ──────────────────────────────────────────────────────────── */
 

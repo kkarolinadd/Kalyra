@@ -189,28 +189,81 @@ const ENERGY_CONTENT: Record<DayMode, Record<string, EnergyContent>> = {
   },
 };
 
-// Moon phase → CSS inline style
-function getMoonStyle(phase: string): React.CSSProperties {
-  switch (phase) {
-    case "New Moon":
-      return { background: "radial-gradient(circle, #1A1228 30%, #2A2440 100%)", boxShadow: "inset 0 0 0 1px rgba(155,139,184,0.3)" };
-    case "Waxing Crescent":
-      return { background: "radial-gradient(circle at 62% 50%, #F5E8D0 0%, #F5E8D0 30%, #15101F 30%)" };
-    case "First Quarter":
-      return { background: "linear-gradient(90deg, #15101F 50%, #F5E8D0 50%)" };
-    case "Waxing Gibbous":
-      return { background: "radial-gradient(circle at 68% 50%, #F5E8D0 0%, #F5E8D0 62%, #15101F 62%)" };
-    case "Full Moon":
-      return { background: "radial-gradient(circle, #F5E8D0, #E8D4B8)", boxShadow: "0 0 32px rgba(245,232,208,0.6)" };
-    case "Waning Gibbous":
-      return { background: "radial-gradient(circle at 32% 50%, #F5E8D0 0%, #F5E8D0 62%, #15101F 62%)" };
-    case "Last Quarter":
-      return { background: "linear-gradient(90deg, #F5E8D0 50%, #15101F 50%)" };
-    case "Waning Crescent":
-      return { background: "radial-gradient(circle at 20% 50%, #F5E8D0 0%, #F5E8D0 38%, #15101F 38%)" };
-    default:
-      return { background: "radial-gradient(circle, #F5E8D0, #E8D4B8)" };
-  }
+// Premium Moon SVG — warstwowy: poświata, kula, powierzchnia, rim light, cień fazy
+function PremiumMoon({ phase }: { phase: string }) {
+  // Pozycja cienia (cx) tworzy fazę — przesuwa okrąg cienia nad dyskiem
+  const shadowCx: Record<string, number> = {
+    "New Moon":       37,
+    "Waxing Crescent":48,
+    "First Quarter":  50,
+    "Waxing Gibbous": 54,
+    "Full Moon":      90,
+    "Waning Gibbous": 20,
+    "Last Quarter":   24,
+    "Waning Crescent":26,
+  };
+  const cx = shadowCx[phase] ?? 90;
+  const isNew = phase === "New Moon";
+  const isFull = phase === "Full Moon";
+
+  return (
+    <svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">
+      <defs>
+        <radialGradient id="pmSphere" cx="40%" cy="38%" r="68%">
+          <stop offset="0%"   stopColor="#FDF6E4"/>
+          <stop offset="60%"  stopColor="#EFE0C4"/>
+          <stop offset="100%" stopColor="#CDB896"/>
+        </radialGradient>
+        <radialGradient id="pmGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="50%"  stopColor="rgba(255,240,210,0.45)"/>
+          <stop offset="100%" stopColor="rgba(255,240,210,0)"/>
+        </radialGradient>
+        {/* New Moon: ciemna kula */}
+        <radialGradient id="pmNewSphere" cx="40%" cy="38%" r="68%">
+          <stop offset="0%"   stopColor="#2A2440"/>
+          <stop offset="100%" stopColor="#1A1228"/>
+        </radialGradient>
+        <filter id="pmCrater"><feGaussianBlur stdDeviation="1.0"/></filter>
+        <filter id="pmTerminator"><feGaussianBlur stdDeviation="2.2"/></filter>
+        <clipPath id="pmDisc"><circle cx="37" cy="37" r="26"/></clipPath>
+      </defs>
+
+      {/* 1. Atmosferyczna poświata */}
+      {!isNew && <circle cx="37" cy="37" r="37" fill="url(#pmGlow)"/>}
+      {isFull && <circle cx="37" cy="37" r="37" fill="rgba(255,240,210,0.15)"/>}
+
+      {/* 2. Kula z cieniowaniem */}
+      <circle cx="37" cy="37" r="26" fill={isNew ? "url(#pmNewSphere)" : "url(#pmSphere)"}/>
+
+      {/* 3. Maria + kratery (tylko gdy widoczna powierzchnia) */}
+      {!isNew && (
+        <g clipPath="url(#pmDisc)" opacity="0.22">
+          <ellipse cx="28" cy="26" rx="8"  ry="6"  fill="#A89070" filter="url(#pmCrater)"/>
+          <ellipse cx="44" cy="34" rx="9"  ry="7"  fill="#9A8568" filter="url(#pmCrater)"/>
+          <ellipse cx="31" cy="44" rx="5"  ry="5"  fill="#A89070" filter="url(#pmCrater)"/>
+          <circle  cx="24" cy="37" r="2.5"         fill="#8A7558" filter="url(#pmCrater)"/>
+          <circle  cx="38" cy="21" r="2"           fill="#8A7558" filter="url(#pmCrater)"/>
+        </g>
+      )}
+
+      {/* 4. Rim light — jaśniejszy punkt w górnej-lewej krawędzi */}
+      {!isNew && (
+        <circle cx="29" cy="29" r="8" fill="rgba(255,255,255,0.25)"
+          filter="url(#pmTerminator)" clipPath="url(#pmDisc)"/>
+      )}
+
+      {/* 5. Cień fazy — mocno rozmyty terminator */}
+      {!isFull && (
+        <g clipPath="url(#pmDisc)">
+          <circle cx={cx} cy="37" r="26" fill={isNew ? "rgba(0,0,0,0)" : "#15101F"}
+            filter={isNew ? undefined : "url(#pmTerminator)"}/>
+        </g>
+      )}
+
+      {/* New Moon: subtelna krawędź */}
+      {isNew && <circle cx="37" cy="37" r="25.5" fill="none" stroke="rgba(155,139,184,0.25)" strokeWidth="1"/>}
+    </svg>
+  );
 }
 
 // Mode glyph icons
@@ -270,11 +323,10 @@ function EnergyCard({ moonPhase, dayRuler }: { moonPhase: string; dayRuler: stri
   const mode = PHASE_TO_MODE[moonPhase] ?? "manifest";
   const modeConfig = MODE_CONFIG[mode];
   const content = ENERGY_CONTENT[mode][dayRuler] ?? ENERGY_CONTENT[mode]["Sun"];
-  const moonStyle = getMoonStyle(moonPhase);
   const isFullMoon = moonPhase === "Full Moon";
 
   return (
-    <div style={{
+    <div className="energy-card" style={{
       background: "linear-gradient(180deg, #0D0A1A 0%, #1A0D35 70%, #241540 100%)",
       borderRadius: 18,
       padding: "22px 20px 24px",
@@ -305,15 +357,10 @@ function EnergyCard({ moonPhase, dayRuler }: { moonPhase: string; dayRuler: stri
         Energy of the Day
       </p>
 
-      {/* Moon — CSS phase rendering */}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-        <div style={{
-          width: 74, height: 74, borderRadius: "50%",
-          boxShadow: isFullMoon
-            ? "0 0 28px rgba(245,232,208,0.5)"
-            : "0 0 16px rgba(245,232,208,0.12)",
-          ...moonStyle,
-        }} />
+      {/* Moon — Premium SVG warstwowy */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 14,
+        filter: isFullMoon ? "drop-shadow(0 0 12px rgba(245,232,208,0.5))" : undefined }}>
+        <PremiumMoon phase={moonPhase} />
       </div>
 
       {/* Phase name */}
@@ -844,7 +891,7 @@ function SacredDivider() {
   return (
     <div className="sacred-divider">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" className="sacred-divider__glyph">
-        <path d="M5 0.5L9.5 5L5 9.5L0.5 5L5 0.5Z" stroke="#C9A84C" strokeWidth="0.75" fill="none"/>
+        <path d="M5 0.5L9.5 5L5 9.5L0.5 5L5 0.5Z" stroke="currentColor" strokeWidth="0.75" fill="none"/>
       </svg>
     </div>
   );
