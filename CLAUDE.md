@@ -33,47 +33,46 @@ npx tsc --noEmit   # TypeScript check
 |---|---|---|---|
 | DAWN | `:root` | 6–11h | Lavender-peach, white cards, dark text |
 | DAY | `.day` | 11–16h | Subtle blue gradient, white cards, dark text |
-| DUSK | `.dusk` | 16–20h | "After the Sun" — amber→coral→magenta→plum gradient, solid cream cards |
+| DUSK | `.dusk` | 16–20h | "Jasny Zachód" — light peach→coral→rose gradient, dark text, light nav, cream cards |
 | NIGHT | `.night` | 20–6h | Cosmic navy `#0D0A1A→#2D1B69`, `#1A1238` cards, light text |
 
 Key vars: `var(--bg-gradient)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`, `var(--nav-bg)`, `var(--pill-bg)`.
 Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous in DUSK.
 
-**DUSK v4.1 "After the Sun — Refined" rules:**
-- Gradient: `#E89B5C → #C85A5A → #8B3A5E → #3D1E3D` (jewel tones — no muddy middle)
-- Text ON gradient = white `#FFF5EE` + text-shadow
+**DUSK v6.0 "Jasny Zachód" rules:**
+- Gradient: `#F5C8A0 → #F0B0A0 → #E8A8B8` (light peach→coral→rose — pale like Dawn)
+- Text ON gradient = dark `#3A2530` — same logic as Dawn/Day, NO text-shadow
 - Text ON cards = dark `#2A1820` (via `.dusk .kalyra-card` CSS var override)
 - Cards: solid gradient `linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%)` — NO glassmorphism
-- Card shadow: `0 4px 18px rgba(60,15,40,0.22)` + `inset 0 1px 0 rgba(255,255,255,0.8)` (luxury depth)
-- `--muted-foreground` at root = `rgba(255,245,238,0.65)` (for gradient text), overridden inside cards to `#8B6B5A`
+- Gold: single `#C9A84C` everywhere (no more dual gold #FFD97A / #C9A84C)
+- Nav bar: light warm `rgba(245,235,230,0.92)` — matches light background
+- `--muted-foreground`: `#A89090` (dark muted, same on gradient and cards)
 
-**DUSK — 5 zasad (ściąga dla developera):**
+**DUSK — 4 zasady (ściąga dla developera):**
 ```
-1. Tekst NA gradiencie     → biały #FFF5EE + text-shadow 0 2px 12px rgba(0,0,0,0.3)
+1. Tekst NA gradiencie     → ciemny #3A2530 (identyczna logika jak Dawn/Day)
 2. Tekst NA kartach        → ciemny #2A1820 (via .dusk .kalyra-card CSS vars override)
 3. Karty bez glassmorphism → backdrop-filter: none, solidny gradient wewnętrzny
-4. CSS vars na kartach     → KAŻDA karta bez klasy kalyra-card potrzebuje własnych --foreground/--muted-foreground
-5. Sign cards !important   → elementBg inline style wygrywa, potrzeba background: ... !important
+4. Sign cards !important   → elementBg inline style wygrywa, potrzeba background: ... !important
 ```
 
 **DUSK — kluczowe kolory:**
 ```
-Gradient:        #E89B5C → #C85A5A → #8B3A5E → #3D1E3D
+Gradient:        #F5C8A0 → #F0B0A0 → #E8A8B8
+Gradient text:   #3A2530
+Gradient muted:  #8B6B6B
 Karta text:      #2A1820
 Karta muted:     #8B6B5A
-Gradient muted:  rgba(255,245,238,0.65)
-Gold na gradient:#FFD97A
-Gold na karcie:  #C9A84C
-Pills border:    rgba(255,215,150,0.4)  ← złoty, nie biały
-Nav bg:          rgba(45,22,40,0.92)
+Gold (wszędzie): #C9A84C
+Nav bg:          rgba(245,235,230,0.92)
 Quote bg:        rgba(58,30,48,0.05)
 Quote text:      #4A2838
 ```
 
-**DUSK v4.1 — kluczowe klasy CSS (źródło: `Kalyra_DuskMode_Redesign_v4.1.md`):**
+**DUSK v6.0 — kluczowe klasy CSS:**
 
 Wszystkie karty = `linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%)`, brak blur/glassmorphism.
-Tekst na gradiencie = `#FFF5EE`. Tekst na kartach = `#2A1820` (via CSS var override).
+Tekst na gradiencie = `#3A2530`. Tekst na kartach = `#2A1820` (via CSS var override).
 
 | Klasa | Kluczowa właściwość | Uwaga |
 |---|---|---|
@@ -81,11 +80,11 @@ Tekst na gradiencie = `#FFF5EE`. Tekst na kartach = `#2A1820` (via CSS var overr
 | `.dusk .kalyra-card` | `--foreground: #2A1820`, `--muted-foreground: #8B6B5A` | CSS var scope |
 | `.dusk .sign-card` | `background: gradient !important` | override inline elementBg |
 | `.dusk .profile-header-card` | + `--foreground: #2A1820` (nie ma kalyra-card klasy) | wymagane |
-| `.dusk .page-title / .page-subtitle` | `color: #FFF5EE` (NA gradiencie) | — |
-| `.dusk .section-label` | `rgba(255,245,238,0.8)` (NA gradiencie) | — |
+| `.dusk .page-title / .page-subtitle` | `color: #3A2530` (NA jasnym gradiencie) | — |
+| `.dusk .section-label` | `#8B6B6B` (NA jasnym gradiencie) | — |
 | `.dusk .quote-block` | `rgba(58,30,48,0.05)`, text `#4A2838` | — |
-| `--pill-border` | `rgba(255,215,150,0.4)` — złoty | nie biały |
-| `--nav-bg` | `rgba(45,22,40,0.92)` | śliwkowy |
+| `--pill-border` | `rgba(201,168,76,0.3)` — złoty | standard |
+| `--nav-bg` | `rgba(245,235,230,0.92)` | jasny ciepły |
 
 **CSS class conventions (wszystkie taby):**
 - `page-title / page-subtitle` — nagłówek i podtytuł ekranu na gradiencie
@@ -255,7 +254,7 @@ public/
   - CrystalCardSmall in LearnTab: added `kalyra-card crystal-card` className for dusk CSS var inheritance
 - ✅ Energy of the Day Card v5.0 (June 2026) — portal widget replacing 3-tile grid:
   - Always-dark cosmic card (`#0D0A1A → #1A0D35 → #241540`) — same in all 4 sky modes
-  - Real moon phase rendered via CSS gradients (8 phases, radial/linear-gradient per shape)
+  - Moon phase rendered via `PremiumMoon` SVG component (5 layers — see v6.0 below)
   - 5-layer architecture: top label → moon → phase name → day mode → guidance+question → crystal
   - Day mode = moon phase × planetary ruler synthesis (5 modes: Begin/Build/Manifest/Release/Rest)
   - `PHASE_TO_MODE` maps 8 phases to 5 modes; `ENERGY_CONTENT` = 35 entries (5×7)
@@ -265,16 +264,16 @@ public/
   - 10 static star positions with twinkle animation inside card
   - No "Done" circle — energy of the day is experienced, not checked off
   - Removed: old 3-tile grid, MOON_PHASE_TAGLINE, DAY_RULER_TAGLINE, MoonPhaseIcon2/PlanetIcon imports
-- ✅ Dusk Mode Redesign v4.1 "After the Sun — Refined" (June 2026):
-  - Gradient: `#E89B5C → #C85A5A → #8B3A5E → #3D1E3D` (jewel tones, no muddy middle)
-  - Removed glassmorphism from cards completely (backdrop-filter: none)
-  - Cards: internal gradient `linear-gradient(160deg, #FFFBF7 → #FBF2EA)` + deep shadow + inset highlight
-  - CSS var split: `--muted-foreground` at root = gradient muted (light), overridden inside cards = `#8B6B5A`
-  - All non-kalyra-card containers get explicit `--foreground`/`--muted-foreground` CSS var overrides
-  - Sign cards: `background: gradient !important` overrides inline elementBg styles
-  - Pills: golden border `rgba(255,215,150,0.4)` instead of white
-  - Text on gradient: `#FFF5EE` + stronger text-shadow; text on cards: `#2A1820`
-  - Nav bar: `rgba(45,22,40,0.92)` (plum, matches gradient bottom)
+- ✅ Visual Polish v6.0 (June 2026) — Dusk Jasny Zachód + Premium Moon + Night Energy card:
+  - Dusk "Jasny Zachód": light gradient `#F5C8A0 → #F0B0A0 → #E8A8B8`, dark text (like Dawn), single gold `#C9A84C`, light warm nav
+  - `PremiumMoon` SVG component: 5-layer rendering — atmospheric glow, sphere radial gradient, maria/craters (opacity 0.22), rim light, soft blurred terminator (`feGaussianBlur stdDeviation="2.2"`)
+  - Shadow cx offset per phase creates moon phase shape; `isNew`/`isFull` special cases
+  - Night Energy card: `border: 0.5px solid rgba(201,168,76,0.2)` + gold glow so card reads against dark bg
+- ✅ Visual Polish v6.1 (June 2026) — Divider & Energy card halo per mode:
+  - Sacred divider uses `currentColor` (line + SVG stroke) — color set per mode via CSS class
+  - Dawn: lila `rgba(123,104,144,0.7)` · Day: blue `rgba(90,110,140,0.7)` · Dusk: warm brown `rgba(160,100,90,0.8)` · Night: gold `rgba(201,168,76,0.8)`
+  - Energy card adaptive glow: dawn=lila, day=blue, dusk=warm orange, night=gold border+glow
+  - Principle: dark portal card stays constant, only its frame (divider + shadow) adapts per mode
 
 ## What's NOT built yet
 
