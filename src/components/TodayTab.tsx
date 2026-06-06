@@ -7,34 +7,12 @@ import { getRitual, getSpecialSectionContent, getTriggeredRituals } from "@/lib/
 import { getProfile, saveProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitualUsed, type CheckinKey } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import {
-  MoonPhaseIcon2,
   IconSunrise, IconEvening, IconJournal, IconMirror,
   IconCrystalSection, IconGlamour, IconEnergy,
-  CrystalIcon, PlanetIcon,
+  CrystalIcon,
 } from "@/components/icons";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-
-const MOON_PHASE_TAGLINE: Record<string, string> = {
-  "New Moon":        "Set intentions",
-  "Waxing Crescent": "Take first steps",
-  "First Quarter":   "Push through",
-  "Waxing Gibbous":  "Refine & build",
-  "Full Moon":       "Release & celebrate",
-  "Waning Gibbous":  "Time to release",
-  "Last Quarter":    "Let it go",
-  "Waning Crescent": "Rest & restore",
-};
-
-const DAY_RULER_TAGLINE: Record<string, { label: string; action: string }> = {
-  Sun:     { label: "Sun rules today",     action: "Be seen"         },
-  Moon:    { label: "Moon rules today",    action: "Trust feelings"  },
-  Mercury: { label: "Mercury rules today", action: "Speak clearly"   },
-  Venus:   { label: "Venus rules today",   action: "Choose beauty"   },
-  Mars:    { label: "Mars rules today",    action: "Bold moves only" },
-  Jupiter: { label: "Jupiter rules today", action: "Think bigger"    },
-  Saturn:  { label: "Saturn rules today",  action: "Do the work"     },
-};
 
 // CSS variables — values defined per mode in globals.css
 const CARD_ACCENTS: Record<CheckinKey | "energy", string> = {
@@ -55,6 +33,32 @@ const GLAMOUR_COLOR_MAP: Record<string, string> = {
   "Red or orange":           "#C4622D",
   "Deep blue or purple":     "#4A3F7A",
   "Black, charcoal, or dark green": "#2A2A35",
+};
+
+const GLAMOUR_SWATCHES: Record<string, Array<{ name: string; hex: string }>> = {
+  "Gold or amber":           [{ name: "Gold",       hex: "#C9A84C" }, { name: "Amber",       hex: "#D4813A" }],
+  "Silver or white":         [{ name: "Silver",     hex: "#C8D0D8" }, { name: "White",       hex: "#EFEFEF" }],
+  "Silver or pale yellow":   [{ name: "Silver",     hex: "#C8D0D8" }, { name: "Pale yellow", hex: "#E4DF9A" }],
+  "Rose pink or soft green": [{ name: "Rose pink",  hex: "#E8A0B0" }, { name: "Soft green",  hex: "#A8C4A0" }],
+  "Red or orange":           [{ name: "Red",        hex: "#C4622D" }, { name: "Orange",      hex: "#D4813A" }],
+  "Deep blue or purple":     [{ name: "Deep blue",  hex: "#3A4A8A" }, { name: "Purple",      hex: "#6A3F8A" }],
+  "Black, charcoal, or dark green": [
+    { name: "Black",      hex: "#1A1A22" },
+    { name: "Charcoal",   hex: "#404048" },
+    { name: "Dark green", hex: "#2A4A32" },
+  ],
+};
+
+const CRYSTAL_PROPERTIES: Record<string, string[]> = {
+  "Citrine":          ["Confidence", "Abundance", "Sun"],
+  "Moonstone":        ["Intuition", "Feeling",    "Moon"],
+  "Blue Lace Agate":  ["Clarity",   "Expression", "Mercury"],
+  "Rose Quartz":      ["Love",      "Beauty",     "Venus"],
+  "Carnelian":        ["Courage",   "Action",     "Mars"],
+  "Lapis Lazuli":     ["Wisdom",    "Expansion",  "Jupiter"],
+  "Black Tourmaline": ["Protection","Grounding",  "Saturn"],
+  "Amethyst":         ["Intuition", "Peace",      "Neptune"],
+  "Obsidian":         ["Truth",     "Release",    "Pluto"],
 };
 
 const ZODIAC_SIGNS = [
@@ -108,6 +112,279 @@ function getRitualState(key: CheckinKey, colorMode: string, checkedKeys: Checkin
   return currentIdx < firstIdx ? "upcoming" : "missed";
 }
 
+// ─── Energy of the Day Card ───────────────────────────────────────────────────
+
+type DayMode = "begin" | "build" | "manifest" | "release" | "rest";
+
+const PHASE_TO_MODE: Record<string, DayMode> = {
+  "New Moon":       "begin",
+  "Waxing Crescent":"begin",
+  "First Quarter":  "build",
+  "Waxing Gibbous": "build",
+  "Full Moon":      "manifest",
+  "Waning Gibbous": "release",
+  "Last Quarter":   "release",
+  "Waning Crescent":"rest",
+};
+
+const MODE_CONFIG: Record<DayMode, { label: string; color: string }> = {
+  begin:    { label: "A day to begin",    color: "#5BA89A" },
+  build:    { label: "A day to build",    color: "#C9A84C" },
+  manifest: { label: "A day to manifest", color: "#E89B5C" },
+  release:  { label: "A day to release",  color: "#C06070" },
+  rest:     { label: "A day to rest",     color: "#8B6EB0" },
+};
+
+interface EnergyContent {
+  guidance: string;
+  question: string;
+  crystal: { name: string; detail: string };
+}
+
+const ENERGY_CONTENT: Record<DayMode, Record<string, EnergyContent>> = {
+  begin: {
+    Sun:     { guidance: "The Sun rises on new ground. Begin what you've been waiting to start.", question: "What am I ready to plant?", crystal: { name: "Citrine", detail: "held in the morning light" } },
+    Moon:    { guidance: "The Moon begins her cycle with you. Trust what stirs beneath the surface.", question: "What intention wants to be born?", crystal: { name: "Moonstone", detail: "placed on your chest" } },
+    Mercury: { guidance: "Mercury opens a channel. Write the first words before you're ready.", question: "What wants to be named?", crystal: { name: "Blue Lace Agate", detail: "held while writing" } },
+    Venus:   { guidance: "Venus blesses what begins in beauty. Start with what you love.", question: "What am I beginning for love's sake?", crystal: { name: "Rose Quartz", detail: "worn close to the heart" } },
+    Mars:    { guidance: "Mars ignites what you've hesitated to start. Act before you overthink.", question: "What am I ready to claim?", crystal: { name: "Carnelian", detail: "carried in the right hand" } },
+    Jupiter: { guidance: "Jupiter opens the door wide. Step through.", question: "What would I begin if I knew I couldn't fail?", crystal: { name: "Lapis Lazuli", detail: "touched before the threshold" } },
+    Saturn:  { guidance: "Saturn honors what begins with intention. Build the foundation first.", question: "What am I committed to?", crystal: { name: "Black Tourmaline", detail: "set at your desk" } },
+  },
+  build: {
+    Sun:     { guidance: "The Sun amplifies your effort. What you build now shines.", question: "What am I building toward?", crystal: { name: "Citrine", detail: "kept near your work" } },
+    Moon:    { guidance: "The Moon supports slow, steady growth. Trust the pace.", question: "What needs tending, not rushing?", crystal: { name: "Moonstone", detail: "in your pocket" } },
+    Mercury: { guidance: "Mercury sharpens the mind. Refine before you expand.", question: "What needs clarity before the next step?", crystal: { name: "Blue Lace Agate", detail: "on your desk" } },
+    Venus:   { guidance: "Venus softens the climb. What you've grown is almost ready — tend it.", question: "What is nearly ready to be shared?", crystal: { name: "Rose Quartz", detail: "warmed in the palm" } },
+    Mars:    { guidance: "Mars fuels the push. This is the moment to act decisively.", question: "What decision am I ready to make?", crystal: { name: "Carnelian", detail: "in the active hand" } },
+    Jupiter: { guidance: "Jupiter expands what you're building. Think one size larger.", question: "Where can I think bigger?", crystal: { name: "Lapis Lazuli", detail: "under the light" } },
+    Saturn:  { guidance: "Saturn rewards sustained effort. Do the work without looking for shortcuts.", question: "What requires my full attention today?", crystal: { name: "Black Tourmaline", detail: "on your work surface" } },
+  },
+  manifest: {
+    Sun:     { guidance: "The Sun and Moon align at their peak. Let yourself be seen.", question: "What am I ready to claim out loud?", crystal: { name: "Citrine", detail: "worn visibly" } },
+    Moon:    { guidance: "The Full Moon is in her fullness. You are too. Receive.", question: "What has arrived that I haven't acknowledged?", crystal: { name: "Moonstone", detail: "charged in moonlight" } },
+    Mercury: { guidance: "Mercury carries your words to their destination. Speak what matters.", question: "What truth am I ready to say?", crystal: { name: "Blue Lace Agate", detail: "held at the throat" } },
+    Venus:   { guidance: "Venus at the peak. Beauty, love, and pleasure are yours to receive.", question: "What do I love about where I am?", crystal: { name: "Rose Quartz", detail: "near the heart" } },
+    Mars:    { guidance: "Mars at the full moon: power meets courage. Take the leap.", question: "What bold move has been waiting?", crystal: { name: "Carnelian", detail: "gripped with intention" } },
+    Jupiter: { guidance: "Jupiter amplifies the Full Moon. Something bigger than expected is arriving.", question: "What abundance am I ready to receive?", crystal: { name: "Lapis Lazuli", detail: "facing upward" } },
+    Saturn:  { guidance: "Saturn at the Full Moon: results. The work you've done is showing.", question: "What am I proud of building?", crystal: { name: "Black Tourmaline", detail: "acknowledged, not carried" } },
+  },
+  release: {
+    Sun:     { guidance: "The Sun begins its retreat. Release what no longer needs your full light.", question: "What am I ready to let go?", crystal: { name: "Citrine", detail: "set down, not carried" } },
+    Moon:    { guidance: "The Moon releases. Your feelings know the way — let them move through.", question: "What emotion is ready to be felt and freed?", crystal: { name: "Moonstone", detail: "held loosely" } },
+    Mercury: { guidance: "Mercury clears the channel. Let old stories go.", question: "What story am I finally done telling?", crystal: { name: "Blue Lace Agate", detail: "set aside" } },
+    Venus:   { guidance: "Venus releases with grace. What you let go of, you honor.", question: "What am I releasing with love?", crystal: { name: "Rose Quartz", detail: "placed by an open window" } },
+    Mars:    { guidance: "Mars releases what it can't control. Act on what's yours; release the rest.", question: "What am I trying to force that I can let go?", crystal: { name: "Carnelian", detail: "cleansed under water" } },
+    Jupiter: { guidance: "Jupiter releases excess. Wisdom is knowing what to put down.", question: "What have I been carrying that isn't mine?", crystal: { name: "Lapis Lazuli", detail: "returned to earth" } },
+    Saturn:  { guidance: "Saturn closes the cycle. Completion is the gift. Let this chapter end.", question: "What am I ready to finish?", crystal: { name: "Black Tourmaline", detail: "boundaries honored" } },
+  },
+  rest: {
+    Sun:     { guidance: "The Sun prepares for its return. You are allowed to restore.", question: "What does rest look like today?", crystal: { name: "Citrine", detail: "set in the window" } },
+    Moon:    { guidance: "The Moon rests in darkness. She asks you to do the same.", question: "What would I do if I needed nothing from myself?", crystal: { name: "Moonstone", detail: "under the pillow" } },
+    Mercury: { guidance: "Mercury quiets. Less speaking, more listening.", question: "What do I hear when I go still?", crystal: { name: "Blue Lace Agate", detail: "beside the bed" } },
+    Venus:   { guidance: "Venus in the quiet. Rest is its own form of beauty.", question: "How can I be gentle with myself today?", crystal: { name: "Rose Quartz", detail: "anywhere soft" } },
+    Mars:    { guidance: "Mars rests. Stillness is strength replenishing itself.", question: "What would I do if being still were enough?", crystal: { name: "Carnelian", detail: "set down intentionally" } },
+    Jupiter: { guidance: "Jupiter in contemplation. Great expansion begins in silence.", question: "What is quietly growing that I haven't noticed?", crystal: { name: "Lapis Lazuli", detail: "held still" } },
+    Saturn:  { guidance: "Saturn honors rest as structure. Sleep is not laziness.", question: "What boundary am I setting to protect my rest?", crystal: { name: "Black Tourmaline", detail: "at the threshold" } },
+  },
+};
+
+// Moon phase → CSS inline style
+function getMoonStyle(phase: string): React.CSSProperties {
+  switch (phase) {
+    case "New Moon":
+      return { background: "radial-gradient(circle, #1A1228 30%, #2A2440 100%)", boxShadow: "inset 0 0 0 1px rgba(155,139,184,0.3)" };
+    case "Waxing Crescent":
+      return { background: "radial-gradient(circle at 62% 50%, #F5E8D0 0%, #F5E8D0 30%, #15101F 30%)" };
+    case "First Quarter":
+      return { background: "linear-gradient(90deg, #15101F 50%, #F5E8D0 50%)" };
+    case "Waxing Gibbous":
+      return { background: "radial-gradient(circle at 68% 50%, #F5E8D0 0%, #F5E8D0 62%, #15101F 62%)" };
+    case "Full Moon":
+      return { background: "radial-gradient(circle, #F5E8D0, #E8D4B8)", boxShadow: "0 0 32px rgba(245,232,208,0.6)" };
+    case "Waning Gibbous":
+      return { background: "radial-gradient(circle at 32% 50%, #F5E8D0 0%, #F5E8D0 62%, #15101F 62%)" };
+    case "Last Quarter":
+      return { background: "linear-gradient(90deg, #F5E8D0 50%, #15101F 50%)" };
+    case "Waning Crescent":
+      return { background: "radial-gradient(circle at 20% 50%, #F5E8D0 0%, #F5E8D0 38%, #15101F 38%)" };
+    default:
+      return { background: "radial-gradient(circle, #F5E8D0, #E8D4B8)" };
+  }
+}
+
+// Mode glyph icons
+function ModeGlyph({ mode, color }: { mode: DayMode; color: string }) {
+  const p = { width: 18, height: 18, fill: "none", xmlns: "http://www.w3.org/2000/svg" };
+  if (mode === "begin") return (
+    <svg {...p} viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="3" fill={color} />
+      <circle cx="9" cy="9" r="6.5" stroke={color} strokeWidth="0.75" opacity="0.4" />
+    </svg>
+  );
+  if (mode === "build") return (
+    <svg {...p} viewBox="0 0 18 18">
+      <path d="M9 14V4M5 8l4-4 4 4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+  if (mode === "manifest") return (
+    <svg {...p} viewBox="0 0 18 18">
+      <circle cx="9" cy="9" r="3" fill={color} />
+      {[0,45,90,135,180,225,270,315].map((a, i) => (
+        <line key={i}
+          x1={9 + Math.cos(a * Math.PI / 180) * 5.5} y1={9 + Math.sin(a * Math.PI / 180) * 5.5}
+          x2={9 + Math.cos(a * Math.PI / 180) * 7.5} y2={9 + Math.sin(a * Math.PI / 180) * 7.5}
+          stroke={color} strokeWidth="1" strokeLinecap="round"
+        />
+      ))}
+    </svg>
+  );
+  if (mode === "release") return (
+    <svg {...p} viewBox="0 0 18 18">
+      <path d="M9 4v10M5 10l4 4 4-4" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+  // rest
+  return (
+    <svg {...p} viewBox="0 0 18 18">
+      <path d="M11.5 5A6 6 0 0 0 6 14a6 6 0 0 0 8-5.5A4 4 0 0 1 11.5 5z" stroke={color} strokeWidth="1" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Static star positions — deterministic, no hydration mismatch
+const CARD_STARS = [
+  { top: "12%", left: "8%",  size: 1.5, opacity: 0.5,  delay: "0s"   },
+  { top: "20%", left: "85%", size: 1,   opacity: 0.3,  delay: "0.8s" },
+  { top: "35%", left: "15%", size: 1,   opacity: 0.4,  delay: "1.5s" },
+  { top: "8%",  left: "55%", size: 2,   opacity: 0.6,  delay: "0.3s" },
+  { top: "60%", left: "88%", size: 1,   opacity: 0.35, delay: "2.1s" },
+  { top: "75%", left: "6%",  size: 1.5, opacity: 0.4,  delay: "1.1s" },
+  { top: "45%", left: "92%", size: 1,   opacity: 0.3,  delay: "1.8s" },
+  { top: "88%", left: "40%", size: 1,   opacity: 0.25, delay: "0.6s" },
+  { top: "15%", left: "38%", size: 1,   opacity: 0.35, delay: "2.5s" },
+  { top: "55%", left: "22%", size: 1.5, opacity: 0.4,  delay: "1.3s" },
+];
+
+function EnergyCard({ moonPhase, dayRuler }: { moonPhase: string; dayRuler: string }) {
+  const mode = PHASE_TO_MODE[moonPhase] ?? "manifest";
+  const modeConfig = MODE_CONFIG[mode];
+  const content = ENERGY_CONTENT[mode][dayRuler] ?? ENERGY_CONTENT[mode]["Sun"];
+  const moonStyle = getMoonStyle(moonPhase);
+  const isFullMoon = moonPhase === "Full Moon";
+
+  return (
+    <div style={{
+      background: "linear-gradient(180deg, #0D0A1A 0%, #1A0D35 70%, #241540 100%)",
+      borderRadius: 18,
+      padding: "22px 20px 24px",
+      boxShadow: "0 8px 30px rgba(20, 10, 40, 0.4)",
+      position: "relative",
+      overflow: "hidden",
+      marginBottom: 12,
+    }}>
+      {/* Stars */}
+      {CARD_STARS.map((s, i) => (
+        <div key={i} aria-hidden="true" style={{
+          position: "absolute", top: s.top, left: s.left,
+          width: s.size, height: s.size,
+          background: "#FFFFFF", borderRadius: "50%",
+          opacity: s.opacity,
+          animation: `twinkle 2s ${s.delay} ease-in-out infinite alternate`,
+          pointerEvents: "none",
+        }} />
+      ))}
+
+      {/* Top label */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 9,
+        letterSpacing: "0.18em", color: "#9B8BB8",
+        textTransform: "uppercase", textAlign: "center",
+        margin: "0 0 18px",
+      }}>
+        Energy of the Day
+      </p>
+
+      {/* Moon — CSS phase rendering */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+        <div style={{
+          width: 74, height: 74, borderRadius: "50%",
+          boxShadow: isFullMoon
+            ? "0 0 28px rgba(245,232,208,0.5)"
+            : "0 0 16px rgba(245,232,208,0.12)",
+          ...moonStyle,
+        }} />
+      </div>
+
+      {/* Phase name */}
+      <p style={{
+        fontFamily: "var(--font-cormorant), serif",
+        fontSize: 24, fontWeight: 400,
+        color: "#F0EAF8", textAlign: "center",
+        margin: "0 0 10px", lineHeight: 1.1,
+      }}>
+        {moonPhase}
+      </p>
+
+      {/* Day mode */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7, marginBottom: 14 }}>
+        <ModeGlyph mode={mode} color={modeConfig.color} />
+        <span style={{
+          fontFamily: "var(--font-inter)", fontSize: 12,
+          letterSpacing: "0.16em", textTransform: "uppercase",
+          color: modeConfig.color, fontWeight: 500,
+        }}>
+          {modeConfig.label}
+        </span>
+      </div>
+
+      {/* Guidance */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 13,
+        color: "#C8B8D8", textAlign: "center",
+        lineHeight: 1.55, margin: "0 8px",
+      }}>
+        {content.guidance}
+      </p>
+
+      {/* Gold divider */}
+      <div style={{
+        width: 30, height: 0.5,
+        background: "rgba(201,168,76,0.4)",
+        margin: "16px auto",
+      }} />
+
+      {/* Question */}
+      <p style={{
+        fontFamily: "var(--font-cormorant), serif",
+        fontSize: 15, fontStyle: "italic",
+        color: "#E8DCC8", textAlign: "center",
+        lineHeight: 1.4, margin: "0 8px 14px",
+      }}>
+        &ldquo;{content.question}&rdquo;
+      </p>
+
+      {/* Crystal detail */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 11,
+        color: "#9B8BB8", textAlign: "center",
+        letterSpacing: "0.02em", margin: 0,
+      }}>
+        <strong style={{ color: "#C9A899", fontWeight: 400 }}>{content.crystal.name}</strong>
+        {" · "}{content.crystal.detail}
+      </p>
+    </div>
+  );
+}
+
+// ─── Glance line helpers ──────────────────────────────────────────────────────
+
+function truncateWords(text: string, max: number): string {
+  const words = text.split(" ");
+  if (words.length <= max) return text;
+  return words.slice(0, max).join(" ") + "…";
+}
+
 // ─── Upsell localStorage helpers ─────────────────────────────────────────────
 
 function getUpsellVisible(): boolean {
@@ -147,7 +424,8 @@ function SectionCard({
   onMarkComplete,
   children,
   accent,
-  defaultExpanded = true,
+  defaultExpanded = false,
+  glanceLine,
   stateMessage,
 }: {
   icon: React.ComponentType<{ size?: number; color?: string }>;
@@ -159,6 +437,7 @@ function SectionCard({
   children: React.ReactNode;
   accent?: string;
   defaultExpanded?: boolean;
+  glanceLine?: string;
   stateMessage?: string;
 }) {
   const [isExpanded, setIsExpanded] = useState(state === "active" ? defaultExpanded : false);
@@ -168,7 +447,7 @@ function SectionCard({
   useEffect(() => {
     if (prevStateRef.current === state) return;
     if (state === "done") {
-      setTimeout(() => setIsExpanded(false), 1500);
+      // do NOT auto-collapse — user may still want to read
     } else if (state === "active") {
       setIsExpanded(defaultExpanded);
     } else {
@@ -215,7 +494,7 @@ function SectionCard({
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between gap-3" style={{ padding: "14px 16px 14px 20px" }}>
+      <div className="flex items-start justify-between gap-3" style={{ padding: "14px 16px 14px 20px" }}>
         <div className="flex flex-col flex-1 min-w-0 gap-0.5">
           <div className="flex items-center gap-2.5">
             <Icon size={18} color={iconColor} />
@@ -251,12 +530,15 @@ function SectionCard({
               {stateMessage}
             </p>
           )}
-          {state === "done" && !isExpanded && (
-            <p style={{
-              fontFamily: "var(--font-inter)", fontSize: 11,
-              color: "var(--muted-foreground)", margin: 0, lineHeight: 1.4,
+
+          {/* Glance line — visible when collapsed, hidden when expanded */}
+          {glanceLine && !isExpanded && state !== "upcoming" && state !== "missed" && (
+            <p className="rcard-glance" style={{
+              fontFamily: "var(--font-inter)", fontSize: 13,
+              color: "var(--muted-foreground)", margin: "2px 0 0 0",
+              lineHeight: 1.5,
             }}>
-              Tap to read · completed today
+              {glanceLine}
             </p>
           )}
         </div>
@@ -320,6 +602,218 @@ function RitualList({ steps }: { steps: string[] }) {
         </li>
       ))}
     </ol>
+  );
+}
+
+// ─── Rich card bodies ─────────────────────────────────────────────────────────
+
+/** Morning Ritual — vertical dashed path timeline */
+function MorningRitualBody({ steps }: { steps: string[] }) {
+  return (
+    <div>
+      {steps.map((step, i) => (
+        <div key={i} style={{ display: "flex", gap: 12 }}>
+          {/* Step number + dashed connector */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: 24 }}>
+            <div style={{
+              width: 24, height: 24, borderRadius: "50%",
+              border: "1px solid var(--primary)",
+              background: "var(--card)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 11, fontWeight: 600, color: "var(--primary)",
+              fontFamily: "var(--font-inter)", flexShrink: 0, zIndex: 1,
+            }}>
+              {i + 1}
+            </div>
+            {i < steps.length - 1 && (
+              <div style={{
+                width: 0, flex: 1, minHeight: 16,
+                borderLeft: "1.5px dashed var(--border)",
+                marginTop: 3, marginBottom: 3,
+              }} />
+            )}
+          </div>
+          {/* Step text */}
+          <div style={{ paddingBottom: i < steps.length - 1 ? 14 : 0, flex: 1, paddingTop: 3 }}>
+            <span style={{ fontSize: 14, lineHeight: 1.5, color: "var(--foreground)" }}>{step}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Journal Prompt — lined paper with prompt */
+function JournalBody({ prompt }: { prompt: string }) {
+  const LINE_COUNT = 5;
+  return (
+    <div style={{
+      position: "relative", borderRadius: 10,
+      background: "var(--secondary)", padding: "14px 14px 18px",
+      overflow: "hidden",
+    }}>
+      {/* Horizontal ruled lines */}
+      {Array.from({ length: LINE_COUNT }).map((_, i) => (
+        <div key={i} style={{
+          position: "absolute", left: 14, right: 14,
+          top: 46 + i * 28, height: "0.5px",
+          background: "var(--border)", opacity: 0.55,
+          pointerEvents: "none",
+        }} />
+      ))}
+      {/* Prompt */}
+      <p style={{
+        fontFamily: "var(--font-cormorant), serif",
+        fontSize: 17, fontStyle: "italic", lineHeight: 1.7,
+        color: "var(--foreground)", margin: 0, position: "relative", zIndex: 1,
+      }}>
+        &ldquo;{prompt}&rdquo;
+      </p>
+      {/* Start writing hint */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 11,
+        color: "var(--muted-foreground)", margin: "10px 0 0",
+        fontStyle: "italic", opacity: 0.5, position: "relative", zIndex: 1,
+      }}>
+        Start writing…
+      </p>
+    </div>
+  );
+}
+
+/** Mirror Reflection — affirmation + ghosted flipped echo */
+function MirrorBody({ reflection }: { reflection: string }) {
+  return (
+    <div>
+      <p className="read-aloud-label" style={{ textTransform: "none", marginBottom: 10, fontSize: 11 }}>
+        Read aloud · in the mirror
+      </p>
+      {/* Main affirmation */}
+      <div className="quote-block" style={{ textAlign: "center", marginBottom: 0 }}>
+        &ldquo;{reflection}&rdquo;
+      </div>
+      {/* Mirror echo — barely visible flip, capped height */}
+      <div
+        aria-hidden="true"
+        style={{
+          maxHeight: 36,
+          overflow: "hidden",
+          transform: "scaleY(-1)",
+          opacity: 0.06,
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
+          pointerEvents: "none", userSelect: "none",
+          fontFamily: "var(--font-cormorant), serif",
+          fontSize: 17, fontStyle: "italic", lineHeight: 1.7,
+          color: "var(--foreground)", textAlign: "center",
+          marginTop: 1, padding: "0 4px",
+        }}
+      >
+        &ldquo;{reflection}&rdquo;
+      </div>
+    </div>
+  );
+}
+
+/** Crystal of the Day — icon + name + chips + instruction */
+function CrystalBody({ name, why, howToUse }: { name: string; why: string; howToUse: string }) {
+  const chips = CRYSTAL_PROPERTIES[name] ?? [];
+  return (
+    <div>
+      {/* Icon + name */}
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
+        <div style={{ flexShrink: 0 }}>
+          <CrystalIcon name={name} size={52} />
+        </div>
+        <div>
+          <p style={{
+            fontFamily: "var(--font-cormorant), serif",
+            fontWeight: 600, fontSize: 22, color: "var(--primary)",
+            margin: 0, lineHeight: 1.1,
+          }}>
+            {name}
+          </p>
+          <p style={{
+            fontFamily: "var(--font-inter)", fontSize: 12,
+            color: "var(--muted-foreground)", margin: "4px 0 0",
+          }}>
+            Carry it close today
+          </p>
+          {/* Why — compact */}
+          <p style={{
+            fontFamily: "var(--font-inter)", fontSize: 12,
+            color: "var(--muted-foreground)", margin: "3px 0 0", lineHeight: 1.4,
+          }}>
+            {why.split(".")[0]}.
+          </p>
+        </div>
+      </div>
+      {/* Property chips */}
+      {chips.length > 0 && (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 0 }}>
+          {chips.map((chip) => (
+            <span key={chip} style={{
+              fontFamily: "var(--font-inter)", fontSize: 11, fontWeight: 500,
+              color: "var(--muted-foreground)",
+              border: "1px solid var(--border)", borderRadius: 20,
+              padding: "3px 9px",
+            }}>
+              {chip}
+            </span>
+          ))}
+        </div>
+      )}
+      {/* Instruction */}
+      {howToUse && (
+        <p style={{
+          fontFamily: "var(--font-inter)", fontSize: 13,
+          color: "var(--muted-foreground)", lineHeight: 1.5,
+          marginTop: 12, paddingTop: 12, marginBottom: 0,
+          borderTop: "0.5px solid var(--border)",
+        }}>
+          {truncateWords(howToUse, 20)}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Glamour Magic — color swatches + short copy */
+function GlamourBody({ colorName, suggestion }: { colorName: string; suggestion: string }) {
+  const swatches = GLAMOUR_SWATCHES[colorName]
+    ?? [{ name: colorName, hex: GLAMOUR_COLOR_MAP[colorName] ?? "#C9A84C" }];
+  // Take only the first sentence as copy
+  const shortCopy = suggestion.split(". ")[0] + ".";
+
+  return (
+    <div>
+      {/* Swatches */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "flex-end" }}>
+        {swatches.map((s) => (
+          <div key={s.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+            <div style={{
+              width: 64, height: 64, borderRadius: 14,
+              background: s.hex,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+            }} />
+            <span style={{
+              fontFamily: "var(--font-inter)", fontSize: 11,
+              color: "var(--muted-foreground)", textAlign: "center",
+            }}>
+              {s.name}
+            </span>
+          </div>
+        ))}
+      </div>
+      {/* Short copy */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 13,
+        color: "var(--muted-foreground)", lineHeight: 1.5,
+        margin: 0,
+      }}>
+        {shortCopy}
+      </p>
+    </div>
   );
 }
 
@@ -681,11 +1175,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
 
   const cardState = (key: CheckinKey) => getRitualState(key, colorMode, checkins);
 
-  // Moon phase colors — warm brown/beige on light bg, default on dark bg
-  const isLightMode  = colorMode === "dawn" || colorMode === "day";
-  const moonLitColor  = isLightMode ? "#8B7355"  : "var(--foreground)";
-  const moonDarkColor = isLightMode ? "#E8E0D0"  : undefined;
-  const moonStroke    = "var(--primary)";
 
   const handleGenerateRitual = async () => {
     setAiState("loading");
@@ -787,64 +1276,8 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
 
         <div style={{ height: 1, background: "var(--divider)", marginBottom: 20 }} />
 
-        {/* ── Energy Card (3 columns) ──────────────────────── */}
-        <div
-          className="rounded-2xl overflow-hidden mb-3 kalyra-card"
-          style={{ background: "var(--card)", border: "1px solid var(--border)" }}
-        >
-          <div className="grid grid-cols-3">
-            {/* Moon Phase */}
-            <div
-              className="flex flex-col items-center p-4 text-center"
-              style={{ borderRight: "1px solid var(--border)" }}
-            >
-              <div style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
-                <MoonPhaseIcon2
-                  phase={astro.moonPhase}
-                  size={24}
-                  litColor={moonLitColor}
-                  darkColor={moonDarkColor}
-                  strokeColor={moonStroke}
-                />
-              </div>
-              <span className="text-xs font-semibold leading-tight" style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
-                {astro.moonPhase}
-              </span>
-              <span className="text-xs leading-tight mt-0.5" style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
-                {MOON_PHASE_TAGLINE[astro.moonPhase]}
-              </span>
-            </div>
-
-            {/* Planet of the Day */}
-            <div
-              className="flex flex-col items-center p-4 text-center"
-              style={{ borderRight: "1px solid var(--border)" }}
-            >
-              <div style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
-                <PlanetIcon planet={astro.dayRuler} size={20} color="var(--primary)" />
-              </div>
-              <span className="text-xs font-semibold leading-tight" style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
-                {DAY_RULER_TAGLINE[astro.dayRuler].label}
-              </span>
-              <span className="text-xs leading-tight mt-0.5" style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
-                {DAY_RULER_TAGLINE[astro.dayRuler].action}
-              </span>
-            </div>
-
-            {/* Crystal */}
-            <div className="flex flex-col items-center p-4 text-center">
-              <div style={{ width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 8 }}>
-                <CrystalIcon name={ritual.crystal.name} size={24} />
-              </div>
-              <span className="text-xs font-semibold leading-tight" style={{ fontFamily: "var(--font-inter)", color: "var(--foreground)" }}>
-                {ritual.crystal.name}
-              </span>
-              <span className="text-xs leading-tight mt-0.5" style={{ fontFamily: "var(--font-inter)", color: "var(--primary)", fontWeight: 500 }}>
-                carry today
-              </span>
-            </div>
-          </div>
-        </div>
+        {/* ── Energy of the Day Card ───────────────────────── */}
+        <EnergyCard moonPhase={astro.moonPhase} dayRuler={astro.dayRuler} />
 
         {/* Special event badges */}
         {astro.specialEvents.length > 0 && (
@@ -888,12 +1321,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("morning")}
           onMarkComplete={() => markComplete("morning")}
           accent={CARD_ACCENTS.morning}
+          glanceLine={`${truncateWords(ritual.morningRitual[0], 5)} · ${ritual.morningRitual.length} steps`}
           stateMessage={
             cardState("morning") === "upcoming" ? UPCOMING_MSGS.morning :
             cardState("morning") === "missed"   ? MISSED_MSGS.morning   : undefined
           }
         >
-          <RitualList steps={ritual.morningRitual} />
+          <MorningRitualBody steps={ritual.morningRitual} />
         </SectionCard>
 
         {/* 4. Journal Prompt */}
@@ -905,14 +1339,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("journal")}
           onMarkComplete={() => markComplete("journal")}
           accent={CARD_ACCENTS.journal}
+          glanceLine={truncateWords(ritual.journalPrompt, 7)}
           stateMessage={
             cardState("journal") === "upcoming" ? UPCOMING_MSGS.journal :
             cardState("journal") === "missed"   ? MISSED_MSGS.journal   : undefined
           }
         >
-          <div className="quote-block">
-            &ldquo;{ritual.journalPrompt}&rdquo;
-          </div>
+          <JournalBody prompt={ritual.journalPrompt} />
         </SectionCard>
 
         {/* 5. Mirror Reflection */}
@@ -923,15 +1356,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("mirror")}
           onMarkComplete={() => markComplete("mirror")}
           accent={CARD_ACCENTS.mirror}
+          glanceLine="Read aloud · in the mirror"
           stateMessage={
             cardState("mirror") === "upcoming" ? UPCOMING_MSGS.mirror :
             cardState("mirror") === "missed"   ? MISSED_MSGS.mirror   : undefined
           }
         >
-          <p className="read-aloud-label" style={{ textTransform: "none" }}>Read aloud · in the mirror</p>
-          <div className="quote-block" style={{ textAlign: "center" }}>
-            &ldquo;{ritual.mirrorReflection}&rdquo;
-          </div>
+          <MirrorBody reflection={ritual.mirrorReflection} />
         </SectionCard>
 
         {/* 6. Crystal of the Day */}
@@ -942,25 +1373,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("crystal")}
           onMarkComplete={() => markComplete("crystal")}
           accent={CARD_ACCENTS.crystal}
+          glanceLine={`${ritual.crystal.name} · carry today`}
         >
-          <div className="space-y-3">
-            <p style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, fontSize: 20, color: "var(--primary)", margin: 0 }}>
-              {ritual.crystal.name}
-            </p>
-            <p style={{ fontSize: 14, color: "var(--muted-foreground)", margin: 0 }}>
-              {ritual.crystal.why}
-            </p>
-            <div style={{ borderRadius: 10, background: "var(--secondary)", padding: "10px 12px" }}>
-              <p className="card__sublabel" style={{
-                fontFamily: "var(--font-inter)", fontWeight: 600,
-                fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase",
-                color: "var(--muted-foreground)", margin: "0 0 6px 0",
-              }}>
-                How to use today
-              </p>
-              <p style={{ fontSize: 14, margin: 0 }}>{ritual.crystal.howToUse}</p>
-            </div>
-          </div>
+          <CrystalBody
+            name={ritual.crystal.name}
+            why={ritual.crystal.why}
+            howToUse={ritual.crystal.howToUse}
+          />
         </SectionCard>
 
         {/* 7. Glamour Magic */}
@@ -971,18 +1390,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("wear")}
           onMarkComplete={() => markComplete("wear")}
           accent={CARD_ACCENTS.wear}
+          glanceLine={ritual.glamour.color}
           stateMessage={
             cardState("wear") === "upcoming" ? UPCOMING_MSGS.wear :
             cardState("wear") === "missed"   ? MISSED_MSGS.wear   : undefined
           }
         >
-          <div className="space-y-2">
-            <p style={{ fontFamily: "var(--font-cormorant), serif", fontWeight: 600, fontSize: 20, color: "var(--primary)", margin: 0, display: "flex", alignItems: "center" }}>
-              <GlamourChip colorName={glamourChipColor} />
-              {ritual.glamour.color}
-            </p>
-            <p style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>{ritual.glamour.suggestion}</p>
-          </div>
+          <GlamourBody colorName={ritual.glamour.color} suggestion={ritual.glamour.suggestion} />
         </SectionCard>
 
         {/* 8. Evening Ritual */}
@@ -994,13 +1408,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("evening")}
           onMarkComplete={() => markComplete("evening")}
           accent={CARD_ACCENTS.evening}
-          defaultExpanded={colorMode === "dusk"}
+          glanceLine={`${truncateWords(ritual.eveningRitual[0], 5)} · ${ritual.eveningRitual.length} steps`}
           stateMessage={
             cardState("evening") === "upcoming" ? UPCOMING_MSGS.evening :
             cardState("evening") === "missed"   ? MISSED_MSGS.evening   : undefined
           }
         >
-          <RitualList steps={ritual.eveningRitual} />
+          <MorningRitualBody steps={ritual.eveningRitual} />
         </SectionCard>
 
         {/* 9. Upsell */}

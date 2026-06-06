@@ -368,9 +368,9 @@ const PHASE_BASE: Record<
 
   "Waning Gibbous": {
     morning: [
-      "Begin with gratitude — the peak has passed and it's time to harvest.",
-      "Write 5 things this lunar cycle has taught you.",
-      "Share something you've learned with someone you trust.",
+      "Begin with gratitude. The peak has passed.",
+      "Name 5 things this cycle taught you.",
+      "Share one with someone you trust.",
     ],
     journal:
       "What did this lunar cycle teach you? What arrived that you didn't expect? What are you integrating?",
@@ -494,7 +494,7 @@ const RULER_LAYER: Record<
     glamour:
       "Black or charcoal. Classic, structured, intentional. Saturn days reward discipline and long-term thinking.",
     morningAdd:
-      "Write one commitment you are making to yourself this week. Saturn honors follow-through.",
+      "Write one commitment to yourself this week.",
   },
 };
 

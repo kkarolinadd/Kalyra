@@ -159,55 +159,56 @@
    MODE 3 — DUSK  ·  16:00–20:00  ·  Złota godzina — amber i rose
 ───────────────────────────────────────────────────────────────────────────── */
 .dusk {
-  --bg-gradient:          linear-gradient(180deg, #F5C080 0%, #E89060 35%, #C45878 65%, #8B3050 100%);
-  --background:           #C45878;
-  --foreground:           #FFF5EE;
-  --text-secondary:       #F5D4B8;
-  --card:                 rgba(255, 255, 255, 0.25);
-  --card-foreground:      #3A1810;
-  --popover:              rgba(255, 255, 255, 0.2);
-  --popover-foreground:   #FFF5EE;
-  --primary:              #FFD97A;
+  /* ── "After the Sun — Refined" — klejnotowy gradient ───────────────────────── */
+  --bg-gradient:          linear-gradient(180deg, #E89B5C 0%, #C85A5A 32%, #8B3A5E 60%, #3D1E3D 100%);
+  --background:           #3D1E3D;
+  --foreground:           #FFF5EE;   /* tekst NA gradiencie — biały */
+  --text-secondary:       rgba(255, 245, 238, 0.75);
+  --card:                 #FFFBF7;  /* wewnętrzny gradient ustawiony na .dusk .card */
+  --card-foreground:      #2A1820;
+  --popover:              rgba(255, 250, 245, 0.95);
+  --popover-foreground:   #2A1820;
+  --primary:              #FFD97A;   /* gold na gradiencie (nagłówki, pills) */
   --primary-foreground:   #3A1A00;
-  --secondary:            rgba(255, 255, 255, 0.2);
-  --secondary-foreground: #FFF5EE;
-  --muted:                rgba(255, 255, 255, 0.1);
-  --muted-foreground:     #D4A890;
+  --secondary:            rgba(58, 37, 48, 0.06);
+  --secondary-foreground: #2A1820;
+  --muted:                rgba(255, 250, 245, 0.15);
+  --muted-foreground:     rgba(255, 245, 238, 0.65);  /* muted NA gradiencie — jasny */
   --accent:               #FFD97A;
   --accent-foreground:    #3A1A00;
-  --accent-warm:          #F5C080;
+  --accent-warm:          #C97850;
   --destructive:          oklch(0.577 0.245 27.325);
-  --border:               rgba(255, 255, 255, 0.32);
-  --divider:              rgba(255, 255, 255, 0.2);
-  --input:                rgba(255, 255, 255, 0.2);
+  --border:               rgba(58, 37, 48, 0.12);    /* border wewnątrz kart */
+  --divider:              rgba(255, 255, 255, 0.15);  /* divider NA gradiencie */
+  --input:                rgba(255, 250, 245, 0.9);
   --ring:                 #FFD97A;
   --gold:                 #FFD97A;
   --gold-dim:             #C9A84C;
-  --nav-bg:               rgba(30, 12, 50, 0.88);
-  --nav-border:           rgba(180, 140, 220, 0.15);
-  --pill-bg:              rgba(255, 255, 255, 0.2);
-  --pill-border:          rgba(255, 255, 255, 0.35);
+  --nav-bg:               rgba(45, 22, 40, 0.92);    /* ciemny śliwkowy — dopasowany do dołu */
+  --nav-border:           rgba(255, 255, 255, 0.12);
+  --pill-bg:              rgba(255, 255, 255, 0.12);
+  --pill-border:          rgba(255, 215, 150, 0.4);   /* złoty border — biżuteryjny akcent */
   --pill-text:            #FFF5EE;
-  --sidebar:              rgba(30, 12, 50, 0.88);
+  --sidebar:              rgba(34, 20, 34, 0.9);
   --sidebar-foreground:   #FFF5EE;
   --sidebar-primary:      #FFD97A;
   --sidebar-primary-foreground: #3A1A00;
   --sidebar-accent:       rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #FFF5EE;
-  --sidebar-border:       rgba(180, 140, 220, 0.15);
+  --sidebar-border:       rgba(255, 255, 255, 0.12);
   --sidebar-ring:         #FFD97A;
-  --icon-inactive:        rgba(200, 170, 230, 0.55);
+  --icon-inactive:        #C9A899;   /* przygaszony warm dla nieaktywnych */
   --icon-active:          #FFD97A;
   --star-opacity:         0;
 
-  /* Luminous card accents — visible on dark glassmorphism */
-  --accent-morning: #FFD080;
-  --accent-evening: #C8A0FF;
-  --accent-journal: #FFE080;
-  --accent-mirror:  #FFB0C8;
-  --accent-crystal: #80E0D0;
-  --accent-wear:    #FFD0A0;
-  --accent-energy:  #FFD080;
+  /* Card accent colors — standardowe (karty jasne jak w Dawn/Day) */
+  --accent-morning: #E8943A;
+  --accent-evening: #8B6EB0;
+  --accent-journal: #C9A84C;
+  --accent-mirror:  #C06070;
+  --accent-crystal: #4A9B8E;
+  --accent-wear:    #C9A84C;
+  --accent-energy:  #C9A84C;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -341,17 +342,19 @@
    Text ON cards must be dark — cards are semi-transparent over light bg.
 ─────────────────────────────────────────────────────────────────────────── */
 .dusk .kalyra-card {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow:
+    0 4px 18px rgba(60, 15, 40, 0.22),    /* głęboki cień — karta unosi się */
+    inset 0 1px 0 rgba(255, 255, 255, 0.8); /* blask górnej krawędzi — luxury */
   /* Override CSS vars for all children inside cards */
-  --foreground:        #3A1810;
-  --card-foreground:   #3A1810;
-  --muted-foreground:  #8B4030;
-  --primary:           #A07820;   /* darker gold — readable on light card bg */
-  --secondary:         rgba(122, 48, 32, 0.08);
-  --secondary-foreground: #3A1810;
-  --border:            rgba(122, 48, 32, 0.15);
+  --foreground:        #2A1820;
+  --card-foreground:   #2A1820;
+  --muted-foreground:  #8B6B5A;
+  --primary:           #C9A84C;
+  --secondary:         rgba(58, 30, 48, 0.05);
+  --secondary-foreground: #2A1820;
+  --border:            rgba(58, 37, 48, 0.12);
 }
 
 .night .kalyra-card {
@@ -361,20 +364,23 @@
 /* ─── DUSK: improved card readability ───────────────────────────────────────── */
 
 .dusk .card {
-  background: rgba(255, 248, 240, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  border: 0.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 4px 18px rgba(60, 15, 40, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .dusk .card__header-label {
-  color: #6A2530;
+  color: #2A1820;
 }
 
 .dusk .card__body-text {
-  color: #3A1018;
+  color: #2A1820;
 }
 
 .dusk .card__muted {
-  color: #8A4550;
+  color: #8B6B5A;
 }
 
 /* ─── DUSK: Profile tab — opacity hierarchy (most text = highest opacity) ───── */
@@ -385,115 +391,132 @@
  */
 
 .dusk .profile-card {
-  background: rgba(255, 248, 240, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --primary:          #C9A84C;
+  --border:           rgba(58, 37, 48, 0.12);
+  --divider:          rgba(58, 37, 48, 0.12);
+  --secondary:        rgba(58, 37, 48, 0.06);
 }
 
-.dusk .profile-card .text-primary   { color: #2A1015; }
-.dusk .profile-card .text-secondary { color: #6A3040; }
-.dusk .profile-card .text-muted     { color: #8A5060; }
+.dusk .profile-card .text-primary   { color: #2A1820; }
+.dusk .profile-card .text-secondary { color: #5A3A48; }
+.dusk .profile-card .text-muted     { color: #8B6B5A; }
 
-/* Sign cards */
+/* Sign cards — !important bo inline elementBg style wygrywa z CSS */
 .dusk .sign-card {
-  background: rgba(255, 248, 240, 0.70);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%) !important;
+  /* Nadpisz CSS vars wewnątrz sign-card */
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --primary:          #C9A84C;
+  --divider:          rgba(58, 37, 48, 0.12);
 }
-.dusk .sign-card .sign-name   { color: #2A1015; }
-.dusk .sign-card .sign-label  { color: #8A5060; }
-.dusk .sign-card .sign-traits { color: #6A3040; }
+.dusk .sign-card .sign-name   { color: #2A1820; }
+.dusk .sign-card .sign-label  { color: #8B6B5A; }
+.dusk .sign-card .sign-traits { color: #5A3A48; }
 
 /* Elemental Makeup */
-.dusk .elemental-label { color: #6A3040; }
-.dusk .elemental-value { color: #6A3040; }
+.dusk .elemental-label { color: #5A3A48; }
+.dusk .elemental-value { color: #5A3A48; }
 
 /* Stats */
 .dusk .stat-card {
-  background: rgba(255, 248, 240, 0.70);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --primary:          #C9A84C;
 }
-.dusk .stat-card__label { color: #8A5060; }
+.dusk .stat-card__label { color: #8B6B5A; }
 
 /* Settings */
-.dusk .settings-section-label { color: rgba(42, 16, 21, 0.60); }
-.dusk .settings-row__value    { color: #8A5060; }
+.dusk .settings-section-label { color: rgba(58, 37, 48, 0.55); }
+.dusk .settings-row__value    { color: #8B6B5A; }
 .dusk .settings-cta           { color: #C9A84C; }
 
-/* Section labels outside cards */
-.dusk .section-label { color: rgba(42, 16, 21, 0.65); }
+/* Section labels outside cards — NA gradiencie = jasne */
+.dusk .section-label { color: rgba(255, 245, 238, 0.8); }
 
-/* Kalyra's Reading — text shadow for mauve background */
+/* Kalyra's Reading — ciemne tło, jasny tekst */
 .dusk .kalyra-reading {
-  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* ─── DUSK: collapsed cards + HOW TO USE sublabel ───────────────────────────── */
 
 .dusk .card--collapsed {
-  background: rgba(255, 248, 240, 0.40);
+  background: rgba(255, 250, 245, 0.82);
 }
 
 .dusk .card--collapsed .card__header-label {
-  color: #6A2530;
+  color: #2A1820;
 }
 
 .dusk .card__sublabel {
-  color: #6A2530;
+  color: #5A3A48;
 }
 
 /* ─── Calendar legend labels — dusk ─────────────────────────────────────────── */
 
 .dusk .calendar-legend__label {
-  color: rgba(60, 20, 40, 0.8) !important;
+  color: rgba(255, 245, 238, 0.75) !important;
 }
 
 /* ─── DUSK: §1 Global — card backdrop + page labels ─────────────────────────── */
 
+/* backdrop-filter USUNIĘTY z kart — zostaje tylko dla pills i nav */
 .dusk .card {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(100, 40, 60, 0.12);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.dusk .page-title    { color: #2A1015; text-shadow: none; }
-.dusk .page-subtitle { color: rgba(42, 16, 21, 0.55); font-size: 14px; }
+/* Page titles — NA gradiencie (ciemnym) = jasne */
+.dusk .page-title    { color: #FFF5EE; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25); }
+.dusk .page-subtitle { color: rgba(255, 245, 238, 0.70); font-size: 14px; }
 
 /* ─── DUSK: §2 Today tab ─────────────────────────────────────────────────────── */
 
-.dusk .ritual-card  { background: rgba(255, 248, 240, 0.55); }
-.dusk .card__subtext { color: #8A4550; }
+.dusk .ritual-card   { background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%); }
+.dusk .card__subtext { color: #8B6B5A; }
 .dusk .how-to-use-label {
-  color: #7A2530;
-  background: rgba(255, 248, 240, 0.60);
+  color: #5A3A48;
+  background: transparent;
 }
 .dusk .step-number {
-  background: rgba(255, 248, 240, 0.60);
-  color: #7A2530;
+  background: rgba(58, 37, 48, 0.08);
+  color: #5A3A48;
 }
-.dusk .energy-card__divider  { background: rgba(255, 255, 255, 0.30); }
-.dusk .energy-card__title    { color: #2A1015; }
-.dusk .energy-card__subtitle { color: #8A4550; }
+.dusk .energy-card__divider  { background: rgba(58, 37, 48, 0.12); }
+.dusk .energy-card__title    { color: #2A1820; }
+.dusk .energy-card__subtitle { color: #8B6B5A; }
 .dusk .progress-counter {
-  background: rgba(255, 248, 240, 0.45);
-  color: #2A1015;
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  color: #2A1820;
 }
 .dusk .card--upsell {
-  border-color: rgba(201, 168, 76, 0.45);
-  background: rgba(255, 248, 240, 0.30);
+  border-color: rgba(201, 168, 76, 0.5);
+  background: rgba(255, 250, 245, 0.88);
 }
-.dusk .card--upsell p           { color: rgba(42, 16, 21, 0.85); }
+.dusk .card--upsell p           { color: #2A1820; }
 .dusk .card--upsell .upsell-cta { color: #C9A84C; }
 
 /* ─── DUSK: §3 Moon Calendar ────────────────────────────────────────────────── */
 
-.dusk .day-number { color: rgba(42, 16, 21, 0.75); }
-.dusk .month-nav  { color: rgba(42, 16, 21, 0.55); }
-.dusk .month-title { color: #2A1015; }
+/* Kalendarz — NA gradiencie = jasne */
+.dusk .day-number  { color: rgba(255, 245, 238, 0.85); }
+.dusk .month-nav   { color: rgba(255, 245, 238, 0.65); }
+.dusk .month-title { color: #FFF5EE; }
+/* Bottom sheet — solidne, jasne (jak karta) */
 .dusk .bottom-sheet {
-  background: rgba(255, 248, 240, 0.90);
+  background: rgba(255, 250, 245, 0.97);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
-.dusk .bottom-sheet__title   { color: #2A1015; }
-.dusk .bottom-sheet__content { color: #6A3040; }
-.dusk .bottom-sheet__kalyra  { color: #2A1015; font-style: italic; }
+.dusk .bottom-sheet__title   { color: #2A1820; }
+.dusk .bottom-sheet__content { color: #5A3A48; }
+.dusk .bottom-sheet__kalyra  { color: #2A1820; font-style: italic; }
 
 /* ─── DUSK: §4 Learn tab ─────────────────────────────────────────────────────── */
 
@@ -503,76 +526,99 @@
 .dusk .featured-card__meta  { color: rgba(255, 255, 255, 0.55); }
 
 .dusk .crystal-card {
-  background: rgba(255, 248, 240, 0.70);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
-.dusk .crystal-card__name     { color: #2A1015; }
-.dusk .crystal-card__keywords { color: #8A5060; }
+.dusk .crystal-card__name     { color: #2A1820; }
+.dusk .crystal-card__keywords { color: #8B6B5A; }
 .dusk .crystal-card__planet   { color: #C9A84C; }
 
-.dusk .article-row { background: rgba(255, 248, 240, 0.65); }
-.dusk .article-row__title { color: #2A1015; }
-.dusk .article-row__meta  { color: #8A5060; }
+.dusk .article-row { background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%); }
+.dusk .article-row__title { color: #2A1820; }
+.dusk .article-row__meta  { color: #8B6B5A; }
 
 .dusk .ask-kalyra {
-  background: rgba(255, 248, 240, 0.35);
-  border: 1.5px dashed rgba(201, 168, 76, 0.50);
+  background: rgba(255, 250, 245, 0.80);
+  border: 1.5px dashed rgba(201, 168, 76, 0.55);
 }
-.dusk .ask-kalyra__label   { color: #2A1015; }
-.dusk .ask-kalyra__example { color: rgba(42, 16, 21, 0.60); font-style: italic; }
+.dusk .ask-kalyra__label   { color: #2A1820; }
+.dusk .ask-kalyra__example { color: rgba(58, 37, 48, 0.60); font-style: italic; }
 .dusk .ask-kalyra__arrow   { color: #C9A84C; }
 
-.dusk .crystal-detail__name          { color: #2A1015; }
-.dusk .crystal-detail__keywords      { color: #8A5060; }
-.dusk .crystal-detail__body          { color: #3A1820; }
-.dusk .crystal-detail__section-label { color: #7A2530; }
+.dusk .crystal-detail__name          { color: #2A1820; }
+.dusk .crystal-detail__keywords      { color: #8B6B5A; }
+.dusk .crystal-detail__body          { color: #2A1820; }
+.dusk .crystal-detail__section-label { color: #5A3A48; }
 
-.dusk .article-view__title       { color: #2A1015; }
-.dusk .article-view__body        { color: #3A1820; }
-.dusk .article-view__kalyra-text { color: #2A1015; }
+.dusk .article-view__title       { color: #2A1820; }
+.dusk .article-view__body        { color: #2A1820; }
+.dusk .article-view__kalyra-text { color: #2A1820; }
 .dusk .article-view__takeaway {
-  background: rgba(255, 248, 240, 0.70);
-  color: #3A1820;
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  color: #2A1820;
 }
 
 /* ─── DUSK: §5 Profile tab (complement existing rules) ──────────────────────── */
 
 .dusk .profile-header-card {
-  background: rgba(255, 248, 240, 0.65);
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  /* Nadpisz CSS vars — profile-header-card nie ma klasy kalyra-card */
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --primary:          #C9A84C;
 }
-.dusk .profile-header__name     { color: #2A1015; }
-.dusk .profile-header__meta     { color: #8A5060; }
+.dusk .profile-header__name     { color: #2A1820; }
+.dusk .profile-header__meta     { color: #8B6B5A; }
 .dusk .profile-header__edit-cta { color: #C9A84C; }
 
 .dusk .kalyra-reading {
   border-left-color: #C9A84C;
-  text-shadow: 0 1px 8px rgba(100, 40, 60, 0.25);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
-.dusk .sign-card__label  { color: #8A5060; }
-.dusk .sign-card__symbol { color: #2A1015; }
-.dusk .sign-card__name   { color: #2A1015; }
-.dusk .sign-card__traits { color: #8A5060; }
+.dusk .sign-card__label  { color: #8B6B5A; }
+.dusk .sign-card__symbol { color: #2A1820; }
+.dusk .sign-card__name   { color: #2A1820; }
+.dusk .sign-card__traits { color: #8B6B5A; }
 
-.dusk .elemental-card { background: rgba(255, 248, 240, 0.65); }
+.dusk .elemental-card {
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --primary:          #C9A84C;
+  --divider:          rgba(58, 37, 48, 0.12);
+}
 
 .dusk .rising-locked {
-  background: rgba(255, 248, 240, 0.40);
-  border: 1.5px dashed rgba(201, 168, 76, 0.45);
+  background: rgba(255, 250, 245, 0.85);
+  border: 1.5px dashed rgba(201, 168, 76, 0.5);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
 }
-.dusk .rising-locked__title { color: #2A1015; }
-.dusk .rising-locked__body  { color: #8A5060; }
+.dusk .rising-locked__title { color: #2A1820; }
+.dusk .rising-locked__body  { color: #8B6B5A; }
 .dusk .rising-locked__cta   { color: #C9A84C; }
 
-.dusk .rituals-card { background: rgba(255, 248, 240, 0.70); }
-.dusk .ritual-row__name  { color: #2A1015; }
-.dusk .ritual-row__label { color: #8A5060; }
+.dusk .rituals-card {
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --divider:          rgba(58, 37, 48, 0.12);
+}
+.dusk .ritual-row__name  { color: #2A1820; }
+.dusk .ritual-row__label { color: #8B6B5A; }
 
-.dusk .settings-card { background: rgba(255, 248, 240, 0.65); }
-.dusk .settings-row__label { color: #2A1015; }
+.dusk .settings-card {
+  background: linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%);
+  --foreground:       #2A1820;
+  --muted-foreground: #8B6B5A;
+  --divider:          rgba(58, 37, 48, 0.12);
+  --border:           rgba(58, 37, 48, 0.12);
+}
+.dusk .settings-row__label { color: #2A1820; }
 
 .dusk .toggle--on  { background: #C9A84C; }
-.dusk .toggle--off { background: rgba(42, 16, 21, 0.20); }
+.dusk .toggle--off { background: rgba(58, 37, 48, 0.18); }
 
 /* ─── Nav bar — unified active state (gold icon+label+dot, never background) ── */
 
@@ -585,12 +631,12 @@ nav button {
 /* ─── DUSK: header text directly on gradient (white + shadow) ───────────── */
 
 .dusk .header-date {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  color: #FFF5EE !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
 
 .dusk .header-greeting {
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ─── Card quote blocks ──────────────────────────────────────────────────── */
@@ -612,8 +658,8 @@ nav button {
 }
 
 .dusk .quote-block {
-  background: rgba(0, 0, 0, 0.18);
-  color: #FFF5EE;
+  background: rgba(58, 30, 48, 0.05);
+  color: #4A2838;
 }
 
 .read-aloud-label {

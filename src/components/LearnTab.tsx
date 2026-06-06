@@ -592,7 +592,7 @@ function FeaturedCard({ article, moonPhase, moonSign, onTap }: {
 
 function CrystalCardSmall({ crystal, onTap }: { crystal: Crystal; onTap: () => void }) {
   return (
-    <button onClick={onTap} style={{
+    <button onClick={onTap} className="kalyra-card crystal-card" style={{
       width: 100, minHeight: 130, borderRadius: 14, flexShrink: 0,
       background: "var(--card)", border: "0.5px solid var(--border)",
       padding: "12px 10px", display: "flex", flexDirection: "column",

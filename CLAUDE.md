@@ -33,115 +33,59 @@ npx tsc --noEmit   # TypeScript check
 |---|---|---|---|
 | DAWN | `:root` | 6–11h | Lavender-peach, white cards, dark text |
 | DAY | `.day` | 11–16h | Subtle blue gradient, white cards, dark text |
-| DUSK | `.dusk` | 16–20h | Amber→mauve gradient, glassmorphism cards, dark card text |
+| DUSK | `.dusk` | 16–20h | "After the Sun" — amber→coral→magenta→plum gradient, solid cream cards |
 | NIGHT | `.night` | 20–6h | Cosmic navy `#0D0A1A→#2D1B69`, `#1A1238` cards, light text |
 
 Key vars: `var(--bg-gradient)`, `var(--foreground)`, `var(--card)`, `var(--border)`, `var(--primary)`, `var(--muted-foreground)`, `var(--nav-bg)`, `var(--pill-bg)`.
 Card accent colors: `var(--accent-morning)` etc. — defined per mode, luminous in DUSK.
 
-**DUSK rules:**
-- Text directly on gradient = white `#FFF5EE`
-- Text on cards = dark `#3A1810` (via `.dusk .kalyra-card` CSS var override)
+**DUSK v4.1 "After the Sun — Refined" rules:**
+- Gradient: `#E89B5C → #C85A5A → #8B3A5E → #3D1E3D` (jewel tones — no muddy middle)
+- Text ON gradient = white `#FFF5EE` + text-shadow
+- Text ON cards = dark `#2A1820` (via `.dusk .kalyra-card` CSS var override)
+- Cards: solid gradient `linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%)` — NO glassmorphism
+- Card shadow: `0 4px 18px rgba(60,15,40,0.22)` + `inset 0 1px 0 rgba(255,255,255,0.8)` (luxury depth)
+- `--muted-foreground` at root = `rgba(255,245,238,0.65)` (for gradient text), overridden inside cards to `#8B6B5A`
 
-**DUSK — card opacity hierarchy** (im więcej tekstu, tym wyższa opacity):
+**DUSK — 5 zasad (ściąga dla developera):**
 ```
-Today tab     (visual-heavy):   0.55  →  .dusk .card / .ritual-card
-Crystal cards (małe, treściwe): 0.70  →  .dusk .crystal-card
-Learn tab     (text-heavy):     0.65  →  .dusk .article-row / .ask-kalyra
-Profile tab   (most text):      0.75  →  .dusk .profile-card
-Sign/Stat cards (Profile):      0.70  →  .dusk .sign-card / .stat-card
-Collapsed cards (Today):        0.40  →  .dusk .card--collapsed
-```
-
-**DUSK — 6 zasad (ściąga dla developera):**
-```
-1. Tekst wewnątrz karty   → ciemny (#2A1015 lub #8A5060)
-2. Tekst na gradiencie    → biały (#FFFFFF lub rgba(255,255,255,0.9))
-3. Akcent / CTA           → gold (#C9A84C lub #FFD97A)
-4. Opacity kart           → 0.40–0.75 (wyżej = więcej tekstu)
-5. Nav bar                → ciemny fiolet rgba(30,12,50,0.88)
-6. Featured/topic cards   → zachowaj ciemne własne tła (biały tekst OK)
+1. Tekst NA gradiencie     → biały #FFF5EE + text-shadow 0 2px 12px rgba(0,0,0,0.3)
+2. Tekst NA kartach        → ciemny #2A1820 (via .dusk .kalyra-card CSS vars override)
+3. Karty bez glassmorphism → backdrop-filter: none, solidny gradient wewnętrzny
+4. CSS vars na kartach     → KAŻDA karta bez klasy kalyra-card potrzebuje własnych --foreground/--muted-foreground
+5. Sign cards !important   → elementBg inline style wygrywa, potrzeba background: ... !important
 ```
 
-**DUSK — pełna tabela klas CSS** (źródło: `Kalyra_DuskMode_Overrides.md`):
+**DUSK — kluczowe kolory:**
+```
+Gradient:        #E89B5C → #C85A5A → #8B3A5E → #3D1E3D
+Karta text:      #2A1820
+Karta muted:     #8B6B5A
+Gradient muted:  rgba(255,245,238,0.65)
+Gold na gradient:#FFD97A
+Gold na karcie:  #C9A84C
+Pills border:    rgba(255,215,150,0.4)  ← złoty, nie biały
+Nav bg:          rgba(45,22,40,0.92)
+Quote bg:        rgba(58,30,48,0.05)
+Quote text:      #4A2838
+```
 
-*§1 Global*
-| Klasa | Właściwość | Wartość |
-|---|---|---|
-| `.dusk .card` | background | `rgba(255,248,240,0.55)` + blur(16px) |
-| `.dusk .page-title` | color | `#2A1015` |
-| `.dusk .page-subtitle` | color | `rgba(42,16,21,0.55)` |
-| `.dusk .section-label` | color | `rgba(42,16,21,0.65)` |
+**DUSK v4.1 — kluczowe klasy CSS (źródło: `Kalyra_DuskMode_Redesign_v4.1.md`):**
 
-*§2 Today*
-| Klasa | Właściwość | Wartość |
-|---|---|---|
-| `.dusk .ritual-card` | background | `rgba(255,248,240,0.55)` |
-| `.dusk .card__header-label` | color | `#6A2530` |
-| `.dusk .card__body-text` | color | `#3A1018` |
-| `.dusk .card__subtext` | color | `#8A4550` |
-| `.dusk .card__sublabel` | color | `#6A2530` |
-| `.dusk .card__muted` | color | `#8A4550` |
-| `.dusk .how-to-use-label` | color | `#7A2530` |
-| `.dusk .step-number` | color | `#7A2530` |
-| `.dusk .energy-card__title` | color | `#2A1015` |
-| `.dusk .energy-card__subtitle` | color | `#8A4550` |
-| `.dusk .card--collapsed` | background | `rgba(255,248,240,0.40)` |
-| `.dusk .progress-counter` | background | `rgba(255,248,240,0.45)` |
+Wszystkie karty = `linear-gradient(160deg, #FFFBF7 0%, #FBF2EA 100%)`, brak blur/glassmorphism.
+Tekst na gradiencie = `#FFF5EE`. Tekst na kartach = `#2A1820` (via CSS var override).
 
-*§3 Moon Calendar*
-| Klasa | Właściwość | Wartość |
+| Klasa | Kluczowa właściwość | Uwaga |
 |---|---|---|
-| `.dusk .day-number` | color | `rgba(42,16,21,0.75)` |
-| `.dusk .month-nav` | color | `rgba(42,16,21,0.55)` |
-| `.dusk .month-title` | color | `#2A1015` |
-| `.dusk .calendar-legend__label` | color | `rgba(42,16,21,0.75)` |
-| `.dusk .bottom-sheet` | background | `rgba(255,248,240,0.90)` + blur(20px) |
-| `.dusk .bottom-sheet__title` | color | `#2A1015` |
-| `.dusk .bottom-sheet__content` | color | `#6A3040` |
-
-*§4 Learn*
-| Klasa | Właściwość | Wartość |
-|---|---|---|
-| `.dusk .crystal-card` | background | `rgba(255,248,240,0.70)` |
-| `.dusk .crystal-card__name` | color | `#2A1015` |
-| `.dusk .crystal-card__keywords` | color | `#8A5060` |
-| `.dusk .crystal-card__planet` | color | `#C9A84C` |
-| `.dusk .article-row` | background | `rgba(255,248,240,0.65)` |
-| `.dusk .article-row__title` | color | `#2A1015` |
-| `.dusk .article-row__meta` | color | `#8A5060` |
-| `.dusk .ask-kalyra` | background | `rgba(255,248,240,0.35)` |
-| `.dusk .ask-kalyra__label` | color | `#2A1015` |
-| `.dusk .crystal-detail__body` | color | `#3A1820` |
-| `.dusk .article-view__body` | color | `#3A1820` |
-| `.dusk .article-view__takeaway` | background | `rgba(255,248,240,0.70)` |
-
-*§5 Profile*
-| Klasa | Właściwość | Wartość |
-|---|---|---|
-| `.dusk .profile-header-card` | background | `rgba(255,248,240,0.65)` |
-| `.dusk .profile-header__name` | color | `#2A1015` |
-| `.dusk .profile-header__meta` | color | `#8A5060` |
-| `.dusk .profile-card` | background | `rgba(255,248,240,0.75)` |
-| `.dusk .sign-card` | background | `rgba(255,248,240,0.70)` |
-| `.dusk .sign-card__name` | color | `#2A1015` |
-| `.dusk .sign-card__traits` | color | `#8A5060` |
-| `.dusk .elemental-card` | background | `rgba(255,248,240,0.65)` |
-| `.dusk .elemental-value` | color | `#6A3040` |
-| `.dusk .rising-locked` | border | `dashed rgba(201,168,76,0.45)` |
-| `.dusk .rising-locked__title` | color | `#2A1015` |
-| `.dusk .rising-locked__body` | color | `#8A5060` |
-| `.dusk .rituals-card` | background | `rgba(255,248,240,0.70)` |
-| `.dusk .ritual-row__name` | color | `#2A1015` |
-| `.dusk .stat-card` | background | `rgba(255,248,240,0.65)` |
-| `.dusk .stat-card__label` | color | `#8A5060` |
-| `.dusk .settings-card` | background | `rgba(255,248,240,0.65)` |
-| `.dusk .settings-section-label` | color | `rgba(42,16,21,0.60)` |
-| `.dusk .settings-row__label` | color | `#2A1015` |
-| `.dusk .settings-row__value` | color | `#8A5060` |
-| `.dusk .kalyra-reading` | text-shadow | `0 1px 8px rgba(100,40,60,0.25)` |
-| `.dusk .toggle--on` | background | `#C9A84C` |
-| `.dusk .toggle--off` | background | `rgba(42,16,21,0.20)` |
+| `.dusk .card / .ritual-card` | gradient bg + shadow + inset highlight | luxury depth |
+| `.dusk .kalyra-card` | `--foreground: #2A1820`, `--muted-foreground: #8B6B5A` | CSS var scope |
+| `.dusk .sign-card` | `background: gradient !important` | override inline elementBg |
+| `.dusk .profile-header-card` | + `--foreground: #2A1820` (nie ma kalyra-card klasy) | wymagane |
+| `.dusk .page-title / .page-subtitle` | `color: #FFF5EE` (NA gradiencie) | — |
+| `.dusk .section-label` | `rgba(255,245,238,0.8)` (NA gradiencie) | — |
+| `.dusk .quote-block` | `rgba(58,30,48,0.05)`, text `#4A2838` | — |
+| `--pill-border` | `rgba(255,215,150,0.4)` — złoty | nie biały |
+| `--nav-bg` | `rgba(45,22,40,0.92)` | śliwkowy |
 
 **CSS class conventions (wszystkie taby):**
 - `page-title / page-subtitle` — nagłówek i podtytuł ekranu na gradiencie
@@ -286,12 +230,51 @@ public/
   - 4 states: ACTIVE / DONE / UPCOMING / MISSED per card per colorMode
   - Time windows: morning/journal/mirror=dawn, crystal=all-day, wear=dawn+day, evening=dusk
   - Tap card = expand/collapse (whole surface); "Done" pill button = mark complete (ACTIVE only)
-  - DONE: opacity 0.7, collapsed, "✓ Done" badge, tap to re-read
+  - DONE: opacity 0.7, "✓ Done" badge, tap to re-read (NOT auto-collapsed)
   - UPCOMING: opacity 0.5, pointer-events none, italic Kalyra message
   - MISSED: opacity 0.35, pointer-events none, border loses accent color, italic message
   - getRitualState(key, colorMode, checkedKeys) — MODE_ORDER=['dawn','day','dusk','night']
   - "Done" pill: 10px, font-weight 600, gold outline, replaces radio button pattern
-  - Collapse bug fix: cards can be collapsed with ChevronUp (was one-directional before)
+- ✅ UI Fixes Brief v3.0 (June 2026) — content density + card interaction polish:
+  - All cards collapsed by default (`defaultExpanded = false`) — no card auto-expands on load
+  - Session state: card stays open if user expanded it, resets on new session
+  - Glance lines under each collapsed card header (static + dynamic for Crystal/Glamour)
+  - Done button does NOT auto-collapse card after marking complete
+  - Header alignment fixed: `items-start` (was `items-center`) — title doesn't jump on expand
+  - Waning Gibbous morning ritual: 3 steps shortened ("Begin with gratitude. The peak has passed." etc.)
+  - Saturn morningAdd: removed "Saturn honors follow-through." second sentence
+- ✅ UI Fixes Brief v3.1 (June 2026) — rich card widgets:
+  - `MorningRitualBody` — vertical dashed timeline (numbered circles + dashed connector line)
+  - `JournalBody` — lined paper background (horizontal rules), Cormorant italic, "Start writing…" hint
+  - `MirrorBody` — affirmation + ghost reflection (opacity 0.06, max-height 36px, gradient mask)
+  - `CrystalBody` — large crystal icon + name + "Carry it close today" + property chips [Protection][Grounding][Saturn] + instruction with separator
+  - `GlamourBody` — 64×64px color swatches + labels + shortened copy (first sentence only)
+  - Evening Ritual uses same dashed timeline as Morning Ritual
+  - CRYSTAL_PROPERTIES lookup table for 9 crystals (in TodayTab.tsx)
+  - GLAMOUR_SWATCHES map with per-color hex breakdowns (in TodayTab.tsx)
+  - CrystalCardSmall in LearnTab: added `kalyra-card crystal-card` className for dusk CSS var inheritance
+- ✅ Energy of the Day Card v5.0 (June 2026) — portal widget replacing 3-tile grid:
+  - Always-dark cosmic card (`#0D0A1A → #1A0D35 → #241540`) — same in all 4 sky modes
+  - Real moon phase rendered via CSS gradients (8 phases, radial/linear-gradient per shape)
+  - 5-layer architecture: top label → moon → phase name → day mode → guidance+question → crystal
+  - Day mode = moon phase × planetary ruler synthesis (5 modes: Begin/Build/Manifest/Release/Rest)
+  - `PHASE_TO_MODE` maps 8 phases to 5 modes; `ENERGY_CONTENT` = 35 entries (5×7)
+  - Each entry (mode, planet) has: guidance, question to carry, crystal + detail — all in Kalyra voice
+  - Mode glyphs: inline SVG per mode (seed, arrow-up, sun-rays, arrow-down, crescent)
+  - Mode color: teal(Begin) / gold(Build) / amber(Manifest) / rose(Release) / violet(Rest)
+  - 10 static star positions with twinkle animation inside card
+  - No "Done" circle — energy of the day is experienced, not checked off
+  - Removed: old 3-tile grid, MOON_PHASE_TAGLINE, DAY_RULER_TAGLINE, MoonPhaseIcon2/PlanetIcon imports
+- ✅ Dusk Mode Redesign v4.1 "After the Sun — Refined" (June 2026):
+  - Gradient: `#E89B5C → #C85A5A → #8B3A5E → #3D1E3D` (jewel tones, no muddy middle)
+  - Removed glassmorphism from cards completely (backdrop-filter: none)
+  - Cards: internal gradient `linear-gradient(160deg, #FFFBF7 → #FBF2EA)` + deep shadow + inset highlight
+  - CSS var split: `--muted-foreground` at root = gradient muted (light), overridden inside cards = `#8B6B5A`
+  - All non-kalyra-card containers get explicit `--foreground`/`--muted-foreground` CSS var overrides
+  - Sign cards: `background: gradient !important` overrides inline elementBg styles
+  - Pills: golden border `rgba(255,215,150,0.4)` instead of white
+  - Text on gradient: `#FFF5EE` + stronger text-shadow; text on cards: `#2A1820`
+  - Nav bar: `rgba(45,22,40,0.92)` (plum, matches gradient bottom)
 
 ## What's NOT built yet
 
