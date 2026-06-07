@@ -11,6 +11,7 @@ import {
   IconCrystalSection, IconGlamour, IconEnergy,
   CrystalIcon,
 } from "@/components/icons";
+import { CRYSTALS } from "@/content/crystals";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -25,41 +26,8 @@ const CARD_ACCENTS: Record<CheckinKey | "energy", string> = {
   energy:  "var(--accent-energy)",
 };
 
-const GLAMOUR_COLOR_MAP: Record<string, string> = {
-  "Gold or amber":           "#C9A84C",
-  "Silver or white":         "#C8D0D8",
-  "Silver or pale yellow":   "#E0DC9A",
-  "Rose pink or soft green": "#E8A0B0",
-  "Red or orange":           "#C4622D",
-  "Deep blue or purple":     "#4A3F7A",
-  "Black, charcoal, or dark green": "#2A2A35",
-};
-
-const GLAMOUR_SWATCHES: Record<string, Array<{ name: string; hex: string }>> = {
-  "Gold or amber":           [{ name: "Gold",       hex: "#C9A84C" }, { name: "Amber",       hex: "#D4813A" }],
-  "Silver or white":         [{ name: "Silver",     hex: "#C8D0D8" }, { name: "White",       hex: "#EFEFEF" }],
-  "Silver or pale yellow":   [{ name: "Silver",     hex: "#C8D0D8" }, { name: "Pale yellow", hex: "#E4DF9A" }],
-  "Rose pink or soft green": [{ name: "Rose pink",  hex: "#E8A0B0" }, { name: "Soft green",  hex: "#A8C4A0" }],
-  "Red or orange":           [{ name: "Red",        hex: "#C4622D" }, { name: "Orange",      hex: "#D4813A" }],
-  "Deep blue or purple":     [{ name: "Deep blue",  hex: "#3A4A8A" }, { name: "Purple",      hex: "#6A3F8A" }],
-  "Black, charcoal, or dark green": [
-    { name: "Black",      hex: "#1A1A22" },
-    { name: "Charcoal",   hex: "#404048" },
-    { name: "Dark green", hex: "#2A4A32" },
-  ],
-};
-
-const CRYSTAL_PROPERTIES: Record<string, string[]> = {
-  "Citrine":          ["Confidence", "Abundance", "Sun"],
-  "Moonstone":        ["Intuition", "Feeling",    "Moon"],
-  "Blue Lace Agate":  ["Clarity",   "Expression", "Mercury"],
-  "Rose Quartz":      ["Love",      "Beauty",     "Venus"],
-  "Carnelian":        ["Courage",   "Action",     "Mars"],
-  "Lapis Lazuli":     ["Wisdom",    "Expansion",  "Jupiter"],
-  "Black Tourmaline": ["Protection","Grounding",  "Saturn"],
-  "Amethyst":         ["Intuition", "Peace",      "Neptune"],
-  "Obsidian":         ["Truth",     "Release",    "Pluto"],
-};
+// Crystal properties + glamour swatches now live in src/content/
+// CRYSTALS imported above — single source of truth
 
 const ZODIAC_SIGNS = [
   "Aries","Taurus","Gemini","Cancer","Leo","Virgo",
@@ -319,7 +287,13 @@ const CARD_STARS = [
   { top: "55%", left: "22%", size: 1.5, opacity: 0.4,  delay: "1.3s" },
 ];
 
-function EnergyCard({ moonPhase, dayRuler }: { moonPhase: string; dayRuler: string }) {
+function EnergyCard({
+  moonPhase, dayRuler, crystal,
+}: {
+  moonPhase: string;
+  dayRuler: string;
+  crystal: { name: string; brief: string };
+}) {
   const mode = PHASE_TO_MODE[moonPhase] ?? "manifest";
   const modeConfig = MODE_CONFIG[mode];
   const content = ENERGY_CONTENT[mode][dayRuler] ?? ENERGY_CONTENT[mode]["Sun"];
@@ -411,14 +385,14 @@ function EnergyCard({ moonPhase, dayRuler }: { moonPhase: string; dayRuler: stri
         &ldquo;{content.question}&rdquo;
       </p>
 
-      {/* Crystal detail */}
+      {/* Crystal detail — from master record (same source as Crystal card) */}
       <p style={{
         fontFamily: "var(--font-inter)", fontSize: 11,
         color: "#9B8BB8", textAlign: "center",
         letterSpacing: "0.02em", margin: 0,
       }}>
-        <strong style={{ color: "#C9A899", fontWeight: 400 }}>{content.crystal.name}</strong>
-        {" · "}{content.crystal.detail}
+        <strong style={{ color: "#C9A899", fontWeight: 400 }}>{crystal.name}</strong>
+        {" · "}{crystal.brief}
       </p>
     </div>
   );
@@ -754,7 +728,7 @@ function MirrorBody({ reflection }: { reflection: string }) {
 
 /** Crystal of the Day — icon + phase meaning + chips + how to use (spec v9.1: no name/carry repetition) */
 function CrystalBody({ name, why, howToUse }: { name: string; why: string; howToUse: string }) {
-  const chips = CRYSTAL_PROPERTIES[name] ?? [];
+  const chips = CRYSTALS[name]?.properties ?? [];
   return (
     <div>
       {/* Icon centered — name is already in subtitle */}
@@ -799,26 +773,17 @@ function CrystalBody({ name, why, howToUse }: { name: string; why: string; howTo
   );
 }
 
-// Intention per color — zamienia "co założyć" na "dlaczego" (spec v9 opcja B)
-const GLAMOUR_INTENTIONS: Record<string, string> = {
-  "Gold or amber":           "Carry the Sun's color today.",
-  "Silver or white":         "Wear the light of reflection.",
-  "Silver or pale yellow":   "Dress in clarity and calm.",
-  "Rose pink or soft green": "Wear what opens the heart.",
-  "Red or orange":           "Dress as the fire you're calling in.",
-  "Deep blue or purple":     "Wear the depth of what you know.",
-  "Black, charcoal, or dark green": "Dress as the earth that holds you.",
-};
-
-/** Glamour Magic — jewel swatches + ritual intention (spec v9) */
-function GlamourBody({ colorName }: { colorName: string }) {
-  const swatches = GLAMOUR_SWATCHES[colorName]
-    ?? [{ name: colorName, hex: GLAMOUR_COLOR_MAP[colorName] ?? "#C9A84C" }];
-  const intention = GLAMOUR_INTENTIONS[colorName] ?? "Dress as the energy you're calling in.";
-
+/** Glamour Magic — jewel swatches + two-layer intention (spec v10.1) */
+function GlamourBody({
+  swatches,
+  intention,
+}: {
+  swatches: Array<{ name: string; hex: string }>;
+  intention: string;
+}) {
   return (
     <div>
-      {/* Swatches — smaller, with gold border (bijouterie feel) */}
+      {/* Swatches — klejnotowe, złota obwódka (spec v9) */}
       <div style={{ display: "flex", gap: 12, marginBottom: 14, alignItems: "flex-end" }}>
         {swatches.map((s) => (
           <div key={s.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
@@ -837,7 +802,7 @@ function GlamourBody({ colorName }: { colorName: string }) {
           </div>
         ))}
       </div>
-      {/* Intention — rytuał, nie lista kolorów */}
+      {/* Intention — planet base + phase modifier (v10.1 dwie warstwy) */}
       <p style={{
         fontFamily: "var(--font-cormorant), serif",
         fontStyle: "italic",
@@ -851,26 +816,6 @@ function GlamourBody({ colorName }: { colorName: string }) {
   );
 }
 
-// ─── GlamourChip ──────────────────────────────────────────────────────────────
-
-function GlamourChip({ colorName }: { colorName: string }) {
-  const css = GLAMOUR_COLOR_MAP[colorName] ?? "#C9A84C";
-  return (
-    <span
-      style={{
-        display:       "inline-block",
-        width:         12,
-        height:        12,
-        borderRadius:  "50%",
-        background:    css,
-        marginRight:   6,
-        verticalAlign: "middle",
-        border:        "1px solid rgba(0,0,0,0.1)",
-        flexShrink:    0,
-      }}
-    />
-  );
-}
 
 // ─── SacredDivider ────────────────────────────────────────────────────────────
 
@@ -1222,8 +1167,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
     setShowUpsell(false);
   };
 
-  const glamourChipColor = ritual.glamour.color;
-
   return (
     <>
       <div className="max-w-lg mx-auto px-4 pt-6 pb-4">
@@ -1301,7 +1244,11 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         <div className="energy-section">
           <div className="atmosphere-pool" aria-hidden="true" />
           <div className="aurora" aria-hidden="true" />
-          <EnergyCard moonPhase={astro.moonPhase} dayRuler={astro.dayRuler} />
+          <EnergyCard
+            moonPhase={astro.moonPhase}
+            dayRuler={astro.dayRuler}
+            crystal={{ name: ritual.crystal.name, brief: ritual.crystal.brief }}
+          />
         </div>
 
         {/* Special event badges */}
@@ -1398,7 +1345,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("crystal")}
           onMarkComplete={() => markComplete("crystal")}
           accent={CARD_ACCENTS.crystal}
-          glanceLine={`${ritual.crystal.name} · carry it close`}
+          glanceLine={`${ritual.crystal.name} · ${ritual.crystal.brief}`}
         >
           <CrystalBody
             name={ritual.crystal.name}
@@ -1421,7 +1368,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
             cardState("wear") === "missed"   ? MISSED_MSGS.wear   : undefined
           }
         >
-          <GlamourBody colorName={ritual.glamour.color} />
+          <GlamourBody swatches={ritual.glamour.swatches} intention={ritual.glamour.intention} />
         </SectionCard>
 
         {/* 8. Evening Ritual */}

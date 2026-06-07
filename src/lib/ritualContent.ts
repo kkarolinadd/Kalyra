@@ -1,4 +1,6 @@
 import type { MoonPhase, Planet, ZodiacSign } from "./astrology";
+import { getCrystalOfDay } from "@/content/crystals";
+import { buildGlamourContent } from "@/content/planetaryDays";
 
 // ─── Master Ritual List (12 rituals from PRD section 9.4) ─────────────────────
 
@@ -211,12 +213,15 @@ export interface DailyRitual {
   mirrorReflection: string;
   crystal: {
     name: string;
+    brief: string;    // used by Energy card + Crystal subtitle — same string, one source
     why: string;
     howToUse: string;
   };
   glamour: {
-    color: string;
-    suggestion: string;
+    colorName: string;
+    swatches: Array<{ name: string; hex: string }>;
+    intention: string;
+    instruction: string;
   };
   eveningRitual: string[];
 }
@@ -230,19 +235,23 @@ function getRitual(phase: MoonPhase, ruler: Planet): DailyRitual {
   const phaseContent = PHASE_BASE[phase];
   const rulerLayer = RULER_LAYER[ruler];
 
+  // Crystal: phase-compatible selection from master record (spec v10.1)
+  const crystalRecord = getCrystalOfDay(phase, ruler);
+
+  // Glamour: two-layer composition — planet color + phase modifier (spec v10.1)
+  const glamour = buildGlamourContent(ruler, phase);
+
   return {
     morningRitual: [...phaseContent.morning, rulerLayer.morningAdd],
     journalPrompt: phaseContent.journal,
     mirrorReflection: phaseContent.mirror,
     crystal: {
-      name: rulerLayer.crystal,
-      why: `${phaseContent.crystalWhy} ${rulerLayer.crystalWhy}`,
-      howToUse: phaseContent.crystalUse,
+      name: crystalRecord.name,
+      brief: crystalRecord.brief,
+      why: `${phaseContent.crystalWhy} ${crystalRecord.name} supports ${crystalRecord.properties.slice(0, 2).join(" and ").toLowerCase()}.`,
+      howToUse: crystalRecord.howToUse,
     },
-    glamour: {
-      color: rulerLayer.color,
-      suggestion: rulerLayer.glamour,
-    },
+    glamour,
     eveningRitual: phaseContent.evening,
   };
 }
@@ -427,75 +436,17 @@ const PHASE_BASE: Record<
   },
 };
 
-// ─── Ruler layer (adjusts crystal, color, glamour, +1 morning step) ───────────
+// ─── Ruler layer — morning ritual addition per planet ────────────────────────
+// Crystal + glamour are now sourced from content/crystals.ts + content/planetaryDays.ts
 
-const RULER_LAYER: Record<
-  Planet,
-  { crystal: string; crystalWhy: string; color: string; glamour: string; morningAdd: string }
-> = {
-  Sun: {
-    crystal: "Citrine",
-    crystalWhy: "Sun energy amplifies confidence, visibility, and life force.",
-    color: "Gold or amber",
-    glamour:
-      "Gold or amber. Citrine if you have it. Wear something that makes you feel powerful — the Sun rewards visibility.",
-    morningAdd:
-      "Step into sunlight for at least 2 minutes this morning. Let the Sun see you.",
-  },
-  Moon: {
-    crystal: "Moonstone",
-    crystalWhy: "Moon days amplify intuition, emotion, and lunar connection.",
-    color: "Silver or white",
-    glamour:
-      "Silver or pearl white. Something soft and flowing. Let yourself be luminous today.",
-    morningAdd:
-      "Notice your emotional tone this morning without judgment. The Moon asks you to feel, not fix.",
-  },
-  Mercury: {
-    crystal: "Blue Lace Agate",
-    crystalWhy: "Mercury rules communication — this crystal supports clarity of thought and expression.",
-    color: "Silver or pale yellow",
-    glamour:
-      "Silver or pale yellow. Something that allows you to move freely — Mercury days are for ideas in motion.",
-    morningAdd:
-      "Write or speak 3 ideas that have been waiting in your mind. Mercury days reward communication.",
-  },
-  Venus: {
-    crystal: "Rose Quartz",
-    crystalWhy: "Venus rules love and beauty — Rose Quartz amplifies both.",
-    color: "Rose pink or soft green",
-    glamour:
-      "Rose pink, blush, or soft green. Wear something you feel beautiful in. Venus days are for pleasure and connection.",
-    morningAdd:
-      "Do one thing that is purely for beauty or pleasure today — it doesn't need to be productive.",
-  },
-  Mars: {
-    crystal: "Carnelian",
-    crystalWhy: "Mars rules action and drive — Carnelian amplifies courage and momentum.",
-    color: "Red or orange",
-    glamour:
-      "Red or burnt orange. Wear something bold. Mars days are for decisive action, not hesitation.",
-    morningAdd:
-      "Name one thing you've been putting off. Mars gives you energy today — begin it.",
-  },
-  Jupiter: {
-    crystal: "Green Aventurine",
-    crystalWhy: "Jupiter rules expansion and abundance — Aventurine amplifies luck and opportunity.",
-    color: "Deep blue or purple",
-    glamour:
-      "Deep royal blue or violet. Something that makes you feel expansive and deserving. Jupiter days invite you to think bigger.",
-    morningAdd:
-      "Write one thing you would do if you knew it would succeed. Jupiter days support big vision.",
-  },
-  Saturn: {
-    crystal: "Black Tourmaline",
-    crystalWhy: "Saturn rules structure and protection — Black Tourmaline grounds and shields.",
-    color: "Black, charcoal, or dark green",
-    glamour:
-      "Black or charcoal. Classic, structured, intentional. Saturn days reward discipline and long-term thinking.",
-    morningAdd:
-      "Write one commitment to yourself this week.",
-  },
+const RULER_LAYER: Record<Planet, { morningAdd: string }> = {
+  Sun:     { morningAdd: "Step into sunlight for at least 2 minutes this morning. Let the Sun see you." },
+  Moon:    { morningAdd: "Notice your emotional tone this morning without judgment. The Moon asks you to feel, not fix." },
+  Mercury: { morningAdd: "Write or speak 3 ideas that have been waiting in your mind. Mercury days reward communication." },
+  Venus:   { morningAdd: "Do one thing that is purely for beauty or pleasure today — it doesn't need to be productive." },
+  Mars:    { morningAdd: "Name one thing you've been putting off. Mars gives you energy today — begin it." },
+  Jupiter: { morningAdd: "Write one thing you would do if you knew it would succeed. Jupiter days support big vision." },
+  Saturn:  { morningAdd: "Write one commitment to yourself this week." },
 };
 
 // ─── Special section content ──────────────────────────────────────────────────
