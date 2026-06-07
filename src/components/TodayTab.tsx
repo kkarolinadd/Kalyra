@@ -78,11 +78,11 @@ type RitualState = "active" | "done" | "upcoming" | "missed";
 
 const RITUAL_WINDOWS: Record<CheckinKey, string[]> = {
   morning:  ["dawn"],
-  journal:  ["dawn"],
-  mirror:   ["dawn"],
-  crystal:  ["dawn", "day", "dusk", "night"],
-  wear:     ["dawn", "day"],
-  evening:  ["dusk"],
+  journal:  ["dawn", "day", "dusk", "night"],  // zawsze dostępny
+  mirror:   ["dawn", "day", "dusk", "night"],  // zawsze dostępny
+  crystal:  ["dawn", "day", "dusk", "night"],  // zawsze dostępny
+  wear:     ["dawn", "day", "dusk", "night"],  // zawsze dostępny
+  evening:  ["dusk", "night"],                  // fix: wieczór + noc
 };
 
 const MODE_ORDER = ["dawn", "day", "dusk", "night"] as const;
