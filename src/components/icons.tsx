@@ -434,130 +434,220 @@ interface CrystalProps {
   strokeColor?: string;
 }
 
-// Carnelian — teardrop/point
-function CrystalCarnelian({ size = 28, fillColor = "#B5451B", strokeColor = "#C9A84C" }: CrystalProps) {
+// Carnelian — fasetowany romb z gradientem
+function CrystalCarnelian({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 3 L22 16 Q14 26 6 16 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="14" y1="3" x2="14" y2="22" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <defs>
+        <linearGradient id="g-ca" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E07050"/>
+          <stop offset="100%" stopColor="#A83820"/>
+        </linearGradient>
+      </defs>
+      <polygon points="14,2 24,12 14,26 4,12" fill="url(#g-ca)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="4"  y1="12" x2="24" y2="12" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="14" y1="2"  x2="4"  y2="12" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="2"  x2="24" y2="12" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Moonstone — oval with horizontal lines
-function CrystalMoonstone({ size = 28, fillColor = "#C8D4E8", strokeColor = "#C9A84C" }: CrystalProps) {
+// Moonstone — fasetowany pentagon z gradientem (zastąpił oval/emoji)
+function CrystalMoonstone({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <ellipse cx="14" cy="14" rx="8" ry="11" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} />
-      <line x1="7" y1="11" x2="21" y2="11" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
-      <line x1="6" y1="14" x2="22" y2="14" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
-      <line x1="7" y1="17" x2="21" y2="17" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <defs>
+        <linearGradient id="g-ms" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E8E4F0"/>
+          <stop offset="100%" stopColor="#C8D0E0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="14,2 24,9 21,24 7,24 4,9" fill="url(#g-ms)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="14" y1="2"  x2="14" y2="24" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="4"  y1="9"  x2="24" y2="9"  stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="14" y1="2"  x2="4"  y2="9"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="2"  x2="24" y2="9"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Amethyst — tall hexagon
-function CrystalAmethyst({ size = 28, fillColor = "#7B4FA6", strokeColor = "#C9A84C" }: CrystalProps) {
+// Amethyst — tall hexagon z gradientem
+function CrystalAmethyst({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 2 L20 7 L20 21 L14 26 L8 21 L8 7 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="14" y1="2" x2="14" y2="26" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+      <defs>
+        <linearGradient id="g-am" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#C8A8E0"/>
+          <stop offset="100%" stopColor="#9A6EC8"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 2 L20 7 L20 21 L14 26 L8 21 L8 7 Z" fill="url(#g-am)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="14" y1="2" x2="14" y2="26" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="8"  y1="7" x2="20" y2="7"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="8"  y1="21" x2="20" y2="21" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Citrine — diamond with top point
-function CrystalCitrine({ size = 28, fillColor = "#E8A020", strokeColor = "#C9A84C" }: CrystalProps) {
+// Citrine — diamond z gradientem
+function CrystalCitrine({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 2 L22 12 L14 26 L6 12 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="6" y1="12" x2="22" y2="12" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <defs>
+        <linearGradient id="g-ci" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F5E0A0"/>
+          <stop offset="100%" stopColor="#E8C060"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 2 L22 12 L14 26 L6 12 Z" fill="url(#g-ci)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="6"  y1="12" x2="22" y2="12" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="14" y1="2"  x2="6"  y2="12" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="2"  x2="22" y2="12" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Rose Quartz — heart with facets
-function CrystalRoseQuartz({ size = 28, fillColor = "#E8A0B0", strokeColor = "#C9A84C" }: CrystalProps) {
+// Rose Quartz — fasetowany pentagon z gradientem (zastąpił serce/emoji)
+function CrystalRoseQuartz({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 24 C14 24 4 16 4 10 A5 5 0 0 1 14 8 A5 5 0 0 1 24 10 C24 16 14 24 14 24 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} />
-      <line x1="14" y1="8" x2="14" y2="22" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+      <defs>
+        <linearGradient id="g-rq" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F5D0DC"/>
+          <stop offset="100%" stopColor="#E8A8BC"/>
+        </linearGradient>
+      </defs>
+      <polygon points="14,2 25,10 22,25 6,25 3,10" fill="url(#g-rq)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="14" y1="2"  x2="14" y2="25" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="3"  y1="10" x2="25" y2="10" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="14" y1="2"  x2="3"  y2="10" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="2"  x2="25" y2="10" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Black Tourmaline — tall rectangle with lines
-function CrystalBlackTourmaline({ size = 28, fillColor = "#2A2A35", strokeColor = "#C9A84C" }: CrystalProps) {
+// Black Tourmaline — tall trapezoid z gradientem
+function CrystalBlackTourmaline({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M10 3 L18 3 L20 25 L8 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="10" y1="9" x2="18.5" y2="9" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
-      <line x1="9" y1="15" x2="19" y2="15" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
-      <line x1="8.5" y1="21" x2="19.5" y2="21" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <defs>
+        <linearGradient id="g-bt" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#4A4458"/>
+          <stop offset="100%" stopColor="#1A1828"/>
+        </linearGradient>
+      </defs>
+      <path d="M10 3 L18 3 L20 25 L8 25 Z" fill="url(#g-bt)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="10"  y1="9"  x2="18.5" y2="9"  stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="9"   y1="15" x2="19"   y2="15" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="8.5" y1="21" x2="19.5" y2="21" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Labradorite — irregular polygon
-function CrystalLabradorite({ size = 28, fillColor = "#4A6070", strokeColor = "#C9A84C" }: CrystalProps) {
+// Labradorite — irregular polygon z gradientem
+function CrystalLabradorite({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 3 L23 9 L21 22 L14 25 L7 20 L5 8 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="14" y1="3" x2="14" y2="25" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
-      <line x1="5" y1="8" x2="23" y2="9" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
+      <defs>
+        <linearGradient id="g-lb" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#6A8090"/>
+          <stop offset="100%" stopColor="#3A5060"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 3 L23 9 L21 22 L14 25 L7 20 L5 8 Z" fill="url(#g-lb)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="14" y1="3" x2="14" y2="25" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="5"  y1="8" x2="23" y2="9"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Green Aventurine — regular hexagon
-function CrystalGreenAventurine({ size = 28, fillColor = "#3A8A50", strokeColor = "#C9A84C" }: CrystalProps) {
+// Green Aventurine — regular hexagon z gradientem
+function CrystalGreenAventurine({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 3 L22 8 L22 20 L14 25 L6 20 L6 8 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="6" y1="8" x2="22" y2="8" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
-      <line x1="6" y1="20" x2="22" y2="20" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+      <defs>
+        <linearGradient id="g-ga" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#5AAA6A"/>
+          <stop offset="100%" stopColor="#2A7040"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 3 L22 8 L22 20 L14 25 L6 20 L6 8 Z" fill="url(#g-ga)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="6"  y1="8"  x2="22" y2="8"  stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="6"  y1="20" x2="22" y2="20" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="3"  x2="14" y2="25" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.3"/>
     </svg>
   );
 }
 
-// Fluorite — regular hexagon (flat top)
-function CrystalFluorite({ size = 28, fillColor = "#5BA898", strokeColor = "#C9A84C" }: CrystalProps) {
+// Fluorite — hexagon flat top z gradientem
+function CrystalFluorite({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M6 9 L14 4 L22 9 L22 19 L14 24 L6 19 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="14" y1="4" x2="14" y2="24" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.35} />
+      <defs>
+        <linearGradient id="g-fl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7BC8B8"/>
+          <stop offset="100%" stopColor="#4A9888"/>
+        </linearGradient>
+      </defs>
+      <path d="M6 9 L14 4 L22 9 L22 19 L14 24 L6 19 Z" fill="url(#g-fl)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="14" y1="4" x2="14" y2="24" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="6"  y1="9" x2="22" y2="9"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="6"  y1="19" x2="22" y2="19" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Clear Quartz — hexagon with top point
-function CrystalClearQuartz({ size = 28, fillColor = "#E8E8F4", strokeColor = "#C9A84C" }: CrystalProps) {
+// Clear Quartz — hexagon z gradientem
+function CrystalClearQuartz({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M14 2 L19 7 L19 21 L14 26 L9 21 L9 7 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="9" y1="7" x2="19" y2="7" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
-      <line x1="9" y1="14" x2="19" y2="14" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.3} />
+      <defs>
+        <linearGradient id="g-cq" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F5F2F8"/>
+          <stop offset="100%" stopColor="#DDD8E8"/>
+        </linearGradient>
+      </defs>
+      <path d="M14 2 L19 7 L19 21 L14 26 L9 21 L9 7 Z" fill="url(#g-cq)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="9" y1="7"  x2="19" y2="7"  stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="9" y1="14" x2="19" y2="14" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="9" y1="21" x2="19" y2="21" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Selenite — long wand with wave
-function CrystalSelenite({ size = 28, fillColor = "#F0EDE8", strokeColor = "#C9A84C" }: CrystalProps) {
+// Selenite — długi wand z gradientem
+function CrystalSelenite({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M10 3 L18 3 L18 25 L10 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <path d="M10 12 Q14 9 18 12" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} fill="none" />
-      <path d="M10 17 Q14 14 18 17" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} fill="none" />
+      <defs>
+        <linearGradient id="g-se" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#F8F5F0"/>
+          <stop offset="100%" stopColor="#E8E4DE"/>
+        </linearGradient>
+      </defs>
+      <path d="M10 3 L18 3 L18 25 L10 25 Z" fill="url(#g-se)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <path d="M10 12 Q14 9 18 12" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5" fill="none"/>
+      <path d="M10 17 Q14 14 18 17" stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5" fill="none"/>
+      <line x1="10" y1="8"  x2="18" y2="8"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="10" y1="21" x2="18" y2="21" stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }
 
-// Default fallback — generic gem
-function CrystalDefault({ size = 28, fillColor = "#C9A84C", strokeColor = "#C9A84C" }: CrystalProps) {
+// Default fallback — generic gem z gradientem
+function CrystalDefault({ size = 28, strokeColor = "#C9A84C" }: CrystalProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <path d="M8 8 L14 3 L20 8 L14 25 Z" fill={fillColor} stroke={strokeColor} strokeWidth={1.5} strokeLinejoin="round" />
-      <line x1="8" y1="8" x2="20" y2="8" stroke={strokeColor} strokeWidth={1} strokeOpacity={0.4} />
+      <defs>
+        <linearGradient id="g-df" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#E8D080"/>
+          <stop offset="100%" stopColor="#C9A84C"/>
+        </linearGradient>
+      </defs>
+      <path d="M8 8 L14 3 L20 8 L14 25 Z" fill="url(#g-df)" stroke={strokeColor} strokeWidth="0.8" strokeLinejoin="round"/>
+      <line x1="8"  y1="8" x2="20" y2="8"  stroke={strokeColor} strokeWidth="0.5" strokeOpacity="0.5"/>
+      <line x1="14" y1="3" x2="8"  y2="8"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
+      <line x1="14" y1="3" x2="20" y2="8"  stroke={strokeColor} strokeWidth="0.4" strokeOpacity="0.4"/>
     </svg>
   );
 }

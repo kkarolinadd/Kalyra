@@ -643,24 +643,76 @@ function TopicCard({ topic, onTap }: { topic: Topic; onTap: () => void }) {
 function ArticleRow({ article, onTap }: { article: Article; onTap: () => void }) {
   return (
     <button onClick={onTap} className="w-full text-left kalyra-card" style={{
-      background: "var(--card)", borderRadius: 12, borderLeft: `4px solid ${article.topicColor}`,
-      padding: "14px 16px 14px 18px", marginBottom: 8, cursor: "pointer", border: `none`,
-      borderLeftColor: article.topicColor, borderLeftWidth: 4, borderLeftStyle: "solid",
-      display: "block",
+      background: "var(--card)", borderRadius: 12,
+      borderLeft: `4px solid ${article.topicColor}`,
+      padding: "14px 16px 14px 18px", marginBottom: 8, cursor: "pointer",
+      border: "none", borderLeftColor: article.topicColor,
+      borderLeftWidth: 4, borderLeftStyle: "solid", display: "block",
     }}>
-      <div style={{ background: "var(--card)", borderRadius: 12, borderLeft: `4px solid ${article.topicColor}`, padding: "14px 16px 14px 18px" }}>
-        <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: 15, color: "var(--foreground)", lineHeight: 1.4, marginBottom: 8 }}>
-          {article.title}
-        </p>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "var(--font-inter)", fontWeight: 600 }}>
-            {article.category}
+      <p style={{ fontFamily: "var(--font-cormorant), serif", fontSize: 15, color: "var(--foreground)", lineHeight: 1.4, marginBottom: 8 }}>
+        {article.title}
+      </p>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <span style={{ fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted-foreground)", fontFamily: "var(--font-inter)", fontWeight: 600 }}>
+          {article.category}
+        </span>
+        <span style={{ color: "var(--muted-foreground)", fontSize: 10 }}>·</span>
+        <span style={{ fontSize: 10, color: "var(--muted-foreground)", fontFamily: "var(--font-inter)" }}>
+          {article.readTime} min
+        </span>
+      </div>
+    </button>
+  );
+}
+
+// ─── Library List — editorial format (Recently Added) ─────────────────────────
+
+const CATEGORY_DOT_COLORS: Record<TopicId, string> = {
+  moon:     "#8B6EB0",
+  planets:  "#C9A84C",
+  glamour:  "#C06070",
+  chakra:   "#8B6EB0",
+  rituals:  "#C9A84C",
+  crystals: "#4A9B8E",
+};
+
+const CATEGORY_LABELS: Record<TopicId, string> = {
+  moon:     "Moon",
+  planets:  "Planets",
+  glamour:  "Glamour",
+  chakra:   "Chakra",
+  rituals:  "Rituals",
+  crystals: "Crystals",
+};
+
+function LibraryDivider() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, opacity: 0.4, margin: "2px 0" }}>
+      <div style={{ flex: 1, height: 0.5, background: "var(--gold, #C9A84C)" }} />
+      <div style={{ width: 5, height: 5, border: "0.5px solid var(--gold, #C9A84C)", transform: "rotate(45deg)", flexShrink: 0 }} />
+      <div style={{ flex: 1, height: 0.5, background: "var(--gold, #C9A84C)" }} />
+    </div>
+  );
+}
+
+function LibraryItem({ article, onTap }: { article: Article; onTap: () => void }) {
+  const dotColor = CATEGORY_DOT_COLORS[article.category];
+  const categoryLabel = CATEGORY_LABELS[article.category];
+  return (
+    <button onClick={onTap} className="w-full text-left" style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+      <div style={{ padding: "14px 4px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+          <div style={{ width: 5, height: 5, borderRadius: "50%", background: dotColor, flexShrink: 0 }} />
+          <span style={{ fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600, color: dotColor, fontFamily: "var(--font-inter)" }}>
+            {categoryLabel}
           </span>
-          <span style={{ color: "var(--muted-foreground)", fontSize: 10 }}>·</span>
-          <span style={{ fontSize: 10, color: "var(--muted-foreground)", fontFamily: "var(--font-inter)" }}>
-            {article.readTime} min
+          <span style={{ fontSize: 9, color: "var(--muted-foreground)", fontFamily: "var(--font-inter)" }}>
+            · {article.readTime} min
           </span>
         </div>
+        <h3 style={{ fontFamily: "var(--font-cormorant), serif", fontSize: 17, fontWeight: 500, lineHeight: 1.25, color: "var(--foreground)", margin: 0 }}>
+          {article.title}
+        </h3>
       </div>
     </button>
   );
@@ -1044,11 +1096,14 @@ export function LearnTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         </div>
       </div>
 
-      {/* ── Recently Added ────────────────────── */}
+      {/* ── Recently Added — editorial list ──── */}
       <div className="mb-5">
         <SectionHeader label="Recently Added" />
-        {recentArticles.map((a) => (
-          <ArticleRow key={a.id} article={a} onTap={() => setSelectedArticle(a)} />
+        {recentArticles.map((a, i) => (
+          <div key={a.id}>
+            {i > 0 && <LibraryDivider />}
+            <LibraryItem article={a} onTap={() => setSelectedArticle(a)} />
+          </div>
         ))}
       </div>
 
