@@ -197,6 +197,16 @@ public/
 - ✅ SVG Icon System v1.0 — planet icons per ruler, geometric crystals; NO emoji anywhere in UI
 - ✅ 4-tab nav (TODAY / MOON / LEARN / PROFILE)
 - ✅ Learn Tab — Featured Today, Crystal Library (12), Explore Topics (5), articles (13), Ask Kalyra
+- ✅ Learn Tab Refine v7.0 (June 2026) — "biblioteka świątyni" editorial format:
+  - Recently Added: `LibraryItem` editorial list replaces `ArticleRow` cards — no containers, no borders
+  - `LibraryDivider`: 0.5px gold line + 5px rotated diamond glyph between entries
+  - Category: 5px colored dot + uppercase label (moon=#8B6EB0, planets/rituals=#C9A84C, glamour=#C06070, crystals=#4A9B8E)
+  - Titles: Cormorant 17px/500, reads like grimoire table of contents
+  - Crystal icons v2: all 11 crystals get `linearGradient` fills + strokeWidth 0.8px + facet lines 0.4–0.5 opacity
+  - Rose Quartz: heart → faceted pentagon (#F5D0DC→#E8A8BC)
+  - Moonstone: oval/ellipse → faceted pentagon (#E8E4F0→#C8D0E0)
+  - Carnelian: teardrop → faceted rhombus (#E07050→#A83820)
+  - One visual language: thin golden geometry across crystals, moon, sacred dividers, Kalyra sigil
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
 - ✅ AI Ritual Generator — tap-on-card pattern (no button); Ask Kalyra (mocked)
 - ✅ Profile tab dusk polish — full contrast pass, opacity hierarchy (0.75), all text classes, typographic zodiac symbols, SVG lock icon
