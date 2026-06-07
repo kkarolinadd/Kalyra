@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { getDailyAstrology, type DailyAstrology } from "@/lib/astrology";
 import { getRitual, getSpecialSectionContent, getTriggeredRituals } from "@/lib/ritualContent";
-import { getProfile, saveProfile, getTodayCheckins, toggleCheckin, canUseAiRitual, markAiRitualUsed, type CheckinKey } from "@/lib/storage";
+import { getProfile, saveProfile, getTodayCheckins, toggleCheckin, type CheckinKey } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import {
   IconSunrise, IconEvening, IconJournal, IconMirror,
@@ -553,9 +553,6 @@ function SectionCard({
               margin: 0,
             }}>
               {title}
-              {state === "done" && (
-                <span style={{ color: "var(--muted-foreground)", fontWeight: 500 }}>{" · done"}</span>
-              )}
             </h3>
             {tag && state === "active" && (
               <span className="text-xs px-2 py-0.5 rounded-full shrink-0" style={{
@@ -578,12 +575,12 @@ function SectionCard({
             </p>
           )}
 
-          {/* Glance line — visible when collapsed, hidden when expanded */}
-          {glanceLine && !isExpanded && state !== "upcoming" && state !== "missed" && (
+          {/* Subtitle — persists in both collapsed and expanded state (spec v9.1) */}
+          {glanceLine && state !== "upcoming" && state !== "missed" && (
             <p className="rcard-glance" style={{
-              fontFamily: "var(--font-inter)", fontSize: 13,
+              fontFamily: "var(--font-inter)", fontSize: 13, fontWeight: 400,
               color: "var(--muted-foreground)", margin: "2px 0 0 0",
-              lineHeight: 1.5,
+              lineHeight: 1.4, letterSpacing: "0.01em",
             }}>
               {glanceLine}
             </p>
@@ -654,36 +651,31 @@ function RitualList({ steps }: { steps: string[] }) {
 
 // ─── Rich card bodies ─────────────────────────────────────────────────────────
 
-/** Morning Ritual — vertical dashed path timeline */
+/** Morning/Evening Ritual — sekwencja rytuału, nie checklista (spec v9) */
 function MorningRitualBody({ steps }: { steps: string[] }) {
+  const ROMAN = ["i","ii","iii","iv","v","vi","vii","viii","ix","x"];
   return (
     <div>
       {steps.map((step, i) => (
-        <div key={i} style={{ display: "flex", gap: 12 }}>
-          {/* Step number + dashed connector */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, width: 24 }}>
-            <div style={{
-              width: 24, height: 24, borderRadius: "50%",
-              border: "1px solid var(--primary)",
-              background: "var(--card)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 11, fontWeight: 600, color: "var(--primary)",
-              fontFamily: "var(--font-inter)", flexShrink: 0, zIndex: 1,
-            }}>
-              {i + 1}
-            </div>
-            {i < steps.length - 1 && (
-              <div style={{
-                width: 0, flex: 1, minHeight: 16,
-                borderLeft: "1.5px dashed var(--border)",
-                marginTop: 3, marginBottom: 3,
-              }} />
-            )}
-          </div>
-          {/* Step text */}
-          <div style={{ paddingBottom: i < steps.length - 1 ? 14 : 0, flex: 1, paddingTop: 3 }}>
-            <span style={{ fontSize: 14, lineHeight: 1.5, color: "var(--foreground)" }}>{step}</span>
-          </div>
+        <div key={i} style={{
+          display: "flex", gap: 14,
+          padding: "11px 0",
+          alignItems: "flex-start",
+          borderTop: i > 0 ? "0.5px solid rgba(201,168,76,0.15)" : "none",
+        }}>
+          <span style={{
+            fontFamily: "var(--font-cormorant), Georgia, serif",
+            fontStyle: "italic",
+            fontSize: 19,
+            color: "var(--primary)",
+            flexShrink: 0,
+            width: 20,
+            textAlign: "center",
+            lineHeight: 1.35,
+          }}>
+            {ROMAN[i] ?? String(i + 1)}
+          </span>
+          <span style={{ fontSize: 14, lineHeight: 1.5, color: "var(--foreground)" }}>{step}</span>
         </div>
       ))}
     </div>
@@ -728,32 +720,30 @@ function JournalBody({ prompt }: { prompt: string }) {
   );
 }
 
-/** Mirror Reflection — affirmation + ghosted flipped echo */
+/** Mirror Reflection — affirmation + mirror echo feature (spec v9.1: no "read aloud" label, controlled reflection) */
 function MirrorBody({ reflection }: { reflection: string }) {
   return (
     <div>
-      <p className="read-aloud-label" style={{ textTransform: "none", marginBottom: 10, fontSize: 11 }}>
-        Read aloud · in the mirror
-      </p>
-      {/* Main affirmation */}
+      {/* Affirmation — "Read aloud · in the mirror" is already in subtitle */}
       <div className="quote-block" style={{ textAlign: "center", marginBottom: 0 }}>
         &ldquo;{reflection}&rdquo;
       </div>
-      {/* Mirror echo — barely visible flip, capped height */}
+      {/* Mirror echo — intentional feature: the reflection in the mirror */}
       <div
         aria-hidden="true"
         style={{
-          maxHeight: 36,
+          maxHeight: 40,
           overflow: "hidden",
           transform: "scaleY(-1)",
-          opacity: 0.06,
-          maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)",
+          opacity: 0.10,
+          filter: "blur(0.5px)",
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 55%)",
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 55%)",
           pointerEvents: "none", userSelect: "none",
           fontFamily: "var(--font-cormorant), serif",
           fontSize: 17, fontStyle: "italic", lineHeight: 1.7,
           color: "var(--foreground)", textAlign: "center",
-          marginTop: 1, padding: "0 4px",
+          marginTop: 4, padding: "0 4px",
         }}
       >
         &ldquo;{reflection}&rdquo;
@@ -762,39 +752,23 @@ function MirrorBody({ reflection }: { reflection: string }) {
   );
 }
 
-/** Crystal of the Day — icon + name + chips + instruction */
+/** Crystal of the Day — icon + phase meaning + chips + how to use (spec v9.1: no name/carry repetition) */
 function CrystalBody({ name, why, howToUse }: { name: string; why: string; howToUse: string }) {
   const chips = CRYSTAL_PROPERTIES[name] ?? [];
   return (
     <div>
-      {/* Icon + name */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
-        <div style={{ flexShrink: 0 }}>
-          <CrystalIcon name={name} size={52} />
-        </div>
-        <div>
-          <p style={{
-            fontFamily: "var(--font-cormorant), serif",
-            fontWeight: 600, fontSize: 22, color: "var(--primary)",
-            margin: 0, lineHeight: 1.1,
-          }}>
-            {name}
-          </p>
-          <p style={{
-            fontFamily: "var(--font-inter)", fontSize: 12,
-            color: "var(--muted-foreground)", margin: "4px 0 0",
-          }}>
-            Carry it close today
-          </p>
-          {/* Why — compact */}
-          <p style={{
-            fontFamily: "var(--font-inter)", fontSize: 12,
-            color: "var(--muted-foreground)", margin: "3px 0 0", lineHeight: 1.4,
-          }}>
-            {why.split(".")[0]}.
-          </p>
-        </div>
+      {/* Icon centered — name is already in subtitle */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+        <CrystalIcon name={name} size={52} />
       </div>
+      {/* Phase connection — the why */}
+      <p style={{
+        fontFamily: "var(--font-inter)", fontSize: 13,
+        color: "var(--muted-foreground)", lineHeight: 1.5,
+        margin: "0 0 12px",
+      }}>
+        {why.split(".")[0]}.
+      </p>
       {/* Property chips */}
       {chips.length > 0 && (
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 0 }}>
@@ -810,7 +784,7 @@ function CrystalBody({ name, why, howToUse }: { name: string; why: string; howTo
           ))}
         </div>
       )}
-      {/* Instruction */}
+      {/* How to use */}
       {howToUse && (
         <p style={{
           fontFamily: "var(--font-inter)", fontSize: 13,
@@ -825,23 +799,34 @@ function CrystalBody({ name, why, howToUse }: { name: string; why: string; howTo
   );
 }
 
-/** Glamour Magic — color swatches + short copy */
-function GlamourBody({ colorName, suggestion }: { colorName: string; suggestion: string }) {
+// Intention per color — zamienia "co założyć" na "dlaczego" (spec v9 opcja B)
+const GLAMOUR_INTENTIONS: Record<string, string> = {
+  "Gold or amber":           "Carry the Sun's color today.",
+  "Silver or white":         "Wear the light of reflection.",
+  "Silver or pale yellow":   "Dress in clarity and calm.",
+  "Rose pink or soft green": "Wear what opens the heart.",
+  "Red or orange":           "Dress as the fire you're calling in.",
+  "Deep blue or purple":     "Wear the depth of what you know.",
+  "Black, charcoal, or dark green": "Dress as the earth that holds you.",
+};
+
+/** Glamour Magic — jewel swatches + ritual intention (spec v9) */
+function GlamourBody({ colorName }: { colorName: string }) {
   const swatches = GLAMOUR_SWATCHES[colorName]
     ?? [{ name: colorName, hex: GLAMOUR_COLOR_MAP[colorName] ?? "#C9A84C" }];
-  // Take only the first sentence as copy
-  const shortCopy = suggestion.split(". ")[0] + ".";
+  const intention = GLAMOUR_INTENTIONS[colorName] ?? "Dress as the energy you're calling in.";
 
   return (
     <div>
-      {/* Swatches */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "flex-end" }}>
+      {/* Swatches — smaller, with gold border (bijouterie feel) */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 14, alignItems: "flex-end" }}>
         {swatches.map((s) => (
-          <div key={s.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+          <div key={s.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
             <div style={{
-              width: 64, height: 64, borderRadius: 14,
+              width: 56, height: 56, borderRadius: 12,
               background: s.hex,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+              border: "1px solid rgba(201,168,76,0.5)",
+              boxShadow: "0 2px 8px rgba(120,60,40,0.15)",
             }} />
             <span style={{
               fontFamily: "var(--font-inter)", fontSize: 11,
@@ -852,13 +837,15 @@ function GlamourBody({ colorName, suggestion }: { colorName: string; suggestion:
           </div>
         ))}
       </div>
-      {/* Short copy */}
+      {/* Intention — rytuał, nie lista kolorów */}
       <p style={{
-        fontFamily: "var(--font-inter)", fontSize: 13,
-        color: "var(--muted-foreground)", lineHeight: 1.5,
+        fontFamily: "var(--font-cormorant), serif",
+        fontStyle: "italic",
+        fontSize: 15,
+        color: "var(--foreground)", lineHeight: 1.5,
         margin: 0,
       }}>
-        {shortCopy}
+        {intention}
       </p>
     </div>
   );
@@ -1175,9 +1162,6 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
 export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" | "dusk" | "night" }) {
   const [astro, setAstro]         = useState<DailyAstrology | null>(null);
   const [checkins, setCheckins]   = useState<CheckinKey[]>([]);
-  const [aiState, setAiState]     = useState<"idle" | "loading" | "done">("idle");
-  const [aiContent, setAiContent] = useState("");
-  const [aiUsed, setAiUsed]       = useState(false);
 
   // Upsell
   const [showUpsell, setShowUpsell] = useState(false);
@@ -1189,7 +1173,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
   useEffect(() => {
     setAstro(getDailyAstrology());
     setCheckins(getTodayCheckins());
-    setAiUsed(!canUseAiRitual());
     if (!profile?.birth_time) setShowUpsell(getUpsellVisible());
     const interval = setInterval(() => setAstro(getDailyAstrology()), 3600000);
     return () => clearInterval(interval);
@@ -1222,15 +1205,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
 
   const cardState = (key: CheckinKey) => getRitualState(key, colorMode, checkins);
 
-
-  const handleGenerateRitual = async () => {
-    setAiState("loading");
-    await new Promise((r) => setTimeout(r, 1800));
-    setAiContent(MOCK_AI_RITUAL);
-    setAiState("done");
-    markAiRitualUsed();
-    setAiUsed(true);
-  };
 
   const handleSaveBirthTime = (time: string) => {
     if (!profile) return;
@@ -1372,7 +1346,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("morning")}
           onMarkComplete={() => markComplete("morning")}
           accent={CARD_ACCENTS.morning}
-          glanceLine={`${truncateWords(ritual.morningRitual[0], 5)} · ${ritual.morningRitual.length} steps`}
+          glanceLine={`A morning sequence · ${ritual.morningRitual.length} gestures`}
           stateMessage={
             cardState("morning") === "upcoming" ? UPCOMING_MSGS.morning :
             cardState("morning") === "missed"   ? MISSED_MSGS.morning   : undefined
@@ -1390,7 +1364,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("journal")}
           onMarkComplete={() => markComplete("journal")}
           accent={CARD_ACCENTS.journal}
-          glanceLine={truncateWords(ritual.journalPrompt, 7)}
+          glanceLine="A question to sit with"
           stateMessage={
             cardState("journal") === "upcoming" ? UPCOMING_MSGS.journal :
             cardState("journal") === "missed"   ? MISSED_MSGS.journal   : undefined
@@ -1424,7 +1398,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("crystal")}
           onMarkComplete={() => markComplete("crystal")}
           accent={CARD_ACCENTS.crystal}
-          glanceLine={`${ritual.crystal.name} · carry today`}
+          glanceLine={`${ritual.crystal.name} · carry it close`}
         >
           <CrystalBody
             name={ritual.crystal.name}
@@ -1441,13 +1415,13 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("wear")}
           onMarkComplete={() => markComplete("wear")}
           accent={CARD_ACCENTS.wear}
-          glanceLine={ritual.glamour.color}
+          glanceLine="Wear the day's color"
           stateMessage={
             cardState("wear") === "upcoming" ? UPCOMING_MSGS.wear :
             cardState("wear") === "missed"   ? MISSED_MSGS.wear   : undefined
           }
         >
-          <GlamourBody colorName={ritual.glamour.color} suggestion={ritual.glamour.suggestion} />
+          <GlamourBody colorName={ritual.glamour.color} />
         </SectionCard>
 
         {/* 8. Evening Ritual */}
@@ -1459,7 +1433,7 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
           state={cardState("evening")}
           onMarkComplete={() => markComplete("evening")}
           accent={CARD_ACCENTS.evening}
-          glanceLine={`${truncateWords(ritual.eveningRitual[0], 5)} · ${ritual.eveningRitual.length} steps`}
+          glanceLine={`An evening sequence · ${ritual.eveningRitual.length} gestures`}
           stateMessage={
             cardState("evening") === "upcoming" ? UPCOMING_MSGS.evening :
             cardState("evening") === "missed"   ? MISSED_MSGS.evening   : undefined
@@ -1480,52 +1454,6 @@ export function TodayTab({ colorMode = "night" }: { colorMode?: "dawn" | "day" |
         {doneCount > 0 && (
           <ProgressCounter done={doneCount} total={allCheckins.length} />
         )}
-
-        {/* AI Ritual Generator — subtle dashed card, tap to generate */}
-        <div
-          className="rounded-2xl p-5 space-y-4 mt-3 kalyra-card"
-          style={{
-            background: "var(--card)",
-            border: "1px dashed var(--border)",
-            cursor: (!aiUsed && aiState !== "done") ? "pointer" : "default",
-          }}
-          onClick={(!aiUsed && aiState === "idle") ? handleGenerateRitual : undefined}
-        >
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="10" cy="10" r="9" stroke="#C9A84C" strokeWidth="1"/>
-                  <line x1="10" y1="1" x2="10" y2="19" stroke="#C9A84C" strokeWidth="1"/>
-                </svg>
-              <div>
-                <h3
-                  className="text-sm tracking-widest uppercase"
-                  style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}
-                >
-                  Kalyra — Your Ritual
-                </h3>
-                <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
-                  {aiState === "loading"
-                    ? "Weaving your ritual…"
-                    : aiUsed && aiState !== "done"
-                    ? "Used today — come back tomorrow"
-                    : aiState === "done"
-                    ? "Your ritual for today"
-                    : "Tap to generate · 1× per day"}
-                </p>
-              </div>
-            </div>
-            {!aiUsed && aiState === "idle" && (
-              <span style={{ fontSize: 16, color: "var(--primary)", opacity: 0.7 }}>→</span>
-            )}
-          </div>
-
-          {aiState === "done" && (
-            <div className="rounded-xl p-4 space-y-3" style={{ background: "var(--background)" }}>
-              <p className="kalyra-voice text-base leading-relaxed whitespace-pre-line">{aiContent}</p>
-            </div>
-          )}
-        </div>
 
         <div className="h-4" />
       </div>

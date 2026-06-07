@@ -190,7 +190,7 @@ public/
 
 - ✅ Onboarding (4 steps, Sun + Moon sign calculation)
 - ✅ Today Tab v1.1 — checkboxes + animations, color accents per card, auto-collapse, upsell, progress counter
-- ✅ Moon Calendar — 40px two-tone icons, event dots, bottom sheet, swipe nav
+- ✅ Moon Calendar — 30px moon icons, event dots, bottom sheet, swipe nav
 - ✅ Special event sections (8 types)
 - ✅ 12 Master Rituals with steps
 - ✅ Color System v2.5 — 4 sky modes; DUSK fully specced per `Kalyra_DuskMode_Overrides.md` — all 5 tabs, 50+ CSS classes, opacity hierarchy table
@@ -208,7 +208,7 @@ public/
   - Carnelian: teardrop → faceted rhombus (#E07050→#A83820)
   - One visual language: thin golden geometry across crystals, moon, sacred dividers, Kalyra sigil
 - ✅ PWA (installable, `kalyra-virid.vercel.app`)
-- ✅ AI Ritual Generator — tap-on-card pattern (no button); Ask Kalyra (mocked)
+- ❌ AI Ritual Generator — removed (dead CTA, spec v9.2); Ask Kalyra (mocked, in Learn tab only)
 - ✅ Profile tab dusk polish — full contrast pass, opacity hierarchy (0.75), all text classes, typographic zodiac symbols, SVG lock icon
 - ✅ DUSK mode CSS — complete implementation of `Kalyra_DuskMode_Overrides.md`: Today/Calendar/Learn/Profile all tabs, classNames wired in components
 - ✅ Moon Cycles stat — counts from first app use (earliest daily_checkin), not birth date
@@ -253,14 +253,14 @@ public/
   - Waning Gibbous morning ritual: 3 steps shortened ("Begin with gratitude. The peak has passed." etc.)
   - Saturn morningAdd: removed "Saturn honors follow-through." second sentence
 - ✅ UI Fixes Brief v3.1 (June 2026) — rich card widgets:
-  - `MorningRitualBody` — vertical dashed timeline (numbered circles + dashed connector line)
+  - `MorningRitualBody` — roman numerals (Cormorant italic) + thin gold separator; NO circles/dashed lines (v9.0)
   - `JournalBody` — lined paper background (horizontal rules), Cormorant italic, "Start writing…" hint
-  - `MirrorBody` — affirmation + ghost reflection (opacity 0.06, max-height 36px, gradient mask)
-  - `CrystalBody` — large crystal icon + name + "Carry it close today" + property chips [Protection][Grounding][Saturn] + instruction with separator
-  - `GlamourBody` — 64×64px color swatches + labels + shortened copy (first sentence only)
-  - Evening Ritual uses same dashed timeline as Morning Ritual
+  - `MirrorBody` — affirmation + mirror echo feature (opacity 0.10, blur 0.5px, 55% mask); no "read aloud" label (v9.1)
+  - `CrystalBody` — icon centered + phase meaning + chips + how-to; NO name/carry repetition (v9.1)
+  - `GlamourBody` — 56×56px jewel swatches (gold border) + Cormorant italic intention text (v9.0)
+  - Evening Ritual uses same roman numeral sequence as Morning Ritual
   - CRYSTAL_PROPERTIES lookup table for 9 crystals (in TodayTab.tsx)
-  - GLAMOUR_SWATCHES map with per-color hex breakdowns (in TodayTab.tsx)
+  - GLAMOUR_SWATCHES + GLAMOUR_INTENTIONS maps (in TodayTab.tsx)
   - CrystalCardSmall in LearnTab: added `kalyra-card crystal-card` className for dusk CSS var inheritance
 - ✅ Energy of the Day Card v5.0 (June 2026) — portal widget replacing 3-tile grid:
   - Always-dark cosmic card (`#0D0A1A → #1A0D35 → #241540`) — same in all 4 sky modes
@@ -289,11 +289,30 @@ public/
   - Dawn: lila `rgba(123,104,144,0.7)` · Day: blue `rgba(90,110,140,0.7)` · Dusk: warm brown `rgba(160,100,90,0.8)` · Night: gold `rgba(201,168,76,0.8)`
   - Energy card adaptive glow: dawn=lila, day=blue, dusk=warm orange, night=gold border+glow
   - Principle: dark portal card stays constant, only its frame (divider + shadow) adapts per mode
+- ✅ Moon Tab Spec v8.0 (June 2026) — dwa traktowania księżyca w kalendarzu:
+  - `getMoonTreatment(mode)` → 'light' (dawn/day) | 'dark' (dusk/night)
+  - Dark: świecący kościany księżyc (`#FDF6E4→#CDB896`), drop-shadow poświata, ciemny terminator
+  - Light: atlas moon — złoty kontur `#C9A84C`, kremowe wypełnienie `#FBF3E8`, liliowy cień `rgba(123,104,144,0.28)`
+  - Eclipse: miedziany księżyc (`#C97850→#8B4A38`) zamiast kościanego
+  - `getShadowCx(phase)` — pozycja cienia per faza, viewBox 30, spójna tabela 8 faz
+  - `MoonCalIcon` — inline SVG component, dwa warianty, today=złoty pierścień
+  - MOON_SIZE: 40→30px (atlas, nie hero)
+  - Event markers: jedna złota kropka dla wszystkich wydarzeń (zamiast wielokolorowych)
+  - Legenda: 3 pozycje (Full/New · Today · Event) zamiast 4
+- ✅ Ritual Card Refine v9.0–9.2 (June 2026) — sekwencja, nie checklista:
+  - `MorningRitualBody` / `EveningRitual`: roman numerals i–x (Cormorant italic gold) + cienka złota linia między krokami; usunięte kółka i przerywana linia
+  - `GlamourBody`: swatche 56px + złota obwódka + `GLAMOUR_INTENTIONS` map (intencja zamiast nazwy koloru)
+  - Subtitle persistence (v9.1): glanceLine persists on expand — jeden token, jeden styl, nie skacze
+  - Stałe frazy podtytułu: "A morning sequence · N gestures", "A question to sit with", "Read aloud · in the mirror", "Citrine · carry it close", "Wear the day's color", "An evening sequence · N gestures"
+  - `CrystalBody`: usunięte powtórzenie nazwy i "carry" — są w podtytule; body = faza + tagi + instrukcja
+  - `MirrorBody`: usunięty nagłówek "Read aloud" (jest w podtytule); odbicie jako feature: opacity 0.10, blur 0.5px, 55% mask
+  - Removed "· done" from card title (v9.2) — stan done = wyłącznie wypełniony przycisk ✓ Done
+  - Removed AI Ritual Generator (dead CTA, v9.2) — specyfikacja upsellu głębi zaparkowana na przyszłość
 
 ## What's NOT built yet
 
 - ✅ Profile tab v1.0 — signs, elemental bar, ritual affinity, stats, settings, edit modal
-- ❌ Live Claude API (two mocks: AI Ritual Generator + Ask Kalyra)
+- ❌ Live Claude API (Ask Kalyra mock only — AI Ritual Generator removed in v9.2)
 - ❌ Learn — remaining 25 articles (13/38 done)
 - ❌ Rising sign calculation
 - ❌ Backend / accounts

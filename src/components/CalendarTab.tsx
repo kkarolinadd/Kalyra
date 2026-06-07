@@ -14,7 +14,7 @@ const MOON_LIT    = "#E8E0F0";
 const MOON_SHADOW = "#1E1640";
 const MOON_STROKE = "#4A3F7A";
 const GOLD        = "#C9A84C";
-const MOON_SIZE   = 40;
+const MOON_SIZE   = 30;
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 const MONTH_NAMES = [
@@ -29,32 +29,25 @@ const TRADITIONAL_MOON_NAMES: Record<number, string> = {
   10: "Beaver Moon", 11: "Cold Moon",
 };
 
-// Event dot colors per tier (spec section 6)
-const EVENT_DOT_COLORS: Record<string, string> = {
-  full_moon:               GOLD,
-  blue_moon:               GOLD,
-  new_moon:                GOLD,
-  supermoon:               GOLD,
-  micromoon:               GOLD,
-  eclipse_solar:           "#6B3FA0",
-  eclipse_lunar:           "#6B3FA0",
-  sun_ingress:             "#4A9B8E",
-  mercury_rx_start:        "#9B8BB8",
-  mercury_rx_end:          "#9B8BB8",
-  venus_rx_start:          "#9B8BB8",
-  venus_rx_end:            "#9B8BB8",
-  moon_conjunct_jupiter:   "#C4687A",
-  moon_conjunct_venus:     "#C4687A",
-};
+// Two treatments per spec v8 — dark (dusk/night): luminous bone; light (dawn/day): atlas gold lines
+function getMoonTreatment(mode: string): "dark" | "light" {
+  return mode === "dawn" || mode === "day" ? "light" : "dark";
+}
 
-// Priority for dot display (lower = higher priority)
-const EVENT_PRIORITY: Record<string, number> = {
-  eclipse_solar: 1, eclipse_lunar: 1,
-  full_moon: 2, new_moon: 2, blue_moon: 2, supermoon: 2, micromoon: 2,
-  sun_ingress: 3,
-  mercury_rx_start: 4, mercury_rx_end: 4, venus_rx_start: 4, venus_rx_end: 4,
-  moon_conjunct_jupiter: 5, moon_conjunct_venus: 5,
-};
+// Shadow cx per phase — viewBox 30 (spec section 3)
+function getShadowCx(phase: MoonPhase): number {
+  const map: Partial<Record<MoonPhase, number>> = {
+    "New Moon":        15,
+    "Waxing Crescent": 22,
+    "First Quarter":   24,
+    "Waxing Gibbous":  26,
+    "Full Moon":       40,
+    "Waning Gibbous":  4,
+    "Last Quarter":    6,
+    "Waning Crescent": 8,
+  };
+  return map[phase] ?? 15;
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -98,16 +91,84 @@ function buildMonthData(year: number, month: number): DayData[] {
   });
 }
 
-function getDotsForDay(events: SpecialEvent[]): { color: string; type: string }[] {
-  const sorted = [...events].sort((a, b) =>
-    (EVENT_PRIORITY[a.type] ?? 99) - (EVENT_PRIORITY[b.type] ?? 99)
-  );
-  const dots: { color: string; type: string }[] = [];
-  for (const ev of sorted) {
-    const color = EVENT_DOT_COLORS[ev.type];
-    if (color && dots.length < 3) dots.push({ color, type: ev.type });
+// One gold dot for all events (spec v8 section 6 — simplified)
+function hasEventDot(events: SpecialEvent[]): boolean {
+  return events.length > 0;
+}
+
+// ─── Moon Calendar Icon — two treatments (spec v8) ───────────────────────────
+
+function MoonCalIcon({
+  phase, treatment, isToday, isEclipse, size = 30,
+}: {
+  phase: MoonPhase;
+  treatment: "dark" | "light";
+  isToday: boolean;
+  isEclipse: boolean;
+  size?: number;
+}) {
+  const cx = getShadowCx(phase);
+  const uid = `${phase.replace(/\s/g, "")}${treatment}`;
+
+  if (treatment === "dark") {
+    // Luminous bone moon — glows on dark sky
+    const sphereStart = isEclipse ? "#C97850" : "#FDF6E4";
+    const sphereMid   = isEclipse ? "#A05030" : "#EFE0C4";
+    const sphereEnd   = isEclipse ? "#8B4A38" : "#CDB896";
+    return (
+      <svg
+        width={size} height={size} viewBox="0 0 30 30"
+        style={{
+          filter: isEclipse
+            ? "drop-shadow(0 0 6px rgba(180,80,40,0.5))"
+            : isToday
+              ? `drop-shadow(0 0 0 1.5px ${GOLD}) drop-shadow(0 0 8px rgba(201,168,76,0.5))`
+              : "drop-shadow(0 0 8px rgba(245,232,208,0.45))",
+          borderRadius: "50%",
+          boxSizing: "border-box",
+        }}>
+        <defs>
+          <radialGradient id={`lum-${uid}`} cx="42%" cy="40%" r="65%">
+            <stop offset="0%"   stopColor={sphereStart}/>
+            <stop offset="60%"  stopColor={sphereMid}/>
+            <stop offset="100%" stopColor={sphereEnd}/>
+          </radialGradient>
+          <filter id={`termSoft-${uid}`}><feGaussianBlur stdDeviation="0.9"/></filter>
+          <clipPath id={`disc-${uid}`}><circle cx="15" cy="15" r="11"/></clipPath>
+        </defs>
+        <circle cx="15" cy="15" r="11" fill={`url(#lum-${uid})`}/>
+        <g clipPath={`url(#disc-${uid})`}>
+          <circle cx={cx} cy="15" r="11" fill="#1a1228" filter={`url(#termSoft-${uid})`}/>
+        </g>
+        {isToday && (
+          <circle cx="15" cy="15" r="13" fill="none" stroke={GOLD} strokeWidth="1.5"/>
+        )}
+      </svg>
+    );
   }
-  return dots;
+
+  // Atlas moon — drawn with gold lines on light background
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 30 30"
+      style={{ boxSizing: "border-box" }}>
+      <defs>
+        <clipPath id={`atlas-disc-${uid}`}><circle cx="15" cy="15" r="11"/></clipPath>
+      </defs>
+      {/* Cream disc with gold outline */}
+      <circle cx="15" cy="15" r="11" fill="#FBF3E8" stroke={GOLD} strokeWidth="1"/>
+      {/* Lilac phase shadow — NOT navy */}
+      <g clipPath={`url(#atlas-disc-${uid})`}>
+        <circle cx={cx} cy="15" r="11" fill="rgba(123,104,144,0.28)"/>
+      </g>
+      {/* Gold terminator line */}
+      <line x1="15" y1="4" x2="15" y2="26" stroke={GOLD} strokeWidth="0.5" opacity="0.35"/>
+      {/* Today: gold ring */}
+      {isToday && (
+        <circle cx="15" cy="15" r="13" fill="none" stroke={GOLD} strokeWidth="1.5"/>
+      )}
+    </svg>
+  );
 }
 
 // ─── Bottom Sheet ─────────────────────────────────────────────────────────────
@@ -379,87 +440,77 @@ export function CalendarTab({ colorMode = "night" }: { colorMode?: "dawn" | "day
 
           const isToday    = isSameDay(day.date, today);
           const isSelected = selectedDay ? isSameDay(day.date, selectedDay.date) : false;
-          const dots       = getDotsForDay(day.events);
+          const isEclipse  = day.events.some(e => e.type === "eclipse_lunar" || e.type === "eclipse_solar");
+          const showDot    = hasEventDot(day.events);
+          const treatment  = getMoonTreatment(colorMode);
 
           return (
             <button key={i}
               onClick={() => setSelectedDay(isSelected ? null : day)}
               className="flex flex-col items-center justify-start active:scale-90 transition-transform rounded-xl"
-              style={{ height: 80, paddingTop: 4,
+              style={{ height: 72, paddingTop: 4,
                 background: isSelected ? "color-mix(in srgb, var(--primary) 10%, transparent)" : "transparent",
               }}>
               {/* Moon icon */}
-              <div className="relative flex items-center justify-center"
-                style={{ width: MOON_SIZE + 8, height: MOON_SIZE + 8 }}>
-                {isToday && (
-                  <div className="absolute inset-0 rounded-full"
-                    style={{ border: `1.5px solid ${GOLD}` }} />
-                )}
-                <MoonPhaseIcon2
+              <div className="flex items-center justify-center"
+                style={{ width: MOON_SIZE + 6, height: MOON_SIZE + 6 }}>
+                <MoonCalIcon
                   phase={day.phase}
+                  treatment={treatment}
+                  isToday={isToday}
+                  isEclipse={isEclipse}
                   size={MOON_SIZE}
-                  litColor={MOON_LIT}
-                  darkColor={MOON_SHADOW}
-                  strokeColor={
-                    isToday      ? GOLD       :
-                    day.isFullMoon ? "#C9A84C50" :
-                    MOON_STROKE
-                  }
                 />
               </div>
 
               {/* Date number */}
               <span style={{
                 fontFamily: "var(--font-inter)",
-                fontSize: 12,
-                fontWeight: isToday || day.isFullMoon ? 600 : 400,
-                color: isToday || day.isFullMoon ? GOLD : "var(--foreground)",
+                fontSize: 11,
+                fontWeight: isToday ? 600 : 400,
+                color: isToday ? GOLD : "var(--foreground)",
                 lineHeight: 1,
               }}>
                 {day.date.getDate()}
               </span>
 
-              {/* Event dots — max 3, 4px (5px in dusk) */}
-              <div className="flex items-center gap-[3px] mt-1" style={{ minHeight: 8 }}>
-                {dots.map((dot, di) => (
-                  <div key={di}
-                    style={{ width: colorMode === "dusk" ? 5 : 4, height: colorMode === "dusk" ? 5 : 4, borderRadius: "50%", background: dot.color }} />
-                ))}
+              {/* Single gold dot for any event */}
+              <div style={{ minHeight: 8, display: "flex", alignItems: "center", marginTop: 2 }}>
+                {showDot && (
+                  <div style={{
+                    width: 4, height: 4, borderRadius: "50%",
+                    background: GOLD,
+                    boxShadow: `0 0 4px rgba(201,168,76,0.5)`,
+                  }} />
+                )}
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* Legend */}
-      <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-2 pt-4 mt-auto"
+      {/* Legend — 3 items (spec v8 section 6) */}
+      <div className="flex items-center justify-center gap-6 pt-4 mt-auto"
         style={{ borderTop: "1px solid var(--border)" }}>
         <div className="flex items-center gap-1.5">
-          <MoonFirstQuarter size={13} litColor={MOON_LIT} darkColor={MOON_SHADOW} strokeColor={MOON_STROKE} />
+          <MoonFirstQuarter size={12} litColor={MOON_LIT} darkColor={MOON_SHADOW} strokeColor={MOON_STROKE} />
           <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Full / New
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div style={{ width: 13, height: 13, borderRadius: "50%", border: `1.5px solid ${GOLD}` }} />
+          <div style={{ width: 12, height: 12, borderRadius: "50%", border: `1.5px solid ${GOLD}` }} />
           <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
             Today
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#6B3FA0" }} />
+          <div style={{ width: 4, height: 4, borderRadius: "50%", background: GOLD, boxShadow: `0 0 4px rgba(201,168,76,0.5)` }} />
           <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
             style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-            Eclipse
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div style={{ width: 4, height: 4, borderRadius: "50%", background: "#9B8BB8" }} />
-          <span className="calendar-legend__label text-[10px] tracking-widest uppercase"
-            style={{ fontFamily: "var(--font-inter)", fontWeight: 600, color: "var(--muted-foreground)" }}>
-            Special
+            Event
           </span>
         </div>
       </div>
